@@ -11,6 +11,7 @@ Filesystem Layout
 -----------------
 
 <pre>
-/cimenarius - The base application and framework
+/cimenarius      - The base application and framework
++--/tasks        - Grunt tasks
 
 </pre>
