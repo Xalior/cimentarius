@@ -12,11 +12,11 @@ Filesystem Layout
 
 <pre>
 /cimenarius  - The base application and framework
-+--/tasks       - Grunt tasks
 +--/config      - Application installation configuration
 +--/lib         - Internal runtime libraries
 +--/models         - Database integration
-   +--/shelves        - Actual ORM models
-   +--/database       - ORM setup utils
-      +--/migrations     - Automatic DB upgraders
+|  +--/shelves        - Actual ORM models
+|  +--/database       - ORM setup utils
+|   +--/migrations     - Automatic DB upgraders
++--/tasks       - Grunt tasks
 </pre>
