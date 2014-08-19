@@ -1,4 +1,7 @@
 'use strict';
+var config = require('./lib/config');
+
+console.log(config);
 
 var server = {
 	cimentarius: require('./lib/cimentarius')
