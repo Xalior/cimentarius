@@ -20,11 +20,17 @@ tablePromises.push(new Promise(function (resolve) {
         } else {
             knex.schema.createTable('page', function (t) {
                 t.increments('id');
-                t.integer('parent_id');
+                // probably page - maybe site, or a service... :-o
                 t.string('parent_type');
+                // entity ID to look up in remote parent type table
+                t.integer('parent_id');
+                // page title (human readable formatt
                 t.string('title');
+                // pages need rendering templates (by name)
                 t.string('templateName');
+                // and a slug
                 t.string('url');
+                // pages also contain metashit, for SEO purposes.
                 t.string('metaDescription');
                 t.timestamps();
             }).then(function () {
