@@ -105,7 +105,33 @@ var Page = OleBookshelf.Model.extend(
                 return false;
             }
         },
-        /**
+
+
+//        /*
+//         function to locate the handling page for public requests.
+//         */
+//        function find_requested($request) {
+//    $page = $this;
+//    $found = true;
+//    for($i=0, $limit = count($request); $i<$limit; $i++) {
+//        if($request[$i]) {
+//            $next = $page->ChildWithURL($request[$i]);
+//            if(!$next || !$page->publiclyVisible()) {
+//                $found = false;
+//                break;
+//            }
+//            $page = $next;
+//            if($page->service) {
+//                break;
+//            }
+//        }
+//    }
+//    return array(&$page, $found);
+//}
+
+
+
+/**
          * Update Search Field From Children Particles
          * Gets Child Particle Search Content, Then Joins It All
          * Adds to Model
