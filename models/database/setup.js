@@ -28,8 +28,8 @@ tablePromises.push(new Promise(function (resolve) {
                 t.string('title');
                 // pages need rendering templates (by name)
                 t.string('templateName');
-                // and a slug
-                t.string('url');
+                // and a url-part
+                t.string('slug');
                 // pages also contain metashit, for SEO purposes.
                 t.string('metaDescription');
                 t.timestamps();
