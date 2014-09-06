@@ -4,7 +4,7 @@ module.exports = config = {
     "listen_port" : 8080,
     "listen_address" : "127.0.0.1",
     // Admin URL
-    "dashboard": ".admin",
+    "admin": ".admin",
 
     // And the details for saving...
     "dbUser" : "cimentarius",
