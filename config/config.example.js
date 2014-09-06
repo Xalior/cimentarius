@@ -5,6 +5,7 @@ module.exports = config = {
     "listen_address" : "127.0.0.1",
     // Admin URL
     "admin": ".admin",
+    "salt": "BuildingBlocksAreNiceButARealCraftsmanNeedsMasonry",
 
     // And the details for saving...
     "dbUser" : "cimentarius",
