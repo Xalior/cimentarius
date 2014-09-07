@@ -11,6 +11,55 @@ var knex = CimentariusBookshelf.knex;
 // Table Creation Promises
 var tablePromises = [];
 
+// User Table
+tablePromises.push(new Promise(function (resolve) {
+    knex.schema.hasTable('user').then(function(exists) {
+        if (exists) {
+            console.log('Users Table Already Exists');
+            userQ.resolve();
+        } else {
+            knex.schema.createTable('user',function(t) {
+                t.increments('id');
+                t.string('username');
+                t.string('password');
+                t.string('email');
+                t.integer('group_id');
+                t.dateTime('last_seen');
+                t.timestamps();
+            }).then(function() {
+                console.log('Users Table Created');
+                userQ.resolve();
+            });
+        }
+    });
+
+
+}));
+
+// Site Table
+tablePromises.push(new Promise(function (resolve) {
+    knex.schema.hasTable('site').then(function (exists) {
+        if (exists) {
+            console.log('Site Table Already Exists');
+            resolve();
+        } else {
+            knex.schema.createTable('site', function (t) {
+                t.increments('id');
+                // entity ID to look up in remote parent type table
+                t.string('title');
+                // and a url-part
+                t.string('primary_domain');
+                // pages also contain metashit, for SEO purposes.
+                t.string('other_domains');
+                t.timestamps();
+            }).then(function () {
+                console.log('Site Table Created');
+                resolve();
+            });
+        }
+    });
+}));
+
 // Site Table
 tablePromises.push(new Promise(function (resolve) {
     knex.schema.hasTable('site').then(function (exists) {
