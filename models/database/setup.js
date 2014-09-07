@@ -16,7 +16,7 @@ tablePromises.push(new Promise(function (resolve) {
     knex.schema.hasTable('user').then(function(exists) {
         if (exists) {
             console.log('Users Table Already Exists');
-            userQ.resolve();
+            resolve();
         } else {
             knex.schema.createTable('user',function(t) {
                 t.increments('id');
@@ -28,12 +28,10 @@ tablePromises.push(new Promise(function (resolve) {
                 t.timestamps();
             }).then(function() {
                 console.log('Users Table Created');
-                userQ.resolve();
+                resolve();
             });
         }
     });
-
-
 }));
 
 // Site Table
