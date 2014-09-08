@@ -1,4 +1,6 @@
 'use strict';
+require('./lib/harmony.js');
+
 var config = require('./lib/config');
 
 console.log(config);
