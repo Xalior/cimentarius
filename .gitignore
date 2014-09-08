@@ -31,3 +31,6 @@ node_modules
 #as it says on the tin...
 .sass-cache #as it says on the tin...
 *.swp
+#local config file
+config/config.js
+
