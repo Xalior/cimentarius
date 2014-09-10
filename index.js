@@ -5,15 +5,10 @@ var config = require('./lib/config');
 
 console.log(config);
 
-var server = {
-	cimentarius: require('./lib/cimentarius')
-};
-
-console.log("server:");
-console.log(server);
+var cimentarius = require('./lib/cimentarius')
 
 if (require.main === module) {
-    server.cimentarius.process();
+    cimentarius.main();
 }
 
-module.exports = server;
+module.exports = cimentarius;
