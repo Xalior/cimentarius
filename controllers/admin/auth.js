@@ -73,9 +73,7 @@ var auth = {
 
     router: function(requestPath, req, res) {
         console.log("admin.auth.router:");
-        console.log(requestPath);
-        console.log(res.render('admin/login'));
-//        res.end('Path is '+JSON.stringify(requestPath)+' and I should render taht now...');
+        res.renderAdmin('login.swig');
     }
 }
 

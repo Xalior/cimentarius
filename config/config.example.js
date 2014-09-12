@@ -12,5 +12,12 @@ module.exports = config = {
     "dbPass" : "you_secret_password",
     "dbName" : "cimentarius_sitename",
     "dbHost" : "localhost",
-    "dbPort" : 3306
+    "dbPort" : 3306,
+
+    //middleware settings
+    "middlewares": {
+        render: {
+            cache: false
+        }
+    }
 };
