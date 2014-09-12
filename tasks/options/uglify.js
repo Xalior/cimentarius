@@ -1,6 +1,6 @@
 module.exports = {
   build: {
-    src: 'src/js/.fenestra.js',
-    dest: 'public/js/fenestra.js'
+    src: 'src/js/.cimentarius.js',
+    dest: 'public/js/cimentarius.js'
   }
 }

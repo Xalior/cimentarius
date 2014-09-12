@@ -5,7 +5,7 @@ module.exports = {
       style: 'expanded'
     },
     files: {
-      'src/css/fenestra.css': 'src/scss/fenestra.scss'
+      'src/css/cimentarius.css': 'src/scss/cimentarius.scss'
     }
   }
 }
