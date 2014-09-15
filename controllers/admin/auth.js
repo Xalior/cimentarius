@@ -73,6 +73,31 @@ var auth = {
 
     router: function(requestPath, req, res) {
         console.log("admin.auth.router:");
+        var _method = req.method.toLowerCase();
+        switch(requestPath[0]) {
+            case 'login':
+                if(_method=='post') {
+                    console.log("post!);");
+                    passport.authenticate('local', function (err, user, info) {
+                        if (err) {
+                            return next(err)
+                        }
+                        if (!user) {
+                            req.session.messages = [info.message];
+                            return res.redirect('/login')
+                        }
+                        req.logIn(user, function (err) {
+                            if (err) {
+                                return next(err);
+                            }
+                            return res.redirect('/');
+                        });
+                        return;
+                    });
+                }
+                res.renderAdmin('login.swig');
+                return;
+        }
         res.renderAdmin('login.swig');
     }
 }
