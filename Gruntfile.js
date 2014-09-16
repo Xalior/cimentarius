@@ -1,6 +1,8 @@
 
 module.exports = function(grunt) {
 
+grunt.loadNpmTasks('grunt-contrib-compass');
+
   // Utility to load the different option files
   // based on their names
   function loadConfig(path) {
