@@ -7,26 +7,26 @@ var passport = require('passport'),
     User = require('../../models/shelves/admin/user').User;
 
 var auth = {
-    admin: {
-        authenticate: function (req, res) {
-            console.log("vv");
-            console.log(next);
-            console.log("^^");
-            var redirectPrefix = req.url.startsWith('/' + config.admin) ? '/' + config.admin + '/' : '/';
-
-            var authDone = function(err, user, messages) {
-                console.log('auth done');
-                console.log(messages)
-                console.log(user);
-            }
-
-            passport.authenticate('local', {
-                successRedirect: req.session.goingTo || redirectPrefix,
-                failureRedirect: redirectPrefix + 'login',
-                failureFlash: true
-            })(req, res, authDone);
-        }
-    },
+    //admin: {
+    //    authenticate: function (req, res) {
+    //        console.log("vv");
+    //        console.log(next);
+    //        console.log("^^");
+    //        var redirectPrefix = req.url.startsWith('/' + config.admin) ? '/' + config.admin + '/' : '/';
+    //
+    //        var authDone = function(err, user, messages) {
+    //            console.log('auth done');
+    //            console.log(messages)
+    //            console.log(user);
+    //        }
+    //
+    //        passport.authenticate('local', {
+    //            successRedirect: req.session.goingTo || redirectPrefix,
+    //            failureRedirect: redirectPrefix + 'login',
+    //            failureFlash: true
+    //        })(req, res, authDone);
+    //    }
+    //},
 
     /**
      * Cimentarius Passport Auth Strategy
@@ -34,6 +34,7 @@ var auth = {
      */
     localStrategy: function () {
         return new LocalStrategy({passReqToCallback: true}, function (req, username, password, done) {
+                console.log('local auth going now);');
                 User.forge().set({username: username}).fetch().then(function (user) {
                     // Only Allow Login If Activation Token Has Been Nullified
                     if (user && !user.getActivationToken() && module.exports.passwordVerify(user.attributes.password, password)) {
@@ -83,7 +84,24 @@ var auth = {
     requests: {
         login: function(req, res) {
             res.locals._adminLogin = '/'+config.admin+'/auth/login';
-            res.renderAdmin('login.swig');
+            if(req.method.toUpperCase()=='GET') {
+                res.renderAdmin('login.swig');
+            } else {
+                console.log("not get");
+                var redirectPrefix = req.url.startsWith('/' + config.admin) ? '/' + config.admin + '/' : '/';
+
+                var authDone = function(err, user, messages) {
+                    console.log('auth done');
+                    console.log(messages)
+                    console.log(user);
+                }
+
+                passport.authenticate('local', {
+                    successRedirect: req.session.goingTo || redirectPrefix,
+                    failureRedirect: redirectPrefix + 'login',
+                    failureFlash: true
+                })(req, res, authDone);
+            }
         }
     }
 }
