@@ -6,13 +6,19 @@ var config = require('./../../config/config'),
     User = require('./../../models/shelves/admin/user').User;
 
 var admin = {
+    auth: require('./auth'),
     routes: {
-        auth: require('./auth')
+        auth: function(requestPath, req, res) {
+            admin.auth.router(requestPath, req, res);
+        },
+        test: function(requestPath, req, res) {
+            console.log('admin test:');
+            console.log(requestPath);
+        }
     },
-    passport: require('passport'),
     app: function(requestPath, req, res)  {
-        console.info('cimentarius.admin.app');
-        admin.passport.authenticate('local');
+        console.info('cimentarius.admin.app:');
+        admin.auth.passport.authenticate('admin-login');
         admin.router(requestPath, req, res);
     },
 
@@ -23,38 +29,20 @@ var admin = {
         var redirectPrefix = req.url.startsWith('/' +config.admin) ? '/'+ config.admin + '/' : '/';
 
         if((requestPath[0]=='auth') || (req.isAuthenticated())) {
+            console.log(requestPath[0]);
             var route = requestPath.shift();
-            if(route=='auth')
-                admin.routes.auth.router(requestPath, req, res);
-            // do this route.
-            res.end('Path is '+JSON.stringify(requestPath)+' and I should render taht now...');
+            if (typeof(admin.routes[route])=='function') {
+                admin.routes[route](requestPath, req, res)
+            } else {
+                res.end('Path is '+route+'+'+JSON.stringify(requestPath)+' and I should render taht now...');
+            }
         } else {
             console.log('was asking for '+req.url);
             req.session.goingTo = req.url;
-//            req.flash('message', 'This page requires you to be logged in...');
+            req.flash('message', 'This page requires you to be logged in...');
             res.redirect(redirectPrefix + 'auth/login');
         }
     }
 };
-
-// Passport session setup.
-//   To support persistent login sessions, Passport needs to be able to
-//   serialize users into and deserialize users out of the session.  Typically,
-//   this will be as simple as storing the user ID when serializing, and finding
-//   the user by ID when deserializing.
-admin.passport.serializeUser(function(user, done) {
-    console.log('admin.passport.serializeUser');
-    done(null, user.id);
-});
-
-admin.passport.deserializeUser(function(id, done) {
-    console.log('admin.passport.deserializeUser');
-
-    findById(id, function (err, user) {
-        done(err, user);
-    });
-});
-
-
 
 module.exports = admin;
