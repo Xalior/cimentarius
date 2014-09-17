@@ -43,17 +43,18 @@ var admin = {
 //   this will be as simple as storing the user ID when serializing, and finding
 //   the user by ID when deserializing.
 admin.passport.serializeUser(function(user, done) {
+    console.log('admin.passport.serializeUser');
     done(null, user.id);
 });
 
 admin.passport.deserializeUser(function(id, done) {
+    console.log('admin.passport.deserializeUser');
+
     findById(id, function (err, user) {
         done(err, user);
     });
 });
 
-// Passport
-admin.passport.use(admin.routes.auth.localStrategy());
 
 
 module.exports = admin;

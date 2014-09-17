@@ -74,14 +74,14 @@ var auth = {
 
     router: function(requestPath, req, res) {
         console.log("admin.auth.router:");
-        if (typeof(auth.requests[requestPath]=='function')) {
-            auth.requests[requestPath](req, res)
+        if (typeof(auth.routes[requestPath]=='function')) {
+            auth.routes[requestPath](req, res)
         } else {
             console.log(requestPath);
         }
     },
 
-    requests: {
+    routes: {
         login: function(req, res) {
             res.locals._adminLogin = '/'+config.admin+'/auth/login';
             if(req.method.toUpperCase()=='GET') {
@@ -96,7 +96,7 @@ var auth = {
                     console.log(user);
                 }
 
-                passport.authenticate('local', {
+                passport.authenticate('admin-login', {
                     successRedirect: req.session.goingTo || redirectPrefix,
                     failureRedirect: redirectPrefix + 'login',
                     failureFlash: true
