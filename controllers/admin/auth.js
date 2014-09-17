@@ -73,7 +73,18 @@ var auth = {
 
     router: function(requestPath, req, res) {
         console.log("admin.auth.router:");
-        res.renderAdmin('login.swig');
+        if (typeof(auth.requests[requestPath]=='function')) {
+            auth.requests[requestPath](req, res)
+        } else {
+            console.log(requestPath);
+        }
+    },
+
+    requests: {
+        login: function(req, res) {
+            res.locals._adminLogin = '/'+config.admin+'/auth/login';
+            res.renderAdmin('login.swig');
+        }
     }
 }
 

@@ -8,7 +8,7 @@
                     <h1 class = "text-center">Login</h1>
                 </div>
                 <div class = "modal-body">
-                    <form class = "form col-md-12 center-block" method="post" action="/ole/login">
+                    <form class = "form col-md-12 center-block" method="post" action="{{_adminLogin}}">
                         <div class = "form-group">
                             <input type = "text" class = "form-control input-lg" placeholder = "Email" name="username">
                         </div>
