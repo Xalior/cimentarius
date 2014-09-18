@@ -1,9 +1,38 @@
 'use strict';
 
-var config = require('../../lib/config');
-var Promise = require('bluebird');
+var config = require('../../lib/config'),
+    Promise = require('bluebird'),
+    inquirer = require('inquirer'),
+    auth = require('../../controllers/admin/auth'),
+    User = require('../shelves/admin/user').User;
 
 var CimentariusBookshelf = require('../shelves/cimentarius');
+
+// Install - Questions
+var questions = [
+    {
+        type: 'input',
+        name: 'adminEmail',
+        message: 'Please Enter An Admin Email Address: ',
+        filter: String
+    },
+    {
+        type: 'input',
+        name: 'adminUsername',
+        message: 'Please Enter An Admin Username: ',
+        filter: String
+    },
+    {
+        type: 'password',
+        name: 'adminPassword',
+        message: 'Please Enter An Admin Password: ',
+        filter: String
+    }
+];
+
+
+
+
 
 // Knex Instance
 var knex = CimentariusBookshelf.knex;
@@ -119,7 +148,39 @@ tablePromises.push(knex.migrate.latest(
 // All Done
 Promise.all(tablePromises).then(function () {
     // Report
-    console.log('Tables Created Or Checked...');
-    console.log('All done!');
-    process.exit();
+    console.log('Tables Created Or Checked...!');
+
+    // User Creation
+    knex('user').count('username as userCount').then(function(result) {
+        // Count Users
+        var userCount = result[0]['userCount'];
+        // Need to create a user?
+        if (userCount === 0) {
+            // Inquirer - Prompt
+            inquirer.prompt(questions, function(answers) {
+                // Encrypt Password
+                var userDetails = {
+                    email: answers.adminEmail,
+                    username: answers.adminUsername,
+                    password: auth.passwordHash(answers.adminPassword),
+                    group_id: 0
+                };
+                // Forge User
+                User.forge(userDetails).save().then(function() {
+                    console.log('User Successfully Created.');
+                }).catch(function(e) {
+                    console.log('An error occurred when saving the user:');
+                    console.log(e);
+                    process.exit(-1);
+                }).lastly(function() {
+                    console.log('All done!');
+                    process.exit();
+                });
+            });
+        } else {
+            // No New Users Required
+            console.log('User Account Already Exists');
+            process.exit();
+        }
+    });
 });
