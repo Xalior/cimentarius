@@ -1,10 +1,3 @@
-{% if messageHtml %}
-    <div class = "alert-container">
-        {{ messageHtml | safe }}
-    </div>
-
-    <div ng-controller="AlertDemoCtrl">
-      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-      <button class='btn btn-default' ng-click="addAlert()">Add Alert</button>
-    </div>
-{% endif %}
+<div ng-controller="BootstrapAlert" ng-init='init({{ _messages| safe }})'>
+    <alert ng-repeat="alert in alerts" type="{% raw %}{{alert.type}}{% endraw %}" close="closeAlert($index)">{% raw %}{{alert.msg}}{% endraw %}</alert>
+</div>

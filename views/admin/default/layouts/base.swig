@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html ng-app="Cimentarius">
     <head>
         {% include "../partials/head.swig" %}
     </head>
