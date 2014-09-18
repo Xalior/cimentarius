@@ -65,7 +65,6 @@ var auth = {
     },
 
     router: function(requestPath, req, res) {
-        console.log("admin.auth.router:");
         if (typeof(auth.routes[requestPath])=='function') {
             auth.routes[requestPath](requestPath, req, res)
         } else {
@@ -83,7 +82,7 @@ var auth = {
                     console.log('auth done');
                     console.log(messages)
                     console.log(user);
-                }
+                };
 
                 auth.passport.authenticate('admin-login', {
                     successRedirect: req.session.goingTo || '/'+config.admin+'/dashboard',
