@@ -34,3 +34,4 @@ node_modules
 #local config file
 config/config.js
 
+.cimentarius.*
