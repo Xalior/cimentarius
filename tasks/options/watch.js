@@ -59,7 +59,7 @@ module.exports = {
         },
         css: {
             files: ['src/css/*.css'],
-            tasks: ['autoprefixer'],
+            tasks: ['autoprefixer', 'copy'],
             options: {
                 spawn: false
             }
