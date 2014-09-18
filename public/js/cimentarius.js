@@ -26127,16 +26127,15 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
     "</ul>");
 }]);
 
+var Cimentarius = angular.module('Cimentarius', ['ui.bootstrap']);
+
 Cimentarius.controller('BootstrapAlert', function($scope) {
 
     $scope.init = function(alerts) {
         $scope.alerts = alerts;
     };
 
-    console.log($scope.alerts);
-
     $scope.closeAlert = function (index) {
         $scope.alerts.splice(index, 1);
     };
 });
-var Cimentarius = angular.module('Cimentarius', ['ui.bootstrap']);
