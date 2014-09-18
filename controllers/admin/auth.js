@@ -1,43 +1,34 @@
 'use strict';
 
-var passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy,
+var LocalStrategy = require('passport-local').Strategy,
     passwordHash = require('password-hash'),
     config = require('../../config/config'),
     User = require('../../models/shelves/admin/user').User;
 
 var auth = {
-    //admin: {
-    //    authenticate: function (req, res) {
-    //        console.log("vv");
-    //        console.log(next);
-    //        console.log("^^");
-    //        var redirectPrefix = req.url.startsWith('/' + config.admin) ? '/' + config.admin + '/' : '/';
-    //
-    //        var authDone = function(err, user, messages) {
-    //            console.log('auth done');
-    //            console.log(messages)
-    //            console.log(user);
-    //        }
-    //
-    //        passport.authenticate('local', {
-    //            successRedirect: req.session.goingTo || redirectPrefix,
-    //            failureRedirect: redirectPrefix + 'login',
-    //            failureFlash: true
-    //        })(req, res, authDone);
-    //    }
-    //},
+    passport: null,
+    init: function(passport) {
+        auth.passport = passport;
+        auth.passport.serializeUser(function(user, done) {
+            console.log('auth.passport.serializeUser');
+            done(null, user.id);
+        });
 
-    /**
-     * Cimentarius Passport Auth Strategy
-     * @returns {LocalStrategy}
-     */
-    localStrategy: function () {
-        return new LocalStrategy({passReqToCallback: true}, function (req, username, password, done) {
-                console.log('local auth going now);');
+        auth.passport.deserializeUser(function(id, done) {
+            console.log('auth.passport.deserializeUser');
+            new User().set({id: id}).fetch().then(function(user) {
+                done(null, user);
+            }).catch(function(e) {
+                done(e, null);
+            });
+        });
+
+        auth.passport.use('admin-login', new LocalStrategy({passReqToCallback: true}, function (req, username, password, done) {
+                console.log('LocalStrategy:admin-signup');
                 User.forge().set({username: username}).fetch().then(function (user) {
                     // Only Allow Login If Activation Token Has Been Nullified
-                    if (user && !user.getActivationToken() && module.exports.passwordVerify(user.attributes.password, password)) {
+                    console.log(user);
+                    if (user && !user.getActivationToken() && auth.passwordVerify(user.attributes.password, password)) {
                         user.set({last_seen: new Date()});
                         user.save().then(function (user) {
                             done(null, user);
@@ -53,8 +44,9 @@ var auth = {
                 }).catch(function (e) {
                     done(e);
                 });
-            }
+            })
         );
+
     },
 
     passwordHash: function (password) {
@@ -74,21 +66,20 @@ var auth = {
 
     router: function(requestPath, req, res) {
         console.log("admin.auth.router:");
-        if (typeof(auth.routes[requestPath]=='function')) {
-            auth.routes[requestPath](req, res)
+        if (typeof(auth.routes[requestPath])=='function') {
+            auth.routes[requestPath](requestPath, req, res)
         } else {
             console.log(requestPath);
         }
     },
 
     routes: {
-        login: function(req, res) {
+        login: function(requestPath, req, res) {
             res.locals._adminLogin = '/'+config.admin+'/auth/login';
             if(req.method.toUpperCase()=='GET') {
                 res.renderAdmin('login.swig');
             } else {
-                console.log("not get");
-                var redirectPrefix = req.url.startsWith('/' + config.admin) ? '/' + config.admin + '/' : '/';
+                console.log("ADMIN:/auth/login::NOTGET::");
 
                 var authDone = function(err, user, messages) {
                     console.log('auth done');
@@ -96,9 +87,9 @@ var auth = {
                     console.log(user);
                 }
 
-                passport.authenticate('admin-login', {
-                    successRedirect: req.session.goingTo || redirectPrefix,
-                    failureRedirect: redirectPrefix + 'login',
+                auth.passport.authenticate('admin-login', {
+                    successRedirect: req.session.goingTo || '/'+config.admin+'/dashboard',
+                    failureRedirect: res.locals._adminLogin,
                     failureFlash: true
                 })(req, res, authDone);
             }
