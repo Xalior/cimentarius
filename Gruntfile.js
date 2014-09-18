@@ -23,8 +23,6 @@ grunt.loadNpmTasks('grunt-contrib-compass');
     pkg: grunt.file.readJSON('package.json')
   }
 
-  // Load tasks from the tasks folder
-  grunt.loadTasks('tasks');
 
   // Load all the tasks options in tasks/options base on the name:
   // watch.js => watch{}
@@ -32,7 +30,11 @@ grunt.loadNpmTasks('grunt-contrib-compass');
 
   grunt.initConfig(config);
 
+
   require('load-grunt-tasks')(grunt);
+
+  // Load tasks from the tasks folder
+  grunt.loadTasks('tasks');
 
   // Default Task is basically a rebuild
   grunt.registerTask('default', ['concat', 'uglify', 'sass', 'imagemin', 'copy', 'autoprefixer', 'cssmin']);
