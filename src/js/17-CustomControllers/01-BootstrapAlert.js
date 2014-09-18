@@ -4,8 +4,6 @@ Cimentarius.controller('BootstrapAlert', function($scope) {
         $scope.alerts = alerts;
     };
 
-    console.log($scope.alerts);
-
     $scope.closeAlert = function (index) {
         $scope.alerts.splice(index, 1);
     };
