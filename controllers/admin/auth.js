@@ -79,8 +79,6 @@ var auth = {
             if(req.method.toUpperCase()=='GET') {
                 res.renderAdmin('login.swig');
             } else {
-                console.log("ADMIN:/auth/login::NOTGET::");
-
                 var authDone = function(err, user, messages) {
                     console.log('auth done');
                     console.log(messages)
