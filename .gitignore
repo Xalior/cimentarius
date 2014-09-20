@@ -2,6 +2,9 @@
 logs
 *.log
 
+# sourcemaps
+*.css.map
+
 # Runtime data
 pids
 *.pid
@@ -34,3 +37,4 @@ node_modules
 #local config file
 config/config.js
 
+.cimentarius.*

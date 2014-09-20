@@ -8,12 +8,12 @@
                     <h1 class = "text-center">Login</h1>
                 </div>
                 <div class = "modal-body">
-                    <form class = "form col-md-12 center-block" method="post" action="/.admin/auth/login">
+                    <form class = "form center-block" method="post" action="{{_adminLogin}}">
                         <div class = "form-group">
-                            <input type = "text" class = "form-control input-lg" placeholder = "Email" name="username">
+                            <input type="text" ng-model="username" class="form-control input-lg" placeholder="Username" name="username">
                         </div>
                         <div class = "form-group">
-                            <input type = "password" class = "form-control input-lg" placeholder = "Password" name="password">
+                            <input type="password" ng-model="password" class="form-control input-lg" placeholder="Password" name="password">
                         </div>
                         <div class = "form-group">
                             <button class = "btn btn-primary btn-lg btn-block">Sign In</button>

@@ -19,5 +19,5 @@
 </div><!-- /.modal -->
 {# CSRF Token #}
 <script>
-    ole.ajax.initCSRFToken('{{ _csrf }}');
+   // ole.ajax.initCSRFToken('{{ _csrf }}');
 </script>
