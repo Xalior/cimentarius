@@ -11,6 +11,9 @@ var admin = {
         auth: function(requestPath, req, res) {
             admin.auth.router(requestPath, req, res);
         },
+        dashboard: function(requestPath, req, res) {
+            require('./dashboard').router(requestPath, req, res);
+        },
         test: function(requestPath, req, res) {
             console.log('admin test:');
             console.log(requestPath);
