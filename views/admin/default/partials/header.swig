@@ -4,7 +4,7 @@
             <button type = "button" class = "navbar-toggle" data-toggle = "collapse" data-target = ".navbar-collapse">
                 <span class = "icon-toggle"></span>
             </button>
-            <a class = "navbar-brand" href = "/ole/dashboard">Olé!</a>
+            <a class = "navbar-brand" href = "="{{_adminRoot}}/dashboard">Cimentarius!</a>
             <ul class = "nav navbar-nav navbar-left">
                 {% include "./top-menu.swig" %}
             </ul>
@@ -19,12 +19,12 @@
                     </a>
                     <ul id = "g-account-menu" class = "dropdown-menu" role = "menu">
                         <li>
-                            <a href = "/ole/account">My Account</a>
+                            <a href = "="{{_adminRoot}}/auth/account">My Account</a>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    <a href = "/ole/logout">
+                    <a href = "{{_adminRoot}}/auth/logout">
                         <i class = "glyphicon glyphicon-lock"></i>
                         Logout
                     </a>
