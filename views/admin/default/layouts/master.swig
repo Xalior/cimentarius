@@ -1,7 +1,7 @@
 
 {% import '../macros/forms.swig' as forms %}
 <!doctype html>
-<html>
+<html ng-app="Cimentarius">
     <head>
         {% include "../partials/head.swig" %}
     </head>
