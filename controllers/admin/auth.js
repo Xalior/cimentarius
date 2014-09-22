@@ -74,7 +74,6 @@ var auth = {
 
     routes: {
         login: function(requestPath, req, res) {
-            res.locals._adminLogin = '/'+config.admin+'/auth/login';
             if(req.method.toUpperCase()=='GET') {
                 res.renderAdmin('login.swig');
             } else {
