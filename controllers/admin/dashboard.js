@@ -6,7 +6,7 @@ var config = require('../../config/config'),
 var dashboard = {
     router: function(requestPath, req, res) {
         console.log('dashboard router');
-        if(requesPath[0]==undefined) {
+        if(requestPath[0]==undefined) {
             requestPath[0]='index';
         }
 
