@@ -27,9 +27,10 @@ var admin = {
 
     router: function(requestPath, req, res) {
         console.info('cimentarius.admin.router: '+JSON.stringify(requestPath));
-        console.log("req.isAuthenticated: "+req.isAuthenticated());
 
         var redirectPrefix = req.url.startsWith('/' +config.admin) ? '/'+ config.admin + '/' : '/';
+
+        res.locals['_adminRoot'] = '/' + config.admin;
 
         if((requestPath[0]=='auth') || (req.isAuthenticated())) {
             console.log(requestPath[0]);
