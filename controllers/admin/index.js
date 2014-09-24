@@ -43,7 +43,7 @@ var admin = {
         } else {
             console.log('was asking for '+req.url);
             req.session.goingTo = req.url;
-            req.flash('message', 'This page requires you to be logged in...');
+            req.flash('info', 'This page requires you to be logged in...');
             res.redirect(redirectPrefix + 'auth/login');
         }
     }
