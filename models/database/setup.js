@@ -173,7 +173,6 @@ Promise.all(tablePromises).then(function () {
         } else {
             // No New Users Required
             console.log('(At Least One) User Account Already Exists');
-            process.exit();
         }
     });
 }).then(function () {
@@ -192,9 +191,9 @@ Promise.all(tablePromises).then(function () {
                     filter: String
                 },
                 {
-                    type: 'rawlist',
+                    type: 'textarea',
                     name: 'other_domains',
-                    message: 'Please Enter Your Domain Names For Your Primary Site ( again, without URI ): ',
+                    message: 'Please Enter Your Domain Names For Your Primary Site ( again, without URI - seperated by whitespace ): ',
                     filter: String
                 },
                 {
