@@ -15,7 +15,7 @@ Cimentarius.controller('SiteOverviewAccordion', function ($scope, $http) {
 
     $scope.update = function(data) {
         $scope.sites = data;
-    }
+    };
 
     $scope.oneAtATime = true;
 
