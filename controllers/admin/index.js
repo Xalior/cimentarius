@@ -14,11 +14,15 @@ var admin = {
         dashboard: function(requestPath, req, res) {
             require('./dashboard').router(requestPath, req, res);
         },
+        api: function(requestPath, req, res) {
+            require('./api/index').router(requestPath, req, res);
+        },
         test: function(requestPath, req, res) {
             console.log('admin test:');
             console.log(requestPath);
         }
     },
+
     app: function(requestPath, req, res)  {
         console.info('cimentarius.admin.app:');
         admin.auth.passport.authenticate('admin-login');
@@ -30,11 +34,10 @@ var admin = {
 
         var redirectPrefix = req.url.startsWith('/' +config.admin) ? '/'+ config.admin + '/' : '/';
 
-        res.locals['_adminRoot'] = '/' + config.admin;
 
-        if((requestPath[0]=='auth') || (req.isAuthenticated())) {
-            console.log(requestPath[0]);
-            var route = requestPath.shift();
+        var route = requestPath.shift();
+        if((route=='auth') || (req.isAuthenticated())) {
+            if(!route) { route='dashboard'; }
             if (typeof(admin.routes[route])=='function') {
                 admin.routes[route](requestPath, req, res)
             } else {
