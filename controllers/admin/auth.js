@@ -96,29 +96,29 @@ var auth = {
                     console.log(res.locals);
                     console.log(JSON.stringify(req.session));
 
-                    var options =
+                    var options = {
                         successReturnToOrRedirect: true
-                    };{
+                    };
 
-                    req.logIn(user, {
-                            successReturnToOrRedirect: true
-                        }, function (err) {
+                    req.logIn(user, options, function (err) {
+                            console.log('logIn');
                             if (err) {
                                 return console.log(err);
                             }
 
                             function complete() {
+
+                                console.log('complete');
                                 if (options.successReturnToOrRedirect) {
                                     var url = options.successReturnToOrRedirect;
                                     if (req.session && req.session.goingTo) {
                                         url = req.session.goingTo;
                                         delete req.session.goingTo;
+                                    } else {
+                                        url = '/'+ config.admin + '/dashboard';
                                     }
-                                    return res.redirect(url);
                                 }
-                                if (options.successRedirect) {
-                                    return res.redirect(config.admin + '/dashboard');
-                                }
+                                return res.redirect(url);
                             }
 
                             if (options.authInfo !== false) {
