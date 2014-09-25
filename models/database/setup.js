@@ -75,7 +75,9 @@ tablePromises.push(new Promise(function (resolve) {
                 t.string('parent_type');
                 // entity ID to look up in remote parent type table
                 t.integer('parent_id');
-                // page title (human readable formatt
+                // index order
+                t.integer('position');
+                // page title (human readable format
                 t.string('title');
                 // pages need rendering templates (by name)
                 t.string('templateName');
