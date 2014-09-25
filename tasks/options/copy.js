@@ -9,10 +9,10 @@ module.exports = {
         expand: true,
         cwd: 'src/css/prefixed',
         src: '*',
-        dest: 'public/css/'
+        dest: 'public/admin/skins/default/css/'
     },
     scripts : {
         src: 'src/js/.cimentarius.js',
-        dest: 'public/js/cimentarius.js'
+        dest: 'public/admin/skins/default/js/cimentarius.js'
     }
 }
