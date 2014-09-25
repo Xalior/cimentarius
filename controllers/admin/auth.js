@@ -8,7 +8,6 @@ var LocalStrategy = require('passport-local').Strategy,
 var auth = {
     passport: null,
     init: function(passport) {
-        console.log("Passport init happening!");
         auth.passport = passport;
         auth.passport.serializeUser(function(user, done) {
             console.log('auth.passport.serializeUser');
@@ -83,8 +82,6 @@ var auth = {
             } else {
 
                 var verified = function(err, user, info) {
-                    console.log("VERIFIED");
-
                     if (err) {
                         console.log(err);
                         return res.send(err);
