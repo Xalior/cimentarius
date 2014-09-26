@@ -5,7 +5,8 @@ var config = require('../../lib/config'),
     inquirer = require('inquirer'),
     auth = require('../../controllers/admin/auth'),
     User = require('../shelves/admin/user').User,
-    Site = require('../shelves/site').Site;
+    Site = require('../shelves/site').Site,
+    Page = require('../shelves/page').Page;
 
 var CimentariusBookshelf = require('../shelves/cimentarius');
 
@@ -169,7 +170,6 @@ Promise.all(tablePromises).then(function () {
                     process.exit(-1);
                 }).lastly(function() {
                     console.log('All done!');
-                    process.exit();
                 });
             });
         } else {
@@ -220,13 +220,47 @@ Promise.all(tablePromises).then(function () {
                     process.exit(-1);
                 }).lastly(function() {
                     console.log('All done!');
-                    process.exit();
                 });
             });
         } else {
             // No New Users Required
             console.log('(At Least One) Site Account Already Exists');
-            process.exit();
         }
+    });
+}).then(function () {
+    // Initial Site Creation
+    knex('site').select().orderBy('id').limit(1).then(function(result) {
+        // Count Users
+        var site_id = result[0].id;
+        knex('page').select().where({'parent_type': 'site', 'parent_id': site_id}).limit(1).then(function (result) {
+
+            // Need to create a user?
+            if (result.length == 0) {
+                var pageDetails = {
+                    parent_type: "site",
+                    parent_id: site_id,
+                    position: 0,
+                    title: 'Homepage',
+                    templateName: 'default',
+                    slug: '',
+                    metaDescription: 'Another Awesome Site Powered by Cimentarius'
+                };
+                // Forge New Site
+                Page.forge(pageDetails).save().then(function () {
+                    console.log('Default Homepage Successfully Created.');
+                }).catch(function (e) {
+                    console.log('An error occurred when saving the new Default Homepage:');
+                    console.log(e);
+                    process.exit(-1);
+                }).lastly(function () {
+                    console.log('All done!');
+                    process.exit();
+                });
+            } else {
+                // No New Users Required
+                console.log('Default Homepage Already Exists');
+                process.exit();
+            }
+        });
     });
 });
