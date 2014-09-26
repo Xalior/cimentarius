@@ -16,24 +16,51 @@ var sitemap = {
     sitemap: function (requestPath, req, res) {
         var _sitemap = [];
 
-        new Site().fetchAll().then(function(sites) {
-            sites.mapThen(function(site) {
+        new Site().fetchAll().then(function (sites) {
+            sites.mapThen(function (site) {
                 var _site = {
                     title: site.get('title'),
                     domain: site.get('primary_domain')
-                }
+                };
+                return new Promise(function (resolve) {
+                        new Page().where({'parent_type': 'site', 'parent_id': site.id, 'slug': ''}).fetch()
+                            .then(function (page) {
+                                var walkPage = function (page) {
+                                    return new Promise(function (resolve) {
+                                        new Page().where({'parent_type': 'page', 'parent_id': page.id}).fetch()
+                                            .then(function (pages) {
+                                                return pages.mapThen(function (page) {
+                                                    return walkPage(page);
+                                                    resolve();
+                                                });
+                                            });
+                                    });
+                                };
+
+                                var _page = {
+                                    id: page.id,
+                                    title: page.get('title'),
+                                    pages: walkPage(page)
+                                };
+                                _site.page = _page;
+                            });
+                        resolve();
+
+                    }
+                );
+            }).then(function () {
                 _sitemap.push(_site);
-            }).then(function(){
-                console.log(_sitemap);
-            }).then(function(){
-                res.end(JSON.stringify(_sitemap));
-            }).catch(function (err) {
-                console.error('Error Loading Sites for Sitemap');
-                console.error(err);
             });
+        }).then(function () {
+            console.log(_sitemap);
+        }).then(function () {
+            res.end(JSON.stringify(_sitemap));
+        }).catch(function (err) {
+            console.error('Error Loading Sites for Sitemap');
+            console.error(err);
         });
     }
-}
+};
 
 module.exports = sitemap;
 
