@@ -1,6 +1,5 @@
 <footer class = "text-center">
-    Ole &copy; Occa-Home -
-    <a href = "http://www.occa-home.co.uk/">
-        <strong>occa-home.co.uk</strong>
+    Cimentarius <a href = "https://github.com/Xalior/cimentarius">
+        <strong>&copy</strong> Many People&hellip;
     </a>
 </footer>

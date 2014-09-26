@@ -1,1 +1,1 @@
-var Cimentarius = angular.module('Cimentarius', ['ui.bootstrap']);
+var Cimentarius = angular.module('Cimentarius', ['ui.bootstrap','ui.tree']);

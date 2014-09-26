@@ -4,35 +4,10 @@ var config = require('../../lib/config'),
     Promise = require('bluebird'),
     inquirer = require('inquirer'),
     auth = require('../../controllers/admin/auth'),
-    User = require('../shelves/admin/user').User;
+    User = require('../shelves/admin/user').User,
+    Site = require('../shelves/site').Site;
 
 var CimentariusBookshelf = require('../shelves/cimentarius');
-
-// Install - Questions
-var questions = [
-    {
-        type: 'input',
-        name: 'adminEmail',
-        message: 'Please Enter An Admin Email Address: ',
-        filter: String
-    },
-    {
-        type: 'input',
-        name: 'adminUsername',
-        message: 'Please Enter An Admin Username: ',
-        filter: String
-    },
-    {
-        type: 'password',
-        name: 'adminPassword',
-        message: 'Please Enter An Admin Password: ',
-        filter: String
-    }
-];
-
-
-
-
 
 // Knex Instance
 var knex = CimentariusBookshelf.knex;
@@ -100,7 +75,9 @@ tablePromises.push(new Promise(function (resolve) {
                 t.string('parent_type');
                 // entity ID to look up in remote parent type table
                 t.integer('parent_id');
-                // page title (human readable formatt
+                // index order
+                t.integer('position');
+                // page title (human readable format
                 t.string('title');
                 // pages need rendering templates (by name)
                 t.string('templateName');
@@ -144,7 +121,6 @@ tablePromises.push(new Promise(function (resolve) {
 tablePromises.push(knex.migrate.latest(
     {directory: __dirname + '/migrations'}
 ));
-
 // All Done
 Promise.all(tablePromises).then(function () {
     // Report
@@ -157,7 +133,26 @@ Promise.all(tablePromises).then(function () {
         // Need to create a user?
         if (userCount === 0) {
             // Inquirer - Prompt
-            inquirer.prompt(questions, function(answers) {
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'adminEmail',
+                    message: 'Please Enter An Admin Email Address: ',
+                    filter: String
+                },
+                {
+                    type: 'input',
+                    name: 'adminUsername',
+                    message: 'Please Enter An Admin Username: ',
+                    filter: String
+                },
+                {
+                    type: 'password',
+                    name: 'adminPassword',
+                    message: 'Please Enter An Admin Password: ',
+                    filter: String
+                }
+            ], function(answers) {
                 // Encrypt Password
                 var userDetails = {
                     email: answers.adminEmail,
@@ -179,7 +174,58 @@ Promise.all(tablePromises).then(function () {
             });
         } else {
             // No New Users Required
-            console.log('User Account Already Exists');
+            console.log('(At Least One) User Account Already Exists');
+        }
+    });
+}).then(function () {
+    // Initial Site Creation
+    knex('site').count('primary_domain as siteCount').then(function(result) {
+        // Count Users
+        var siteCount = result[0]['siteCount'];
+        // Need to create a user?
+        if (siteCount === 0) {
+            // Inquirer - Prompt
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'primary_domain',
+                    message: 'Please Enter Your Default Site\'s Primary FQDN ( without URI ): ',
+                    filter: String
+                },
+                {
+                    type: 'textarea',
+                    name: 'other_domains',
+                    message: 'Please Enter Your Domain Names For Your Primary Site ( again, without URI - seperated by whitespace ): ',
+                    filter: String
+                },
+                {
+                    type: 'input',
+                    name: 'title',
+                    message: 'Please Enter Display Title (publicly visible) for the default site: ',
+                    filter: String
+                }
+            ], function(answers) {
+                // Encrypt Password
+                var siteDetails = {
+                    primary_domain: answers.primary_domain,
+                    other_domains: answers.other_domains,
+                    title: answers.title
+                };
+                // Forge New Site
+                Site.forge(siteDetails).save().then(function() {
+                    console.log('Site Successfully Created.');
+                }).catch(function(e) {
+                    console.log('An error occurred when saving the new site:');
+                    console.log(e);
+                    process.exit(-1);
+                }).lastly(function() {
+                    console.log('All done!');
+                    process.exit();
+                });
+            });
+        } else {
+            // No New Users Required
+            console.log('(At Least One) Site Account Already Exists');
             process.exit();
         }
     });

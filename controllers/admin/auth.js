@@ -24,28 +24,31 @@ var auth = {
         });
 
         auth.passport.use('admin-login', new LocalStrategy({passReqToCallback: true}, function (req, username, password, done) {
-                console.log('LocalStrategy:admin-signup');
-                User.forge().set({username: username}).fetch().then(function (user) {
-                    // Only Allow Login If Activation Token Has Been Nullified
-                    console.log(user);
-                    if (user && !user.getActivationToken() && auth.passwordVerify(user.attributes.password, password)) {
-                        user.set({last_seen: new Date()});
-                        user.save().then(function (user) {
-                            done(null, user);
-                        }).catch(function (e) {
-                            // Log
-                            console.log(e);
-                            // Done
-                            done('There was an error logging in.');
-                        });
-                    } else {
-                        done(null, false, {message: 'Incorrect Username or Password.'});
-                    }
-                }).catch(function (e) {
-                    done(e);
-                });
-            })
-        );
+            console.log('LocalStrategy:admin-login');
+            User.forge().set({username: username}).fetch().then(function (user) {
+                // Only Allow Login If Activation Token Has Been Nullified
+                if (user && !user.getActivationToken() && auth.passwordVerify(user.attributes.password, password)) {
+                    user.set({last_seen: new Date()});
+                    user.save().then(function (user) {
+                        done(null, user, null);
+                    }).catch(function (e) {
+                        // Log
+                        console.log(e);
+                        // Done
+                        done('There was an error logging in.', null, null);
+                    });
+                } else {
+                    console.log('Incorrect');
+
+                    done(null, false, {message: 'Incorrect Username or Password.'});
+                }
+            }).catch(function (e) {
+
+                console.log('catch');
+
+                done(e, null, null);
+            });
+        }));
 
     },
 
@@ -77,18 +80,70 @@ var auth = {
             if(req.method.toUpperCase()=='GET') {
                 res.renderAdmin('login.swig');
             } else {
-                var authDone = function(err, user, messages) {
-                    console.log('auth done');
-                    console.log(messages)
-                    console.log(user);
+
+                var verified = function(err, user, info) {
+                    if (err) {
+                        console.log(err);
+                        return res.send(err);
+                    }
+                    if (!user) {
+                        req.flash('error', info.message);
+                        return res.redirect('/' + config.admin + '/auth/login');
+                    }
+
+                    req.flash('info', 'Login successful: ' + user.get('username'));
+
+                    console.log(res.locals);
+                    console.log(JSON.stringify(req.session));
+
+                    var options = {
+                        successReturnToOrRedirect: true
+                    };
+
+                    req.logIn(user, options, function (err) {
+                            console.log('logIn');
+                            if (err) {
+                                return console.log(err);
+                            }
+
+                            function complete() {
+
+                                console.log('complete');
+                                if (options.successReturnToOrRedirect) {
+                                    var url = options.successReturnToOrRedirect;
+                                    if (req.session && req.session.goingTo) {
+                                        url = req.session.goingTo;
+                                        delete req.session.goingTo;
+                                    } else {
+                                        url = '/'+ config.admin + '/dashboard';
+                                    }
+                                }
+                                return res.redirect(url);
+                            }
+
+                            if (options.authInfo !== false) {
+                                auth.passport.transformAuthInfo(info, req, function (err, tinfo) {
+                                    if (err) {
+                                        return next(err);
+                                    }
+                                    req.authInfo = tinfo;
+                                    complete();
+                                });
+                            } else {
+                                complete();
+                            }
+                        }
+                    );
                 };
 
-                auth.passport.authenticate('admin-login', {
-                    successRedirect: req.session.goingTo || '/'+config.admin+'/dashboard',
-                    failureRedirect: res.locals._adminLogin,
-                    failureFlash: true
-                })(req, res, authDone);
+                auth.passport.authenticate('admin-login', verified)(req, res, null); // no next
             }
+        },
+        logout: function(requestPath, req, res) {
+            req.logout();
+            req.flash('info', 'You have been logged out of Cimentarius.');
+            res.redirect('/'+config.admin+'/auth/login')
+
         }
     }
 }

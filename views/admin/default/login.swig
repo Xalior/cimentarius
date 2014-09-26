@@ -8,7 +8,7 @@
                     <h1 class = "text-center">Login</h1>
                 </div>
                 <div class = "modal-body">
-                    <form class = "form center-block" method="post" action="{{_adminRoot}}/auth/login">
+                    <form class = "form center-block" method="post" action="{~_adminRoot~}/auth/login">
                         <div class = "form-group">
                             <input type="text" ng-model="username" class="form-control input-lg" placeholder="Username" name="username">
                         </div>
@@ -18,7 +18,7 @@
                         <div class = "form-group">
                             <button class = "btn btn-primary btn-lg btn-block">Sign In</button>
                         </div>
-                        <input type = "hidden" name="_csrf" value="{{_csrf}}"/>
+                        <input type = "hidden" name="_csrf" value="{~_csrf~}"/>
                     </form>
                 </div>
             </div>
