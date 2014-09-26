@@ -16,7 +16,7 @@ var sitemap = {
     sitemap: function (requestPath, req, res) {
         var _sitemap = [];
 
-        new Sites().fetch().then(function(sites) {
+        new Site().fetchAll().then(function(sites) {
             var sitePromises = [];
             var sitePromise = function(site) {
                 sitePromises.push(new Promise(function (resolve) {
