@@ -239,7 +239,7 @@ Promise.all(tablePromises).then(function () {
                 var pageDetails = {
                     parent_type: "site",
                     parent_id: site_id,
-                    position: 0,
+                    position: 2,
                     title: 'Homepage',
                     templateName: 'default',
                     slug: '',
