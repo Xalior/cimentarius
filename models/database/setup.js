@@ -164,6 +164,90 @@ Promise.all(tablePromises).then(function () {
                 // Forge User
                 User.forge(userDetails).save().then(function() {
                     console.log('User Successfully Created.');
+                    // Initial Site Creation
+                    knex('site').count('primary_domain as siteCount').then(function(result) {
+                        // Count Users
+                        var siteCount = result[0]['siteCount'];
+                        // Need to create a user?
+                        if (siteCount === 0) {
+                            // Inquirer - Prompt
+                            inquirer.prompt([
+                                {
+                                    type: 'input',
+                                    name: 'primary_domain',
+                                    message: 'Please Enter Your Default Site\'s Primary FQDN ( without URI ): ',
+                                    filter: String
+                                },
+                                {
+                                    type: 'textarea',
+                                    name: 'other_domains',
+                                    message: 'Please Enter Your Domain Names For Your Primary Site ( again, without URI - seperated by whitespace ): ',
+                                    filter: String
+                                },
+                                {
+                                    type: 'input',
+                                    name: 'title',
+                                    message: 'Please Enter Display Title (publicly visible) for the default site: ',
+                                    filter: String
+                                }
+                            ], function(answers) {
+                                // Encrypt Password
+                                var siteDetails = {
+                                    primary_domain: answers.primary_domain,
+                                    other_domains: answers.other_domains,
+                                    title: answers.title
+                                };
+                                // Forge New Site
+                                Site.forge(siteDetails).save().then(function() {
+                                    console.log('Site Successfully Created.');
+                                    // Initial Site Creation
+                                    knex('site').select().orderBy('id').limit(1).then(function(result) {
+                                        // Count Users
+                                        var site_id = result[0].id;
+                                        knex('page').select().where({'parent_type': 'site', 'parent_id': site_id}).limit(1).then(function (result) {
+
+                                            // Need to create a user?
+                                            if (result.length == 0) {
+                                                var pageDetails = {
+                                                    parent_type: "site",
+                                                    parent_id: site_id,
+                                                    position: 2,
+                                                    title: 'Homepage',
+                                                    templateName: 'default',
+                                                    slug: '',
+                                                    metaDescription: 'Another Awesome Site Powered by Cimentarius'
+                                                };
+                                                // Forge New Site
+                                                Page.forge(pageDetails).save().then(function () {
+                                                    console.log('Default Homepage Successfully Created.');
+                                                }).catch(function (e) {
+                                                    console.log('An error occurred when saving the new Default Homepage:');
+                                                    console.log(e);
+                                                    process.exit(-1);
+                                                }).lastly(function () {
+                                                    console.log('All done!');
+                                                    process.exit();
+                                                });
+                                            } else {
+                                                // No New Users Required
+                                                console.log('Default Homepage Already Exists');
+                                                process.exit();
+                                            }
+                                        });
+                                    });
+                                }).catch(function(e) {
+                                    console.log('An error occurred when saving the new site:');
+                                    console.log(e);
+                                    process.exit(-1);
+                                }).lastly(function() {
+                                    console.log('All done!');
+                                });
+                            });
+                        } else {
+                            // No New Users Required
+                            console.log('(At Least One) Site Account Already Exists');
+                        }
+                    });
                 }).catch(function(e) {
                     console.log('An error occurred when saving the user:');
                     console.log(e);
@@ -176,91 +260,5 @@ Promise.all(tablePromises).then(function () {
             // No New Users Required
             console.log('(At Least One) User Account Already Exists');
         }
-    });
-}).then(function () {
-    // Initial Site Creation
-    knex('site').count('primary_domain as siteCount').then(function(result) {
-        // Count Users
-        var siteCount = result[0]['siteCount'];
-        // Need to create a user?
-        if (siteCount === 0) {
-            // Inquirer - Prompt
-            inquirer.prompt([
-                {
-                    type: 'input',
-                    name: 'primary_domain',
-                    message: 'Please Enter Your Default Site\'s Primary FQDN ( without URI ): ',
-                    filter: String
-                },
-                {
-                    type: 'textarea',
-                    name: 'other_domains',
-                    message: 'Please Enter Your Domain Names For Your Primary Site ( again, without URI - seperated by whitespace ): ',
-                    filter: String
-                },
-                {
-                    type: 'input',
-                    name: 'title',
-                    message: 'Please Enter Display Title (publicly visible) for the default site: ',
-                    filter: String
-                }
-            ], function(answers) {
-                // Encrypt Password
-                var siteDetails = {
-                    primary_domain: answers.primary_domain,
-                    other_domains: answers.other_domains,
-                    title: answers.title
-                };
-                // Forge New Site
-                Site.forge(siteDetails).save().then(function() {
-                    console.log('Site Successfully Created.');
-                }).catch(function(e) {
-                    console.log('An error occurred when saving the new site:');
-                    console.log(e);
-                    process.exit(-1);
-                }).lastly(function() {
-                    console.log('All done!');
-                });
-            });
-        } else {
-            // No New Users Required
-            console.log('(At Least One) Site Account Already Exists');
-        }
-    });
-}).then(function () {
-    // Initial Site Creation
-    knex('site').select().orderBy('id').limit(1).then(function(result) {
-        // Count Users
-        var site_id = result[0].id;
-        knex('page').select().where({'parent_type': 'site', 'parent_id': site_id}).limit(1).then(function (result) {
-
-            // Need to create a user?
-            if (result.length == 0) {
-                var pageDetails = {
-                    parent_type: "site",
-                    parent_id: site_id,
-                    position: 2,
-                    title: 'Homepage',
-                    templateName: 'default',
-                    slug: '',
-                    metaDescription: 'Another Awesome Site Powered by Cimentarius'
-                };
-                // Forge New Site
-                Page.forge(pageDetails).save().then(function () {
-                    console.log('Default Homepage Successfully Created.');
-                }).catch(function (e) {
-                    console.log('An error occurred when saving the new Default Homepage:');
-                    console.log(e);
-                    process.exit(-1);
-                }).lastly(function () {
-                    console.log('All done!');
-                    process.exit();
-                });
-            } else {
-                // No New Users Required
-                console.log('Default Homepage Already Exists');
-                process.exit();
-            }
-        });
     });
 });
