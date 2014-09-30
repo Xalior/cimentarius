@@ -16,7 +16,6 @@ var sitemap = {
     sitemap: function (requestPath, req, res) {
         new Site().fetchAll().then(function (sites) {
             return sites.mapThen(function (site) {
-                console.log("Walking SITE: " + site.get('title'));
                 var _site = {
                     title: site.get('title'),
                     domain: site.get('primary_domain'),
@@ -28,12 +27,10 @@ var sitemap = {
                         title: page.get('title'),
                         slug: page.get('slug')
                     };
-                    console.log('walkPage: '+page.get('title'));
                     return new Page().where({'parent_type': 'page', 'parent_id': page.id}).fetchAll()
                         .then(function (pages) {
                             if(pages.length > 0) {
                                 return pages.mapThen(function (page) {
-                                    console.log(' ready to walkPage: ' + page.get('title'));
                                     return walkPage(page);
                                 });
                             } else {
@@ -41,14 +38,12 @@ var sitemap = {
                             }
                         }).then(function(_pages) {
                             _page.pages = _pages;
-                            console.log('ready to return _pages');
                             return _page;
                         }
                     );
                 };
                 return new Page().where({'parent_type': 'site', 'parent_id': site.id}).fetchAll()
                     .then(function (pages) {
-                        console.log('ready to mine');
                         return pages.mapThen(function(page) {
                             return walkPage(page);
                         })
@@ -57,8 +52,6 @@ var sitemap = {
                             return _site;
                         });
                     }).then(function(_site) {
-                        console.log('site page fetch returning...');
-                        console.log(_site);
                         return _site;
                     }
                 );
@@ -66,8 +59,6 @@ var sitemap = {
                 return _site;
             });
         }).then(function (_sitemap) {
-            console.log(_sitemap);
-            console.log("end of request");
             res.end(JSON.stringify(_sitemap));
         });
     }
