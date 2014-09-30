@@ -16,51 +16,58 @@ var sitemap = {
     sitemap: function (requestPath, req, res) {
         new Site().fetchAll().then(function (sites) {
             return sites.mapThen(function (site) {
-                console.log("Walking " + site.get('title'));
+                console.log("Walking SITE: " + site.get('title'));
                 var _site = {
                     title: site.get('title'),
                     domain: site.get('primary_domain'),
                     pages: []
                 };
                 var walkPage = function(page) {
-                    console.log('page '+page.get('title'));
+                    var _page = {
+                        id: page.id,
+                        title: page.get('title'),
+                        slug: page.get('slug')
+                    };
+                    console.log('walkPage: '+page.get('title'));
                     return new Page().where({'parent_type': 'page', 'parent_id': page.id}).fetchAll()
                         .then(function (pages) {
-                            return pages.mapThen(function (page) {
-                                return walkPage(page);
-                            })
-                                .then(function (_pages) {
-                                    var sitePages = [];
-                                    console.log(_pages.length);
-                                    if(_pages.length>0) {
-                                        for (var index = 0; index < _pages.length; ++index) {
-                                            console.log(_pages[index]);
-                                            var _sitePage = {
-                                                is: _pages[index].id,
-                                                title: _pages[index].get('title'),
-                                                slug: _pages[index].get('slug')
-                                            };
-                                            sitePages.push(_sitePage);
-                                        }
-                                    }
-                                    return sitePages;
+                            if(pages.length > 0) {
+                                return pages.mapThen(function (page) {
+                                    console.log(' ready to walkPage: ' + page.get('title'));
+                                    return walkPage(page);
                                 });
+                            } else {
+                                return null;
+                            }
+                        }).then(function(_pages) {
+                            _page.pages = _pages;
+                            console.log('ready to return _pages');
+                            return _page;
                         }
                     );
                 };
                 return new Page().where({'parent_type': 'site', 'parent_id': site.id}).fetchAll()
                     .then(function (pages) {
+                        console.log('ready to mine');
                         return pages.mapThen(function(page) {
                             return walkPage(page);
                         })
-                            .then(function(_pages) {
-                                return _pages;
-                            });
+                        .then(function(_pages) {
+                            _site.pages = _pages;
+                            return _site;
+                        });
+                    }).then(function(_site) {
+                        console.log('site page fetch returning...');
+                        console.log(_site);
+                        return _site;
                     }
                 );
+            }).then(function(_site) {
+                return _site;
             });
         }).then(function (_sitemap) {
             console.log(_sitemap);
+            console.log("end of request");
             res.end(JSON.stringify(_sitemap));
         });
     }
