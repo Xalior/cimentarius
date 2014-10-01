@@ -21,17 +21,19 @@ var sitemap = {
                     domain: site.get('primary_domain'),
                     pages: []
                 };
-                var walkPage = function(page) {
+                var _parent = '';
+                var walkPage = function(page, _parent) {
                     var _page = {
                         id: page.id,
                         title: page.get('title'),
-                        slug: page.get('slug')
+                        slug: _parent + page.get('slug') + ('/')
                     };
                     return new Page().where({'parent_type': 'page', 'parent_id': page.id}).fetchAll()
                         .then(function (pages) {
                             if(pages.length > 0) {
                                 return pages.mapThen(function (page) {
-                                    return walkPage(page);
+                                    console.log("with slug!"+_page.slug);
+                                    return walkPage(page, _page.slug);
                                 });
                             } else {
                                 return null;
@@ -45,7 +47,7 @@ var sitemap = {
                 return new Page().where({'parent_type': 'site', 'parent_id': site.id}).fetchAll()
                     .then(function (pages) {
                         return pages.mapThen(function(page) {
-                            return walkPage(page);
+                            return walkPage(page, _parent);
                         })
                         .then(function(_pages) {
                             _site.pages = _pages;
