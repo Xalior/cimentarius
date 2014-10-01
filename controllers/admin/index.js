@@ -17,6 +17,9 @@ var admin = {
         api: function(requestPath, req, res) {
             require('./api/index').router(requestPath, req, res);
         },
+        page: function(requestPath, req, res) {
+            require('./page').router(requestPath, req, res);
+        },
         test: function(requestPath, req, res) {
             console.log('admin test:');
             console.log(requestPath);

@@ -20,7 +20,7 @@
                         <div ui-tree-handle class="tree-node tree-node-content">
                             <a class="btn btn-success btn-xs" ng-if="page.pages && page.pages.length > 0" nodrag ng-click="toggle(this)"><span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span></a>
                             <a class="btn btn-success btn-xs disabled" ng-if="page.pages == undefined || page.pages.length == 0" nodrag><span class="glyphicon glyphicon-minus"></span></a>
-                            <a href="{{page.slug}}">{{page.title}}</a>
+                            <a href="{~_adminRoot~}/page/{{page.id}}/" tooltip-placement="right" tooltip="{{site.url}}{{page.slug}}">{{page.title}}</a>
                             <a class="pull-right btn btn-danger btn-xs" ng-if="page.slug != '/'" nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
                             <a class="pull-right btn btn-danger btn-xs disabled" ng-if="page.slug == '/'" nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
                             <a class="pull-right btn btn-primary btn-xs" nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>
@@ -35,7 +35,7 @@
                         <ol ui-tree-nodes ng-model="site.pages">
                             <li ng-repeat="page in site.pages"
                                 ui-tree-node
-                                ng-class="{ 'selected': selected, 'original': original }"
+                                ng-class="{ 'selected': selected, 'original': original } expanded"
                                 ng-include="'page_renderer.html'"></li>
                         </ol>
                     </div ui-tree>
