@@ -2,88 +2,54 @@
 
 {% block content %}
     <div class="col-md-8">
-        <div class="page-header">
-            <h1>
-                Welcome - Dashboard
-            </h1>
-        </div>
-        <div ng-controller="pageContoller">
-            <form name="signup_form" novalidate ng-submit="signupForm()">
-                <fieldset>
-                    <legend>Signup</legend>
-                    <div class="row">
-                        <div class="large-12 columns">
-                            <label>Your name</label>
-                            <input type="text"
-                                   placeholder="Name"
-                                   name="name"
-                                   ng-model="signup.name"
-                                   ng-minlength=3
-                                   ng-maxlength=20 required />
-                            <div class="error"
-                                 ng-show="signup_form.name.$dirty && signup_form.name.$invalid">
-                                <small class="error"
-                                       ng-show="signup_form.name.$error.required">
-                                    Your name is required.
-                                </small>
-                                <small class="error"
-                                       ng-show="signup_form.name.$error.minlength">
-                                    Your name is required to be at least 3 characters
-                                </small>
-                                <small class="error"
-                                       ng-show="signup_form.name.$error.maxlength">
-                                    Your name cannot be longer than 20 characters
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="large-12 columns">
-                            <label>Your email</label>
-                            <input type="email"
-                                   placeholder="Email"
-                                   name="email"
-                                   ng-model="signup.email"
-                                   ng-minlength=3 ng-maxlength=20 required />
-                            <div class="error-container"
-                                 ng-show="signup_form.email.$dirty && signup_form.email.$invalid">
-                                <small class="error"
-                                       ng-show="signup_form.email.$error.required">
-                                    Your email is required.
-                                </small>
-                                <small class="error"
-                                       ng-show="signup_form.email.$error.minlength">
-                                    Your email is required to be at least 3 characters
-                                </small>
-                                <small class="error"
-                                       ng-show="signup_form.email.$error.email">
-                                    That is not a valid email. Please input a valid email.
-                                </small>
-                                <small class="error"
-                                       ng-show="signup_form.email.$error.maxlength">
-                                    Your email cannot be longer than 20 characters
-                                </small>
-                            </div>
-                        </div>
-                    </div>
+        <div ng-controller="pageController">
+            <div class="page-header">
+                <h1>Page Details</h1>
+            </div>
+            <form name="pageForm" novalidate ng-submit="submit()">
+                <h4>Basics</h4>
+                <div class="row">
                     <div class="large-12 columns">
-                        <label>Username</label>
-                        <input  type="text"
-                                placeholder="Desired username"
-                                name="username"
-                                ng-model="signup.username"
-                                ng-minlength=3
-                                ng-maxlength=20
-                                ensure-unique="username" required />
-                        <div class="error-container" ng-show="signup_form.username.$dirty && signup_form.username.$invalid">
-                            <small class="error" ng-show="signup_form.username.$error.required">Please input a username</small>
-                            <small class="error" ng-show="signup_form.username.$error.minlength">Your username is required to be at least 3 characters</small>
-                            <small class="error" ng-show="signup_form.username.$error.maxlength">Your username cannot be longer than 20 characters</small>
-                            <small class="error" ng-show="signup_form.username.$error.unique">That username is taken, please try another</small>
+                        <label for="title">Title</label>
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Page Title"
+                               name="title"
+                               ng-model="page.title"
+                               ng-minlength=1
+                               ng-maxlength=64
+                               required />
+                        <div class="error-container" ng-show="pageForm.title.$dirty && pageForm.title.$invalid">
+                            <small class="error" ng-show="pageForm.title.$error.required">All pages require a title.</small>
+                            <small class="error" ng-show="pageForm.title.$error.minlength">A page title is required to be at least 1 characters</small>
+                            <small class="error" ng-show="pageForm.title.$error.maxlength">A page title cannot be longer than 64 characters</small>
+                            <small class="error" ng-show="pageForm.title.$error.serverSide">::SEVERE SERVER SEVER::</small>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="large-12 columns">
+                        <label for="slug">Slug</label>
+                        <input type="text"
+                               class="form-control"
+                               placeholder="URL for this page"
+                               name="slug"
+                               ng-model="page.slug"
+                               ng-minlength=1
+                               ng-maxlength=64
+                               required />
+                        <div class="error-container" ng-show="pageForm.slug.$dirty && pageForm.slug.$invalid">
+                            <small class="error" ng-show="pageForm.slug.$error.required">Please input a slug</small>
+                            <small class="error" ng-show="pageForm.slug.$error.minlength">Your username is required to be at least 1 characters</small>
+                            <small class="error" ng-show="pageForm.slug.$error.maxlength">Your username cannot be longer than 64 characters</small>
+                            <small class="error" ng-show="pageForm.slug.$error.unique">That slug is already used at this level, please try another</small>
+                        </div>
+                    </div>
+                </div>
 
-                    <button type="submit" class="button radius">Submit</button>
+                <hr />
+                <button type="submit" popover="I have a title!" popover-title="The title." class="btn btn-default">title</button>
+
                 </fieldset>
             </form>
         </div>

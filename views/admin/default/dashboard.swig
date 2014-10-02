@@ -35,10 +35,9 @@
                         <ol ui-tree-nodes ng-model="site.pages">
                             <li ng-repeat="page in site.pages"
                                 ui-tree-node
-                                ng-class="{ 'selected': selected, 'original': original } expanded"
+                                ng-class="{ 'selected': selected, 'original': original}"
                                 ng-include="'page_renderer.html'"></li>
                         </ol>
-                    </div ui-tree>
                 </accordion-group>
             </accordion>
         </div>

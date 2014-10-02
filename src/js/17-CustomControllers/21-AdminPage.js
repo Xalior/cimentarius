@@ -2,10 +2,11 @@ Cimentarius.controller('pageController', ['$scope', function($scope) {
     $scope.submitted = false;
 
     $scope.submit = function() {
-        if ($scope.form.$valid) {
-
+        console.log(pageForm);
+        if ($scope.pageForm.$valid) {
+            console.log('valid');
         } else {
-            $scope.form.submitted = true;
+            $scope.pageForm.submitted = true;
         }
     }
 }]);
