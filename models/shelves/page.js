@@ -1,10 +1,12 @@
 'use strict';
 
-var CimentariusBookshelf = require('./cimentarius');
-var Promise = require('bluebird');
+var CimentariusBookshelf = require('./cimentarius'),
+    _ = require('lodash'),
+    Promise = require('bluebird'),
+    Checkit = require('checkit');
+
 //var pageForm = require('../forms/page');
 //var PageRenderHelper = require('../../models/helpers/page_render');
-var _ = require('lodash');
 
 /**
  * Parent Model Types Mapping
@@ -30,6 +32,7 @@ var Page = CimentariusBookshelf.Model.extend(
     // Instance Methods
     {
         tableName: 'page',
+
         particles: function () {
             return this.hasMany('Particles');
         },
@@ -85,6 +88,51 @@ var Page = CimentariusBookshelf.Model.extend(
             locals.page = this;
             // Render
             return pageRenderHelper.render(useWrapper, locals);
+        },
+        /**
+         * Validate this model
+         */
+        validate: function(callback) {
+            if(!this.validator) {
+                console.log(this.validatorRules);
+                this.validator = new Checkit(this.validatorRules.compulsory);
+                for(var i = 0; i < this.validatorRules.maybe.length; i++) {
+                    this.validator.maybe(this.validatorRules.maybe[i].rules,
+                        this.validatorRules.maybe[i].handler)
+
+                }
+            }
+            return this.validator.run(this.attributes).then(function(validated) {
+                console.log(validated);
+                return validated;
+            }).catch(Checkit.Error, function(err) {
+                console.log(err.toJSON());
+                return err;
+            })
+        },
+        validator: null,
+        validatorRules: {
+            compulsory: {
+                parent_type: 'required',
+                parent_id: 'required',
+                title: 'required'
+            },
+            maybe:[{
+                rules: { slug: ['required',
+                                function(val) {
+                                    console.log(val);
+                                    return CimentariusBookshelf.knex('page')
+                                        .where('parent_id', '=', input.parent_id)
+                                        .where('slug', '=', val)
+                                        .then(function (resp) {
+                                        if (resp.length > 0) throw new Error('The slug is already in use.')
+                                    })
+                                }]
+                },
+                handler: function(input) {
+                    return input.parent_type != 'site';
+                }
+            }]
         },
 
 

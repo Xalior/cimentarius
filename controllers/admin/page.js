@@ -9,20 +9,45 @@ var page = {
             requestPath[0]='index';
         }
 
-        if(requestPath[0]);
+        var _pageId = parseInt(requestPath[0]);
 
         if (typeof(page.routes[requestPath])=='function') {
             page.routes[requestPath](requestPath, req, res)
         } else {
-            res.renderAdmin('forms/page.swig');
+            if(_pageId) {
+                page.routes['edit'](_pageId, req, res);
+            }
         }
     },
 
     routes: {
         index: function(requestPath, req, res) {
-            res.renderAdmin('edit.swig');
+            res.renderAdmin('pages.swig');
+        },
+        edit: function(pageId, req, res) {
+            var page;
+            if(pageId === parseInt(pageId)) {
+                // get the page to be edited...
+                Page.forge({id: pageId}).fetch().then(function(page) {
+                    if(page) {
+                        if(req.method.toUpperCase()=='POST') {
+                            console.log("POST. (got wood, baby)");
+                            console.log(req.query);
+                            page.validate().then(function(err) {
+                                console.log("ready to err?");
+                                console.log(err);
+                            });
+                        }
+
+                        res.renderAdmin('forms/page.swig', {page: JSON.stringify(page.attributes)});
+                    } else {
+                        res.errorAdmin(404, 'Page not found');
+                    }
+
+                });
+            }
         }
     }
-}
+};
 
 module.exports = page;

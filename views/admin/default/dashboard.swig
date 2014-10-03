@@ -38,6 +38,7 @@
                                 ng-class="{ 'selected': selected, 'original': original}"
                                 ng-include="'page_renderer.html'"></li>
                         </ol>
+                    </div>
                 </accordion-group>
             </accordion>
         </div>

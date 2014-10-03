@@ -7684,3 +7684,12 @@ input.ng-invalid.ng-dirty {
 input.ng-valid.ng-dirty {
   border: 1px solid #779965;
 }
+
+.float-right,
+.legend-buttons {
+  float: right;
+}
+
+.legend-buttons button {
+  margin-top: -5px;
+}

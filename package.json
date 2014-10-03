@@ -13,6 +13,7 @@
     "bluebird": "^1.2.4",
     "body-parser": "^1.8.2",
     "bookshelf": "^0.7",
+    "checkit": "^0.2.0-pre",
     "connect": "^3.1.1",
     "connect-flash": "^0.1.1",
     "cookie-session": "^1.0.2",

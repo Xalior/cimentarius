@@ -1,0 +1,10 @@
+.float-right {
+  float: right;
+}
+
+.legend-buttons {
+  @extend .float-right;
+  button {
+    margin-top: -5px;
+  }
+}
