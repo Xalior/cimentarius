@@ -27376,16 +27376,43 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
 }]);
 
 var Cimentarius = angular.module('Cimentarius', ['ui.bootstrap','ui.tree']);
-Cimentarius.controller('BootstrapAlert', function($scope) {
+
+Cimentarius.factory('sharedService', function($rootScope) {
+    var sharedService = {
+        alerts: []
+    };
+
+    sharedService.addAlert = function(msg) {
+        if(!msg.length) msg = [msg];
+        while(msg.length) {
+            sharedService.alerts.push(msg.pop());
+        }
+        sharedService.updateAlerts();
+    };
+
+    sharedService.updateAlerts = function() {
+        $rootScope.$broadcast('updateAlerts');
+    };
+
+    return sharedService;
+});
+Cimentarius.controller('BootstrapAlert', ['$scope', 'sharedService', function($scope, sharedService) {
+    $scope.alerts = [];
 
     $scope.init = function(alerts) {
-        $scope.alerts = alerts;
+        if(alerts) sharedService.addAlert(alerts);
     };
 
     $scope.closeAlert = function (index) {
         $scope.alerts.splice(index, 1);
     };
-});
+
+    $scope.$on('updateAlerts', function() {
+        while(sharedService.alerts.length) {
+            $scope.alerts.push(sharedService.alerts.pop());
+        }
+    });
+}]);
 Cimentarius.controller('SiteOverviewAccordion', function ($scope, $http) {
     $scope.init = function () {
         $scope.reload();
@@ -27409,7 +27436,7 @@ Cimentarius.controller('SiteOverviewAccordion', function ($scope, $http) {
 
     $scope.sites = [];
 });
-Cimentarius.controller('pageController', ['$scope', '$http', '$location', function($scope, $http, $location) {
+Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'sharedService', function($scope, $http, $location, sharedService) {
     $scope.submitted = false;
 
     $scope.serverErrors = {};
@@ -27433,7 +27460,11 @@ Cimentarius.controller('pageController', ['$scope', '$http', '$location', functi
                         }
                     }
                 } else {
-                    console.log('job done');
+                    sharedService.addAlert([{
+                        type: 'success',
+                        msg: 'Job Done'
+                    }]);
+                    $scope.pageForm.$setPristine(true);
                 }
             }).error(function(data, status, headers, cfg) {
                 console.error(data);
