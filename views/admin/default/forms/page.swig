@@ -6,7 +6,7 @@
             <div class="page-header">
                 <h1>Page Details</h1>
             </div>
-            <form name="pageForm" novalidate ng-submit="submit()">
+            <form name="pageForm" novalidate ng-submit="submit()" method="POST">
                 <fieldset>
                     <legend>Basics</legend>
                     <div class="form-group">
@@ -17,6 +17,7 @@
                                        placeholder="Page Title"
                                        name="title"
                                        ng-model="page.title"
+                                       ng-change="change()"
                                        ng-minlength=1
                                        ng-maxlength=64
                                        required />
@@ -24,7 +25,7 @@
                                     <small class="error" ng-show="pageForm.title.$error.required">All pages require a title.</small>
                                     <small class="error" ng-show="pageForm.title.$error.minlength">A page title is required to be at least 1 characters</small>
                                     <small class="error" ng-show="pageForm.title.$error.maxlength">A page title cannot be longer than 64 characters</small>
-                                    <small class="error" ng-show="pageForm.title.$error.serverSide">::SEVERE SERVER SEVER::</small>
+                                    <small class="error" ng-show="pageForm.title.$error.serverSide">{{ serverErrors.title }}</small>
                                 </div>
                         </div>
                             <div class="large-12 columns">
@@ -34,6 +35,7 @@
                                        placeholder="URL for this page"
                                        name="slug"
                                        ng-model="page.slug"
+                                       ng-change="change()"
                                        ng-minlength=1
                                        ng-maxlength=64
                                        required />
@@ -42,6 +44,7 @@
                                     <small class="error" ng-show="pageForm.slug.$error.minlength">Your username is required to be at least 1 characters</small>
                                     <small class="error" ng-show="pageForm.slug.$error.maxlength">Your username cannot be longer than 64 characters</small>
                                     <small class="error" ng-show="pageForm.slug.$error.unique">That slug is already used at this level, please try another</small>
+                                    <small class="error" ng-show="pageForm.slug.$error.serverSide">{{ serverErrors.slug }}</small>
                                 </div>
                             </div>
                     </div>
@@ -74,9 +77,11 @@
                                        class="form-control"
                                        placeholder="Layout Template for this Page"
                                        name="template"
-                                       ng-model="page.template" />
+                                       ng-model="page.template"
+                                       ng-change="change()" />
                                 <div class="error-container" ng-show="pageForm.template.$dirty && pageForm.metaDescription.$invalid">
                                     <small class="error" ng-show="pageForm.template.$error.maxlength">Your metaDescription cannot be longer than 256 characters</small>
+                                    <small class="error" ng-show="pageForm.template.$error.serverSide">{{ serverErrors.template }}</small>
                                 </div>
                             </div>
                         <div class="large-12 columns">
@@ -86,9 +91,11 @@
                                    placeholder="Metatag description for this page"
                                    name="metaDescription"
                                    ng-model="page.metaDescription"
+                                   ng-change="change()"
                                    ng-maxlength=256 />
                             <div class="error-container" ng-show="pageForm.metaDescription.$dirty && pageForm.metaDescription.$invalid">
                                 <small class="error" ng-show="pageForm.metaDescription.$error.maxlength">Your metaDescription cannot be longer than 256 characters</small>
+                                <small class="error" ng-show="pageForm.metaDescription.$error.serverSide">{{ serverErrors.metaDescription }}</small>
                             </div>
                         </div>
                     </div>
