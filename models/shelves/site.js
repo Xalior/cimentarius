@@ -20,6 +20,18 @@ var Site = CimentariusBookshelf.Model.extend(
 //                return CimentariusBookshelf.knex('category_page').where('page_id', '=', this.get('id')).delete();
             });
         },
+        /*
+         *
+         */
+        preference: function (name) {
+            switch(name) {
+                case 'default_page_template':
+                    return 'default.swig';
+                case 'template_pack':
+                    return 'default';
+
+            }
+        },
         /**
          * Fetch A Page With Particles In Order
          */
