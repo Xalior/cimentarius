@@ -26,7 +26,9 @@ var sitemap = {
                     var _page = {
                         id: page.id,
                         title: page.get('title'),
-                        slug: _parent + page.get('slug') + ('/')
+                        slug: _parent + page.get('slug') + ('/'),
+                        parent_id: page.get('parent_id'),
+                        position: page.get('position')
                     };
                     return new Page().where({'parent_type': 'page', 'parent_id': page.id}).fetchAll()
                         .then(function (pages) {

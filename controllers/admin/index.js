@@ -9,19 +9,23 @@ var admin = {
     auth: require('./auth'),
     routes: {
         auth: function(requestPath, req, res) {
+            console.info('cimentarius.admin.app:auth');
             admin.auth.router(requestPath, req, res);
         },
         dashboard: function(requestPath, req, res) {
+            console.info('cimentarius.admin.app:dashboard');
             require('./dashboard').router(requestPath, req, res);
         },
         api: function(requestPath, req, res) {
+            console.info('cimentarius.admin.app:api');
             require('./api/index').router(requestPath, req, res);
         },
         page: function(requestPath, req, res) {
+            console.info('cimentarius.admin.app:page');
             require('./page').router(requestPath, req, res);
         },
         test: function(requestPath, req, res) {
-            console.log('admin test:');
+            console.info('cimentarius.admin.app:test');
             console.log(requestPath);
         }
     },
