@@ -31,14 +31,16 @@ var page = {
                 Page.forge({id: pageId}).fetch().then(function(page) {
                     if(page) {
                         if(req.method.toUpperCase()=='POST') {
-                            console.log("POST. (got wood, baby)");
-                            console.log(req.query);
-                            page.validate().then(function(err) {
-                                console.log("ready to err?");
-                                console.log(err);
+                            page.attributes = req.body;
+                            return page.validate().then(function(messages) {
+                                if(messages.errors)
+                                    return res.end(JSON.stringify({errors: messages}));
+                                else
+                                    page.save().then(function(data) {
+                                        return res.end(JSON.stringify(data));
+                                    });
                             });
                         }
-
                         res.renderAdmin('forms/page.swig', {page: JSON.stringify(page.attributes)});
                     } else {
                         res.errorAdmin(404, 'Page not found');

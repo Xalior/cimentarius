@@ -27376,16 +27376,43 @@ angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCac
 }]);
 
 var Cimentarius = angular.module('Cimentarius', ['ui.bootstrap','ui.tree']);
-Cimentarius.controller('BootstrapAlert', function($scope) {
+
+Cimentarius.factory('sharedService', function($rootScope) {
+    var sharedService = {
+        alerts: []
+    };
+
+    sharedService.addAlert = function(msg) {
+        if(!msg.length) msg = [msg];
+        while(msg.length) {
+            sharedService.alerts.push(msg.pop());
+        }
+        sharedService.updateAlerts();
+    };
+
+    sharedService.updateAlerts = function() {
+        $rootScope.$broadcast('updateAlerts');
+    };
+
+    return sharedService;
+});
+Cimentarius.controller('BootstrapAlert', ['$scope', 'sharedService', function($scope, sharedService) {
+    $scope.alerts = [];
 
     $scope.init = function(alerts) {
-        $scope.alerts = alerts;
+        if(alerts) sharedService.addAlert(alerts);
     };
 
     $scope.closeAlert = function (index) {
         $scope.alerts.splice(index, 1);
     };
-});
+
+    $scope.$on('updateAlerts', function() {
+        while(sharedService.alerts.length) {
+            $scope.alerts.push(sharedService.alerts.pop());
+        }
+    });
+}]);
 Cimentarius.controller('SiteOverviewAccordion', function ($scope, $http) {
     $scope.init = function () {
         $scope.reload();
@@ -27409,31 +27436,58 @@ Cimentarius.controller('SiteOverviewAccordion', function ($scope, $http) {
 
     $scope.sites = [];
 });
-Cimentarius.controller('pageController', ['$scope', '$http', '$location', function($scope, $http, $location) {
+Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'sharedService', function($scope, $http, $location, sharedService) {
     $scope.submitted = false;
 
+    $scope.serverErrors = {};
+
     $scope.submit = function() {
-        console.log(pageForm);
         if ($scope.pageForm.$valid) {
-            console.log('valid');
             $scope.pageForm.submitted = true;
-            console.log($location);
             $http({
                 method: 'POST',
                 url: $location.$$absUrl,
                 data: $scope.page
             }).success(function(data, status, headers, cfg) {
-                console.log(data);
+                if(data.errors) {
+                    for (var key in data.errors) {
+                        var obj = data.errors[key];
+                        for (var prop in obj) {
+                            if(obj.hasOwnProperty(prop)){
+                                $scope.serverErrors[key] = obj[prop];
+                                $scope.pageForm[key].$setValidity('serverSide', false);
+                            }
+                        }
+                    }
+                } else {
+                    sharedService.addAlert([{
+                        type: 'success',
+                        msg: 'Job Done'
+                    }]);
+                    $scope.pageForm.$setPristine(true);
+                }
             }).error(function(data, status, headers, cfg) {
                 console.error(data);
             });
         } else {
             $scope.pageForm.submitted = false;
         }
-    }
+    };
+
+    $scope.change = function() {
+        for (var key in $scope.serverErrors) {
+            var obj = $scope.serverErrors[key];
+            for (var prop in obj) {
+                if (obj.hasOwnProperty(prop)) {
+                    $scope.serverErrors[key] = '';
+                    $scope.pageForm[key].$setValidity('serverSide', true);
+                }
+            }
+        }
+    };
 
     $scope.init = function(data) {
         $scope.page = data;
 
-    }
+    };
 }]);

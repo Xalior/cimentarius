@@ -92,21 +92,17 @@ var Page = CimentariusBookshelf.Model.extend(
         /**
          * Validate this model
          */
-        validate: function(callback) {
+        validate: function() {
             if(!this.validator) {
-                console.log(this.validatorRules);
                 this.validator = new Checkit(this.validatorRules.compulsory);
                 for(var i = 0; i < this.validatorRules.maybe.length; i++) {
                     this.validator.maybe(this.validatorRules.maybe[i].rules,
-                        this.validatorRules.maybe[i].handler)
-
+                        this.validatorRules.maybe[i].handler);
                 }
             }
             return this.validator.run(this.attributes).then(function(validated) {
-                console.log(validated);
                 return validated;
             }).catch(Checkit.Error, function(err) {
-                console.log(err.toJSON());
                 return err;
             })
         },
@@ -120,9 +116,9 @@ var Page = CimentariusBookshelf.Model.extend(
             maybe:[{
                 rules: { slug: ['required',
                                 function(val) {
-                                    console.log(val);
                                     return CimentariusBookshelf.knex('page')
-                                        .where('parent_id', '=', input.parent_id)
+                                        .where('parent_id', '=', this.target.parent_id)
+                                        .where('id', '!=', this.target.id)
                                         .where('slug', '=', val)
                                         .then(function (resp) {
                                         if (resp.length > 0) throw new Error('The slug is already in use.')
