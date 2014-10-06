@@ -4,7 +4,7 @@
             <button type = "button" class = "navbar-toggle" data-toggle = "collapse" data-target = ".navbar-collapse">
                 <span class = "icon-toggle"></span>
             </button>
-            <a class = "navbar-brand" href = "="{~_adminRoot~}/dashboard">Cimentarius!</a>
+            <a class = "navbar-brand" href = "{~_adminRoot~}/dashboard">Cimentarius!</a>
             <ul class = "nav navbar-nav navbar-left">
                 {% include "./top-menu.swig" %}
             </ul>

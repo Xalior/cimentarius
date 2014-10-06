@@ -31,6 +31,7 @@ var page = {
                 Page.forge({id: pageId}).fetch().then(function(page) {
                     if(page) {
                         if(req.method.toUpperCase()=='POST') {
+                            if(req.body.created_at) delete(req.body.created_at);
                             page.attributes = req.body;
                             return page.validate().then(function(messages) {
                                 if(messages.errors)
