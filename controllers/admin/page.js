@@ -14,7 +14,11 @@ var permittedParents = ['page', 'site'];
 var getTemplatesFor = function(templatePack, type) {
     var _pageTemplates = [];
     var _templatePath = path.resolve(__dirname + '../../../views/public/'+templatePack+'/'+type);
-    var foo = fs.readdir(_templatePath);
+    console.log(_templatePath);
+    var foo = fs.readdir(_templatePath, function(files) {
+        console.log(files);
+        console.log('EoReadDir');
+    });
     console.log(foo);
     console.log('done');
     //.then(function(files) {
