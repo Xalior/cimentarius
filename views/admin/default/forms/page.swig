@@ -58,13 +58,19 @@
                     <div class="large-12 columns">
                         <label for="">Page Template</label>
                         <br />
+                        cmt-select
+                        <a href="http://www.sitepoint.com/practical-guide-angularjs-directives/">inspiration</a>
+                        <input type="hidden" cmt-select ng-model="page.template" name="template">
+
+                        <br />
+                        html
                         <div class="btn-group" dropdown is-open="status.isopen">
                             <button type="button" class="btn btn-primary dropdown-toggle">
                                 {{ page.template }} <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li ng-repeat="template in pageTemplates">
-                                    <a href="#">pageTemplate.name</a>
+                                <li ng-repeat="template in {~ pageTemplates ~}">
+                                    <a href="#">{{ template.name }}</a>
                                 </li>
                                 <li class="divider"></li>
                                 <li><a href="#">System Assigned Default</a></li>

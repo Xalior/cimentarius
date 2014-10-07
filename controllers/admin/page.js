@@ -4,7 +4,8 @@ var config = require('../../config/config'),
     _ = require('lodash'),
     path = require('path'),
     Promise = require('bluebird'),
-    fs = Promise.promisifyAll(require("fs")),
+    readdir = Promise.promisify(require("fs").readdir),
+    readFile = Promise.promisify(require("fs").readFile),
     Page = require('../../models/shelves/page').Page,
     Site = require('../../models/shelves/site').Site;
 
@@ -14,29 +15,17 @@ var permittedParents = ['page', 'site'];
 var getTemplatesFor = function(templatePack, type) {
     var _pageTemplates = [];
     var _templatePath = path.resolve(__dirname + '../../../views/public/'+templatePack+'/'+type);
-    console.log(_templatePath);
-    var foo = fs.readdir(_templatePath, function(files) {
-        console.log(files);
-        console.log('EoReadDir');
+    return readdir(_templatePath).then(function(files) {
+        for (var i = 0; i < files.length; i++) {
+            if(path.extname(files[i])=='.swig') {
+                var file = path.basename(files[i], '.swig');
+                _pageTemplates.push({
+                    name: file
+                });
+            }
+        }
+        return _pageTemplates;
     });
-    console.log(foo);
-    console.log('done');
-    //.then(function(files) {
-//        console.log(files);
-        //files.map(function (file) {
-        //    fs.readFile(file, 'utf-8', function (err, contents) {
-        //        _pageTemplates.push({
-        //            name: file
-        //        })
-        //    });
-        //}).then(function (files) {
-        //    console.log(_pageTemplates);
-        //});
-        //files.filter(function(file) {
-        //    return file.substr(-5) === '.swig';
-        //})
-        //}
-//    });
 };
 
 var findSite = function(page) {
@@ -76,38 +65,39 @@ var page = {
                     return Page.forge({id: _parentId}).fetch().then(function(_parentShelf) {
                         if(_parentShelf) {
                             findSite(_parentShelf).then(function(thisSite) {
-                                res.locals.pageTemplates = getTemplatesFor(thisSite.preference('template_pack'),'page');
-                                console.log(res.locals.pageTemplates);
-                                var _newPage = {};
-                                var _position = requestPath.shift();
-                                if(_position == 'position') {
-                                    _position = requestPath.shift();
-                                    if(_position != parseInt(_position)) {
-                                        _position = 65535;
-                                    }
-                                }
-                                if(req.method.toUpperCase()=='POST') {
-                                    // SAVE IT
-                                    _newPage = new Page;
-                                    _newPage.attributes = req.body;
-                                    return _newPage.validate().then(function (messages) {
-                                        if (messages.errors)
-                                            return res.end(JSON.stringify({errors: messages}));
-                                        else {
-                                            _newPage.save().then(function (data) {
-                                                return res.end(JSON.stringify(data));
-                                            });
+                                getTemplatesFor(thisSite.preference('template_pack'),'page').then(function (_pageTemplates) {
+                                    res.locals.pageTemplates = JSON.stringify(_pageTemplates);
+                                    var _newPage = {};
+                                    var _position = requestPath.shift();
+                                    if (_position == 'position') {
+                                        _position = requestPath.shift();
+                                        if (_position != parseInt(_position)) {
+                                            _position = 65535;
                                         }
-                                    });
-                                } else {
-                                    // a new, not a save -- sub from URL, to pass to ng-api
-                                    _newPage.attributes = {
-                                        parent_type: _pageParent,
-                                        parent_id: _parentId,
-                                        position: _position
-                                    };
-                                }
-                                return res.renderAdmin('forms/page.swig', {page: JSON.stringify(_newPage.attributes)});
+                                    }
+                                    if (req.method.toUpperCase() == 'POST') {
+                                        // SAVE IT
+                                        _newPage = new Page;
+                                        _newPage.attributes = req.body;
+                                        return _newPage.validate().then(function (messages) {
+                                            if (messages.errors)
+                                                return res.end(JSON.stringify({errors: messages}));
+                                            else {
+                                                _newPage.save().then(function (data) {
+                                                    return res.end(JSON.stringify(data));
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        // a new, not a save -- sub from URL, to pass to ng-api
+                                        _newPage.attributes = {
+                                            parent_type: _pageParent,
+                                            parent_id: _parentId,
+                                            position: _position
+                                        };
+                                    }
+                                    return res.renderAdmin('forms/page.swig', {page: JSON.stringify(_newPage.attributes)});
+                                });
                             });
 
                         } else {
