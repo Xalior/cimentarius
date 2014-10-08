@@ -27398,38 +27398,36 @@ Cimentarius.factory('sharedService', function($rootScope) {
 });
 /*
  *
+ *
+ * Help via: http://www.sitepoint.com/practical-guide-angularjs-directives/
+ *
  */
 
 Cimentarius.directive('cmtSelect', function () {
         return {
-            require: [ 'ngModel'],
-//            controller: 'ngBootstrapSelect',
-            link: function (scope, element, attrs, ctrls) {
-                var buttonsCtrl = ctrls[0], ngModelCtrl = ctrls[1];
-
-                //model -> UI
-                ngModelCtrl.$render = function () {
-                    element.toggleClass(buttonsCtrl.activeClass, angular.equals(ngModelCtrl.$modelValue, scope.$eval(attrs.btnRadio)));
-                };
-
-                //ui->model
-                element.bind(buttonsCtrl.toggleEvent, function () {
-                    var isActive = element.hasClass(buttonsCtrl.activeClass);
-
-                    if (!isActive || angular.isDefined(attrs.uncheckable)) {
-                        scope.$apply(function () {
-                            ngModelCtrl.$setViewValue(isActive ? null : scope.$eval(attrs.btnRadio));
-                            ngModelCtrl.$render();
-                        });
-                    }
-                });
-            },
-            template: "<ul class=\"dropdown-menu\" ng-if=\"isOpen()\" ng-style=\"{top: position.top+'px', left: position.left+'px'}\" style=\"display: block;\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
-            "    <li ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"option\" id=\"{{match.id}}\">\n" +
-            "        <div typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
-            "    </li>\n" +
-            "</ul>"
-        };
+            replace: true,
+            template: '<div class="btn-group" dropdown is-open="status.isopen">' +
+                      '  <button type="button" class="btn btn-primary dropdown-toggle">' +
+                      '    {{ value }} <span class="caret"></span>' +
+                      '  </button>' +
+                      '  <ul class="dropdown-menu" role="menu">' +
+                      '    <li ng-repeat="option in options">' +
+                      '      <a href="#" ng-click="select()">{{ option.name }}</a>' +
+                      '    </li>' +
+                      '    <li class="divider"></li>' +
+                      '    <li><a href="#">System Assigned Default</a></li>' +
+                      '  </ul>' +
+                      '</div>',
+            controller: ['$scope', function($scope) {
+                $scope.select = function() {
+                    $scope.value = $scope.options[this.$index].name;
+                }
+            }],
+            restrict: 'A',
+            scope: {
+                options: '=options'
+            }
+        }
     }
 );
 Cimentarius.controller('BootstrapAlert', ['$scope', 'sharedService', function($scope, sharedService) {
