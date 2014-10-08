@@ -93,7 +93,9 @@ var page = {
                                         _newPage.attributes = {
                                             parent_type: _pageParent,
                                             parent_id: _parentId,
-                                            position: _position
+                                            position: _position,
+                                            template: 'default',
+                                            title: 'poo'
                                         };
                                     }
                                     return res.renderAdmin('forms/page.swig', {page: JSON.stringify(_newPage.attributes)});

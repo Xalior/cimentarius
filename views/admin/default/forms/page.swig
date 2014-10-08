@@ -58,7 +58,8 @@
                     <div class="large-12 columns">
                         <label for="">Page Template</label>
                         <br />
-                        <input cmt-select type="text" value="page.template" options='{~ pageTemplates ~}' name="template"/>
+
+                        <input cmt-select type="text" value="{{ page.template }}" options='{~ pageTemplates ~}' name="template" />
 
                         <input type="hidden"
                                class="form-control"
