@@ -27396,14 +27396,6 @@ Cimentarius.factory('sharedService', function($rootScope) {
 
     return sharedService;
 });
-Cimentarius.directive('ngOptions', function() {
-    return {
-        controller: function($scope) {
-            console.log($scope);
-        }
-    }
-});
-
 /*
  *
  *
@@ -27429,6 +27421,7 @@ Cimentarius.directive('cmtSelect', function () {
                       '    <li>' +
                       '     <a ng-click="select(\'System Assigned Default\')" class="template-menu-default-item">System Assigned Default</a></li>' +
                       '  </ul>' +
+                      '  <input type="hidden" value="{{ value }}" name="{{ name }}"/>' +
                       '</div>',
             controller: ['$scope', function($scope) {
                 $scope.select = function(name) {
@@ -27445,10 +27438,11 @@ Cimentarius.directive('cmtSelect', function () {
                     scope.select(scope.value);
                 }
             },
-            restrict: 'A',
+            restrict: 'EA',
             scope: {
                 options: '=',
-                value: '@'
+                value: '@',
+                name: '@'
             }
         }
     }

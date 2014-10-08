@@ -61,12 +61,6 @@
 
                         <input cmt-select type="text" value="{{ page.template }}" options='{~ pageTemplates ~}' name="template" />
 
-                        <input type="hidden"
-                               class="form-control"
-                               placeholder="Layout Template for this Page"
-                               name="template"
-                               ng-model="page.template"
-                               ng-change="change()" />
                         <div class="error-container" ng-show="pageForm.template.$dirty && pageForm.metaDescription.$invalid">
                             <small class="error" ng-show="pageForm.template.$error.maxlength">Your metaDescription cannot be longer than 256 characters</small>
                             <small class="error" ng-show="pageForm.template.$error.serverSide">{{ serverErrors.template }}</small>
