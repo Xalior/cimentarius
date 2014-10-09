@@ -12,7 +12,7 @@ module.exports = {
         dest: 'public/admin/skins/default/css/'
     },
     scripts : {
-        src: 'src/js/.cimentarius.js',
+        src: 'src/.js/concat.js',
         dest: 'public/admin/skins/default/js/cimentarius.js'
     }
 }

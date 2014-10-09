@@ -4,6 +4,6 @@ module.exports = {
       'src/js/**/*.js',
       'src/js/*.js',
     ],
-    dest: 'src/js/.cimentarius.js'
+    dest: 'src/.js/concat.js'
   }
 }

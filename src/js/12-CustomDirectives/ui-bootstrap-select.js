@@ -1,6 +1,5 @@
 /*
  *
- *
  * Help via: http://www.sitepoint.com/practical-guide-angularjs-directives/
  *
  */

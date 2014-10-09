@@ -5,7 +5,7 @@ module.exports = {
         },
         scripts: {
             files: ['src/js/**/*.js', 'src/js/*.js'],
-            tasks: ['jshint', 'concat', 'uglify'],
+            tasks: ['concat', 'uglify'],
             options: {
                 spawn: false
             }
@@ -45,7 +45,7 @@ module.exports = {
         },
         scripts: {
             files: ['src/js/**/*.js', 'src/js/*.js'],
-            tasks: ['jshint', 'concat', 'copy'],
+            tasks: ['concat', 'copy'],
             options: {
                 spawn: false
             }
