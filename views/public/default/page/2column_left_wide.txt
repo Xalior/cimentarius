@@ -1,0 +1,3 @@
+2 Column - Left Wide Template <br />
+Left Column Width: 632px <br />
+Right Column Width: 316px

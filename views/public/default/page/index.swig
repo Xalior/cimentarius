@@ -1,6 +1,0 @@
-VIEWS/PUBLIC/DEFAULT/INDEX
-<br>
-<h1>{{title}}</h1>
-<div>
-{{body}}
-</div>

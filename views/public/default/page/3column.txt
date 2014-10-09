@@ -1,0 +1,4 @@
+3 Column Template <br />
+Left Column Width: 316px <br />
+Mid Column Width: 326px <br />
+Right Column Width: 316px

@@ -1,0 +1,4 @@
+3 Column - Right Narrow Template <br />
+Left Column Width: 359px <br />
+Mid Column Width: 360px <br />
+Right Column Width: 239px

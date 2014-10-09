@@ -1,0 +1,2 @@
+1 Column Template <br />
+Single Column Width: 958px
