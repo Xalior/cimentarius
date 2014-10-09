@@ -36,7 +36,13 @@ Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'share
         }
     };
 
-    $scope.change = function() {
+    $scope.change = function(name) {
+        console.log("page change");
+        if(name) {
+            console.log(name);
+            console.log($scope.pageForm);
+            $scope.pageForm.$setDirty();
+        }
         for (var key in $scope.serverErrors) {
             var obj = $scope.serverErrors[key];
             for (var prop in obj) {

@@ -59,11 +59,18 @@
                         <label for="">Page Template</label>
                         <br />
 
-                        <input cmt-select type="text" value="{{ page.template }}" options='{~ pageTemplates ~}' name="template" />
+                        <input type="hidden"
+                               class="form-control"
+                               name="templateName"
+                               ng-value="page.templateName"/>
 
-                        <div class="error-container" ng-show="pageForm.template.$dirty && pageForm.metaDescription.$invalid">
-                            <small class="error" ng-show="pageForm.template.$error.maxlength">Your metaDescription cannot be longer than 256 characters</small>
-                            <small class="error" ng-show="pageForm.template.$error.serverSide">{{ serverErrors.template }}</small>
+                        <div cmt-select ng-model="page.templateName"
+                               options='{~ pageTemplates ~}'
+                               name="templateName"></div>
+
+                        <div class="error-container" ng-show="pageForm.templateName.$dirty && pageForm.metaDescription.$invalid">
+                            <small class="error" ng-show="pageForm.templateName.$error.maxlength">Your metaDescription cannot be longer than 256 characters</small>
+                            <small class="error" ng-show="pageForm.templateName.$error.serverSide">{{ serverErrors.template }}</small>
                         </div>
                     </div>
                     <div class="large-12 columns">

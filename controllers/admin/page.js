@@ -24,6 +24,12 @@ var getTemplatesFor = function(templatePack, type) {
                 });
             }
         }
+        _pageTemplates.push({
+            name: ''
+        });
+        _pageTemplates.push({
+            name: 'System Defined Default'
+        });
         return _pageTemplates;
     });
 };
@@ -53,8 +59,7 @@ var page = {
         }
 
         if(_pageRoute == parseInt(_pageRoute)) {
-            page.routes['edit'](_pageRoute, req, res);
-            return;
+            return page.routes['edit'](_pageRoute, req, res);
         } else if(_pageRoute=='NEW') {
             // check our parent type exists. Either site, or page.
             var _pageParent = requestPath.shift();
@@ -94,7 +99,6 @@ var page = {
                                             parent_type: _pageParent,
                                             parent_id: _parentId,
                                             position: _position,
-                                            template: 'default',
                                             title: 'poo'
                                         };
                                     }
@@ -126,21 +130,27 @@ var page = {
             // get the page to be edited...
             return Page.forge({id: pageId}).fetch().then(function(page) {
                 if(page) {
-                    if(req.method.toUpperCase()=='POST') {
-                        if(req.body.created_at) delete(req.body.created_at);
-                        page.attributes = req.body;
-                        return page.validate().then(function(messages) {
-                            if(messages.errors)
-                                return res.end(JSON.stringify({errors: messages}));
-                            else
-                                page.save().then(function(data) {
-                                    return res.end(JSON.stringify(data));
+                    return findSite(page).then(function(thisSite) {
+                        return getTemplatesFor(thisSite.preference('template_pack'), 'page').then(function (_pageTemplates) {
+                            res.locals.pageTemplates = JSON.stringify(_pageTemplates);
+                            if (req.method.toUpperCase() == 'POST') {
+                                if (req.body.created_at) delete(req.body.created_at);
+                                page.attributes = req.body;
+                                return page.validate().then(function (messages) {
+                                    if (messages.errors)
+                                        return res.end(JSON.stringify({errors: messages}));
+                                    else
+                                        page.save().then(function (data) {
+                                            return res.end(JSON.stringify(data));
+                                        });
                                 });
+                            }
+                            console.log(page.attributes);
+                            return res.renderAdmin('forms/page.swig', {page: JSON.stringify(page.attributes)});
                         });
-                    }
-                    res.renderAdmin('forms/page.swig', {page: JSON.stringify(page.attributes)});
+                    });
                 } else {
-                    res.errorAdmin(404, 'Page not found');
+                    return res.errorAdmin(404, 'Page not found');
                 }
             });
         }
