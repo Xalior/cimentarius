@@ -26,7 +26,7 @@ Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'share
                         type: 'success',
                         msg: 'Job Done'
                     }]);
-                    $scope.pageForm.$setPristine(true);
+                    $scope.page = data;
                 }
             }).error(function(data, status, headers, cfg) {
                 console.error(data);

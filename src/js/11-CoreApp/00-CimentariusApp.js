@@ -19,3 +19,9 @@ Cimentarius.factory('sharedService', function($rootScope) {
 
     return sharedService;
 });
+
+Cimentarius.filter('asHtml', ['$sce', function($sce){
+    return function(text) {
+        return $sce.trustAsHtml(text);
+    };
+}]);

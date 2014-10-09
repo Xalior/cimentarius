@@ -4,8 +4,9 @@ var config = require('../../config/config'),
     _ = require('lodash'),
     path = require('path'),
     Promise = require('bluebird'),
-    readdir = Promise.promisify(require("fs").readdir),
-    readFile = Promise.promisify(require("fs").readFile),
+    fs = require("fs"),
+    readdir = Promise.promisify(fs.readdir),
+    staticserve = require('node-static'),
     Page = require('../../models/shelves/page').Page,
     Site = require('../../models/shelves/site').Site;
 
@@ -20,7 +21,9 @@ var getTemplatesFor = function(templatePack, type) {
             if(path.extname(files[i])=='.swig') {
                 var file = path.basename(files[i], '.swig');
                 _pageTemplates.push({
-                    name: file
+                    name: file,
+                    item: '  <div class="template-title"><strong>Template Name: </strong> <small>'+file+'</small>.</div>' +
+                          '  <div class="template-preview"><img src="/'+config.admin+'/page/thumbnail/default/'+file+'"></div><br />'
                 });
             }
         }
@@ -28,7 +31,8 @@ var getTemplatesFor = function(templatePack, type) {
             name: ''
         });
         _pageTemplates.push({
-            name: 'System Defined Default'
+            name: 'System Defined Default',
+            item: '<div>System Defined Default</div>'
         });
         return _pageTemplates;
     });
@@ -99,7 +103,7 @@ var page = {
                                             parent_type: _pageParent,
                                             parent_id: _parentId,
                                             position: _position,
-                                            title: 'poo'
+                                            templateName: 'System Defined Default'
                                         };
                                     }
                                     return res.renderAdmin('forms/page.swig', {page: JSON.stringify(_newPage.attributes)});
@@ -117,8 +121,8 @@ var page = {
             } else {
                 return res.errorAdmin(404, 'Parent Type not Found');
             }
-        } else if (typeof(page.routes[_pageId])=='function') {
-            return page.routes[_pageId](requestPath, req, res);
+        } else if (typeof(page.routes[_pageRoute])=='function') {
+            return page.routes[_pageRoute](requestPath, req, res);
         }
     },
 
@@ -153,6 +157,19 @@ var page = {
                     return res.errorAdmin(404, 'Page not found');
                 }
             });
+        },
+        thumbnail: function(requestPath, req, res) {
+            var _templatePack = requestPath.shift();
+            var _templateName = requestPath.shift();
+
+            var _templatePath = path.resolve(__dirname + '../../../views/public/'+_templatePack+'/page/'+_templateName+'.png');
+            console.log(_templatePath);
+            console.log(fs.existsSync(_templatePath));
+            if(fs.existsSync(_templatePath)) {
+                return new staticserve.Server(path.resolve(__dirname + '../../../views/public/'+_templatePack+'/page')).serveFile('/'+_templateName+'.png', 200, {}, req, res);
+            } else {
+                return res.errorAdmin(404, "Template pack thumbnail not found: <code>"+_templatePack+'\\'+_templateName+'</code>.');
+            }
         }
     }
 };

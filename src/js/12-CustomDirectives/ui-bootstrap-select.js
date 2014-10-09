@@ -15,13 +15,12 @@ Cimentarius.directive('cmtSelect', function () {
                       '  <ul class="dropdown-menu" role="menu">' +
                       '    <li ng-repeat="option in options" class="template-menu" ng-class="{divider: option.name == \'\'}" >' +
                       '      <a ng-if="option.name" ng-click="select(option.name)" class="template-menu-item">' +
-                      '        <div class="">{{ option.name }}</div>' +
-                      '        <div ng-if="option.name!=\'System Defined Default\'" class=""><img src="http://froggyadventures.com/wp-content/uploads/galleries/post-93/full/placeholder%20-%20Copy%20(2).gif" height="50%"></div>' +
+                      '        <div ng-bind-html="option.item | asHtml" class="row"></div>' +
                       '      </a>' +
                       '    </li>' +
                       '  </ul>' +
                       '</div>',
-            controller: ['$scope', function($scope) {
+            controller: ['$scope', '$sce', function($scope, $sce) {
                 $scope.select = function(name, _init) {
                     $scope.value = name;
                     if(!_init) {

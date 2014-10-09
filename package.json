@@ -26,6 +26,7 @@
     "knex": "^0.6",
     "lodash": "^2.4.1",
     "mysql": "^2.2.0",
+    "node-static": "^0.7.6",
     "passport": "~0.2.1",
     "passport-local": "~1.0.0",
     "password-hash": "~1.2.2",

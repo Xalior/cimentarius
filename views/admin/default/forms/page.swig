@@ -3,7 +3,8 @@
 {% block content %}
 <div ng-controller="pageController" ng-init="init({~page~})">
     <div class="col-md-8">
-        <h1>Page Details</h1>
+        <h1 ng-show="page.id > 0">Page Details for '{{ page.title }}' <small>({{ page.id }})</small></h1>
+        <h1 ng-show="!page.id">New Page</h1>
         <form name="pageForm" novalidate ng-submit="submit()" method="POST">
             <fieldset>
                 <legend>Basics</legend>
@@ -69,7 +70,6 @@
                                name="templateName"></div>
 
                         <div class="error-container" ng-show="pageForm.templateName.$dirty && pageForm.metaDescription.$invalid">
-                            <small class="error" ng-show="pageForm.templateName.$error.maxlength">Your metaDescription cannot be longer than 256 characters</small>
                             <small class="error" ng-show="pageForm.templateName.$error.serverSide">{{ serverErrors.template }}</small>
                         </div>
                     </div>
@@ -97,20 +97,25 @@
         <div class="page-header">
             <div class="well">
                 <table class="table table-striped">
-                    <h2>META</h2>
-                    <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>@twitter</td>
-                    </tr>
+                    <h2>More Details</h2>
+                    <tbody ng-show="!page.id">
+                        <tr>
+                            <td>This page is not yet saved&hellip;</td>
+                        </tr>
+                    </tbody>
+                    <tbody ng-show="page.id > 0">
+                        <tr>
+                            <td>id:</td>
+                            <td>{{ page.id }}</td>
+                        </tr>
+                        <tr>
+                            <td>Created At:</td>
+                            <td>{{ page.created_at }}</td>
+                        </tr>
+                        <tr>
+                            <td>Updated At:</td>
+                            <td>{{ page.updated_at }}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
