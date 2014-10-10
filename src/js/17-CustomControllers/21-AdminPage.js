@@ -1,11 +1,13 @@
 Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'sharedService', function($scope, $http, $location, sharedService) {
-    $scope.submitted = false;
 
+
+    $scope.submitted = false;
     $scope.serverErrors = {};
 
     $scope.submit = function() {
-        if ($scope.pageForm.$valid) {
-            $scope.pageForm.submitted = true;
+        var that = this;
+        if (that.pageForm.$valid) {
+            that.pageForm.submitted = true;
             $http({
                 method: 'POST',
                 url: $location.$$absUrl,
@@ -32,7 +34,7 @@ Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'share
                 console.error(data);
             });
         } else {
-            $scope.pageForm.submitted = false;
+            that.pageForm.submitted = false;
         }
     };
 
