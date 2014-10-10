@@ -8,22 +8,23 @@ var config = require('../../config/config'),
     readdir = Promise.promisify(fs.readdir),
     staticserve = require('node-static'),
     Page = require('../../models/shelves/page').Page,
-    Site = require('../../models/shelves/site').Site;
+    Site = require('../../models/shelves/site').Site,
+    TemplateHelper = require('../../lib/helpers/template');
 
 // Permitted parent object types
 var permittedParents = ['page', 'site'];
 
-var getTemplatesFor = function(templatePack, type) {
-    var _pageTemplates = [];
-    var _templatePath = path.resolve(__dirname + '../../../views/public/'+templatePack+'/'+type);
-    return readdir(_templatePath).then(function(files) {
+var getTemplatesFor = function(templatePack) {
+    return TemplateHelper.getTemplatesFor(templatePack,'page').then(function(files){
+        var _pageTemplates = [];
         for (var i = 0; i < files.length; i++) {
+            console.log(files);
             if(path.extname(files[i])=='.swig') {
                 var file = path.basename(files[i], '.swig');
                 _pageTemplates.push({
                     name: file,
                     item: '  <div class="template-title"><strong>Template Name: </strong> <small>'+file+'</small>.</div>' +
-                          '  <div class="template-preview"><img src="/'+config.admin+'/page/thumbnail/default/'+file+'"></div><br />'
+                    '  <div class="template-preview"><img src="/'+config.admin+'/page/thumbnail/default/'+file+'"></div><br />'
                 });
             }
         }
@@ -74,7 +75,7 @@ var page = {
                     return Page.forge({id: _parentId}).fetch().then(function(_parentShelf) {
                         if(_parentShelf) {
                             findSite(_parentShelf).then(function(thisSite) {
-                                getTemplatesFor(thisSite.preference('template_pack'),'page').then(function (_pageTemplates) {
+                                getTemplatesFor(thisSite.preference('template_pack')).then(function (_pageTemplates) {
                                     res.locals.pageTemplates = JSON.stringify(_pageTemplates);
                                     var _newPage = {};
                                     var _position = requestPath.shift();

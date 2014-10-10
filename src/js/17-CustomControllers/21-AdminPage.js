@@ -1,11 +1,10 @@
 Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'sharedService', function($scope, $http, $location, sharedService) {
-
-
     $scope.submitted = false;
     $scope.serverErrors = {};
 
     $scope.submit = function() {
         var that = this;
+
         if (that.pageForm.$valid) {
             that.pageForm.submitted = true;
             $http({
@@ -39,18 +38,20 @@ Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'share
     };
 
     $scope.change = function(name) {
+        var that = this;
+
         console.log("page change");
         if(name) {
             console.log(name);
             console.log($scope.pageForm);
-            $scope.pageForm.$setDirty();
+            that.pageForm.$setDirty();
         }
         for (var key in $scope.serverErrors) {
             var obj = $scope.serverErrors[key];
             for (var prop in obj) {
                 if (obj.hasOwnProperty(prop)) {
                     $scope.serverErrors[key] = '';
-                    $scope.pageForm[key].$setValidity('serverSide', true);
+                    that.pageForm[key].$setValidity('serverSide', true);
                 }
             }
         }

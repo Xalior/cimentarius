@@ -3,6 +3,7 @@
 var CimentariusBookshelf = require('./cimentarius'),
     _ = require('lodash'),
     Promise = require('bluebird'),
+    TemplateHelper = require('../../lib/helpers/template.js'),
     Checkit = require('checkit');
 
 //var pageForm = require('../forms/page');
@@ -130,33 +131,10 @@ var Page = CimentariusBookshelf.Model.extend(
                 }
             }]
         },
-
-
-//        /*
-//         function to locate the handling page for public requests.
-//         */
-//        function find_requested($request) {
-//    $page = $this;
-//    $found = true;
-//    for($i=0, $limit = count($request); $i<$limit; $i++) {
-//        if($request[$i]) {
-//            $next = $page->ChildWithURL($request[$i]);
-//            if(!$next || !$page->publiclyVisible()) {
-//                $found = false;
-//                break;
-//            }
-//            $page = $next;
-//            if($page->service) {
-//                break;
-//            }
-//        }
-//    }
-//    return array(&$page, $found);
-//}
-
-
-
-/**
+        contentBlocks: function() {
+            return TemplateHelper(this.get('templateName'))
+        },
+        /**
          * Update Search Field From Children Particles
          * Gets Child Particle Search Content, Then Joins It All
          * Adds to Model
