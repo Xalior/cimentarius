@@ -152,8 +152,9 @@ var page = {
                                             console.log(data);
                                             var _template = data.get('templateName');
                                             // fix default template
+                                            console.log(_template);
                                             if (_template=="System Defined Default") _template = 'default';
-                                            data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(thisSite.preference('template_pack'), 'page') + '/' + data.get('templateName') + '.swig');
+                                            data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(thisSite.preference('template_pack'), 'page') + '/' + _template + '.swig');
                                             console.log(data.template);
                                             return res.end(JSON.stringify(data));
                                         });
