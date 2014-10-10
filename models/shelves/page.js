@@ -132,7 +132,7 @@ var Page = CimentariusBookshelf.Model.extend(
             }]
         },
         contentBlocks: function() {
-            return TemplateHelper(this.get('templateName'))
+            return TemplateHelper.parseTemplate(TemplateHelper.parsthis.get('templateName'))
         },
         /**
          * Update Search Field From Children Particles

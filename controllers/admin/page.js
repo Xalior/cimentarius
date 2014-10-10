@@ -94,6 +94,9 @@ var page = {
                                                 return res.end(JSON.stringify({errors: messages}));
                                             else {
                                                 _newPage.save().then(function (data) {
+                                                    console.log(data);
+                                                    data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(data.templateName, 'page') + '.swig');
+                                                    console.log(data.template);
                                                     return res.end(JSON.stringify(data));
                                                 });
                                             }
@@ -146,6 +149,12 @@ var page = {
                                         return res.end(JSON.stringify({errors: messages}));
                                     else
                                         page.save().then(function (data) {
+                                            console.log(data);
+                                            var _template = data.get('templateName');
+                                            // fix default template
+                                            if (_template=="System Defined Default") _template = 'default';
+                                            data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(thisSite.preference('template_pack'), 'page') + '/' + data.get('templateName') + '.swig');
+                                            console.log(data.template);
                                             return res.end(JSON.stringify(data));
                                         });
                                 });
