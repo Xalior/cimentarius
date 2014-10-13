@@ -7,10 +7,8 @@ Cimentarius.directive('particleCollection', function () {
             replace: true,
             require: ['ngModel'],
             transclude: true,
-            template: '<div>' +
-                '  <div>' +
-                '    <ul class="particle-list">' +
-                '      <li ng-repeat="contentBlock in contentBlocks.contentBlocks" class="content-block">' +
+            template:
+                '       <div class="particleCollection">'+
                 '        <div class="row">' +
                 '          <div class="col-sm-1 columns">&nbsp;</div>' +
                 '          <div class="col-sm-8 columns">{{ contentBlock.description }}</div>' +
@@ -32,24 +30,29 @@ Cimentarius.directive('particleCollection', function () {
                 '            </ul>' +
                 '          </div>' +
                 '        </div>' +
-                '        <ul class="particles-list">' +
-                '          <li ng-repeat="particle in contentBlock.particles" class="particle">' +
+                '        <ul class="particle-list">' +
+                '          <li ng-if="contentBlock.particles.length" ng-repeat="particle in contentBlock.particles" class="particle">' +
                 '            {{ particle }}' +
                 '          </li>' +
+                '          <li ng-if="!contentBlock.particles.length" class="no-particles">' +
+                '            <span class="glyphicon glyphicon-warning-sign"></span>This content block is empty&hellip;<br />Content blocks invariably look better when they contain content!' +
+                '          </li>' +
                 '        </ul>' +
-                '      </li>' +
-                '    </ul>' +
-                '  </div>' +
-                '</div>',
+                '       </div>',
             controller: ['$scope', '$sce', function($scope) {
                 console.log('particleCollection.controller');
                 console.log($scope);
             }],
+            link: function( scope, element, attributes, controller ) {
+                console.log('particleCollection.link');
+                console.log(scope);
+                if (scope.value) {
+                    scope.select(scope.value, true);
+                }
+            },
             restrict: 'EA',
             scope: {
-                options: '=',
-                contentBlocks: '=ngModel',
-                name: '@'
+                contentBlock: '=ngModel',
             }
         }
     }

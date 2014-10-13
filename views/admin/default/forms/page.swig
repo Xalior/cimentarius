@@ -97,9 +97,11 @@
                 </form>
             </tab>
             <tab heading="Content" disabled="!page.id">
-                <div particle-collection ng-model="page.template"
-                     name="contentBlocks" ng-display="page.template.name"></div>
-
+                <ul class="content-blocks">
+                    <li ng-repeat="contentBlock in page.template.contentBlocks" class="content-block">
+                        <div particle-collection ng-model="contentBlock"></div>
+                    </li>
+                </ul>
             </tab>
         </tabset>
     </div>

@@ -28,11 +28,29 @@ form[name=pageForm] {
 }
 
 // Conent Blocks -- This is where Cimentarius is born.
-ul.particle-list {
+ul.content-blocks {
   padding: 0;
+
   li.content-block {
     @extend .tab-body;
     padding: 10px;
     list-style: none;
+    ul.particle-list {
+      li.particle {
+        list-style: none;
+      }
+      li.no-particles {
+        @extend .well;
+        @extend li.particle;
+        span {
+          margin: 10px 20px 0 0;
+          font-size: 200%;
+          float: left;
+          color: red;
+        }
+        font-size: 110%;
+        margin: 40px 40px 40px 0;
+      }
+    }
   }
 }
