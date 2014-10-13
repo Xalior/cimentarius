@@ -97,7 +97,9 @@
                 </form>
             </tab>
             <tab heading="Content" disabled="!page.id">
-                Content blocks...
+                <div particle-collection ng-model="page.template"
+                     name="contentBlocks" ng-display="page.template.name"></div>
+
             </tab>
         </tabset>
     </div>

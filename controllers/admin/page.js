@@ -18,7 +18,6 @@ var getTemplatesFor = function(templatePack) {
     return TemplateHelper.getTemplatesFor(templatePack,'page').then(function(files){
         var _pageTemplates = [];
         for (var i = 0; i < files.length; i++) {
-            console.log(files);
             if(path.extname(files[i])=='.swig') {
                 var file = path.basename(files[i], '.swig');
                 _pageTemplates.push({
@@ -75,7 +74,8 @@ var page = {
                     return Page.forge({id: _parentId}).fetch().then(function(_parentShelf) {
                         if(_parentShelf) {
                             findSite(_parentShelf).then(function(thisSite) {
-                                getTemplatesFor(thisSite.preference('template_pack')).then(function (_pageTemplates) {
+                                var _defaultTemplatePack = thisSite.getPreference('template_pack');
+                                getTemplatesFor(thisSite.getPreference('template_pack')).then(function (_pageTemplates) {
                                     res.locals.pageTemplates = JSON.stringify(_pageTemplates);
                                     var _newPage = {};
                                     var _position = requestPath.shift();
@@ -89,6 +89,10 @@ var page = {
                                         // SAVE IT
                                         _newPage = new Page;
                                         _newPage.attributes = req.body;
+
+                                        if (_newPage.attributes.created_at) delete(_newPage.attributes.created_at);
+                                        if (_newPage.attributes.template) delete(_newPage.attributes.template);
+
                                         return _newPage.validate().then(function (messages) {
                                             if (messages.errors)
                                                 return res.end(JSON.stringify({errors: messages}));
@@ -145,8 +149,11 @@ var page = {
                         return getTemplatesFor(_defaultTemplatePack, 'page').then(function (_pageTemplates) {
                             res.locals.pageTemplates = JSON.stringify(_pageTemplates);
                             if (req.method.toUpperCase() == 'POST') {
-                                if (req.body.created_at) delete(req.body.created_at);
                                 page.attributes = req.body;
+
+                                if (page.attributes.created_at) delete(page.attributes.created_at);
+                                if (page.attributes.template) delete(page.attributes.template);
+
                                 return page.validate().then(function (messages) {
                                     if (messages.errors)
                                         return res.end(JSON.stringify({errors: messages}));
@@ -160,9 +167,14 @@ var page = {
                                             return res.end(JSON.stringify(data));
                                         });
                                 });
+                            } else {
+                                var data = page.attributes;
+                                var _template = data.templateName;
+                                // fix default template
+                                if (_template == "System Defined Default") _template = thisSite.getPreference('default_page_template');
+                                data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(_defaultTemplatePack, 'page') + '/' + _template + '.swig');
+                                return res.renderAdmin('forms/page.swig', {page: JSON.stringify(data)});
                             }
-                            console.log(page.attributes);
-                            return res.renderAdmin('forms/page.swig', {page: JSON.stringify(page.attributes)});
                         });
                     });
                 } else {
@@ -175,8 +187,6 @@ var page = {
             var _templateName = requestPath.shift();
 
             var _templatePath = path.resolve(__dirname + '../../../views/public/'+_templatePack+'/page/'+_templateName+'.png');
-            console.log(_templatePath);
-            console.log(fs.existsSync(_templatePath));
             if(fs.existsSync(_templatePath)) {
                 return new staticserve.Server(path.resolve(__dirname + '../../../views/public/'+_templatePack+'/page')).serveFile('/'+_templateName+'.png', 200, {}, req, res);
             } else {

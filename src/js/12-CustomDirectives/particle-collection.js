@@ -11,11 +11,29 @@ Cimentarius.directive('particleCollection', function () {
                 '  <div>' +
                 '    <ul class="particle-list">' +
                 '      <li ng-repeat="contentBlock in contentBlocks.contentBlocks" class="content-block">' +
-                //'        <a ng-if="option.name" ng-click="select(option.name)" class="template-menu-item">' +
-            '          <div>{{ contentBlock.description }}</div>' +
-            '          <div>{{ contentBlock.name }}</div>' +
-            '          <div>{{ contentBlock.limit }}</div>' +
-                //'        </a>' +
+                '        <div class="row">' +
+                '          <div class="col-sm-1 columns">&nbsp;</div>' +
+                '          <div class="col-sm-6 columns">{{ contentBlock.description }}</div>' +
+                '          <div class="col-sm-2 columns">{{ contentBlock.limit }}</div>' +
+                '          <div class="col-sm-3 columns">' +
+                '            <button type="button" class="btn btn-primary dropdown-toggle">' +
+                '              Add Content <span class="caret"></span>' +
+                '            </button>' +
+                '            <ul class="dropdown-menu" role="menu">' +
+                '              <li ng-repeat="content in contentTypes" class="particle-menu">' +
+                '                <a ng-click="select(content.type, contentBlock.name)" class="particle-menu-item">' +
+                '                  {{ content.name }} ' +
+                '                </a>' +
+                '              </li>' +
+                '            </ul>' +
+                '          </div>' +
+                '        </div>' +
+                '        <ul class="particles-list">' +
+                '          <li ng-repeat="particle in contentBlock.particles" class="particle">' +
+                '            {{ particle }}' +
+                '          </li>' +
+                '        </ul>' +
+                '        <br />' +
                 '      </li>' +
                 '    </ul>' +
                 '  </div>' +
