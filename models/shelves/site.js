@@ -23,10 +23,10 @@ var Site = CimentariusBookshelf.Model.extend(
         /*
          *
          */
-        preference: function (name) {
+        getPreference: function (name) {
             switch(name) {
                 case 'default_page_template':
-                    return 'default.swig';
+                    return 'default';
                 case 'template_pack':
                     return 'default';
 

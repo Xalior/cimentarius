@@ -94,9 +94,11 @@ var page = {
                                                 return res.end(JSON.stringify({errors: messages}));
                                             else {
                                                 _newPage.save().then(function (data) {
-                                                    console.log(data);
-                                                    data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(data.templateName, 'page') + '.swig');
-                                                    console.log(data.template);
+                                                    var data = data.attributes;
+                                                    var _template = data.templateName;
+                                                    // fix default template
+                                                    if (_template=="System Defined Default") _template = thisSite.getPreference('default_page_template');
+                                                    data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(_defaultTemplatePack, 'page') + '/' + _template + '.swig');
                                                     return res.end(JSON.stringify(data));
                                                 });
                                             }
@@ -139,7 +141,8 @@ var page = {
             return Page.forge({id: pageId}).fetch().then(function(page) {
                 if(page) {
                     return findSite(page).then(function(thisSite) {
-                        return getTemplatesFor(thisSite.preference('template_pack'), 'page').then(function (_pageTemplates) {
+                        var _defaultTemplatePack = thisSite.getPreference('template_pack');
+                        return getTemplatesFor(_defaultTemplatePack, 'page').then(function (_pageTemplates) {
                             res.locals.pageTemplates = JSON.stringify(_pageTemplates);
                             if (req.method.toUpperCase() == 'POST') {
                                 if (req.body.created_at) delete(req.body.created_at);
@@ -149,13 +152,11 @@ var page = {
                                         return res.end(JSON.stringify({errors: messages}));
                                     else
                                         page.save().then(function (data) {
-                                            console.log(data);
-                                            var _template = data.get('templateName');
+                                            var data = data.attributes;
+                                            var _template = data.templateName;
                                             // fix default template
-                                            console.log(_template);
-                                            if (_template=="System Defined Default") _template = 'default';
-                                            data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(thisSite.preference('template_pack'), 'page') + '/' + _template + '.swig');
-                                            console.log(data.template);
+                                            if (_template=="System Defined Default") _template = thisSite.getPreference('default_page_template');
+                                            data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(_defaultTemplatePack, 'page') + '/' + _template + '.swig');
                                             return res.end(JSON.stringify(data));
                                         });
                                 });
