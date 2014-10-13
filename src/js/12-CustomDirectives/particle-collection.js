@@ -12,14 +12,15 @@ Cimentarius.directive('particleCollection', function () {
                 '    <ul class="particle-list">' +
                 '      <li ng-repeat="contentBlock in contentBlocks.contentBlocks" class="content-block">' +
                 '        <div class="row">' +
-                '          <div class="col-sm-1 columns">&nbsp;</div>' +
-                '          <div class="col-sm-6 columns">{{ contentBlock.description }}</div>' +
-                '          <div class="col-sm-2 columns">{{ contentBlock.limit }}</div>' +
-                '          <div class="col-sm-3 columns">' +
-                '            <button type="button" class="btn btn-primary dropdown-toggle">' +
-                '              Add Content <span class="caret"></span>' +
+                '          <div class="col-sm-2 columns">&nbsp;</div>' +
+                '          <div class="col-sm-7 columns">{{ contentBlock.description }}</div>' +
+                '          <div class="col-sm-3 columns" dropdown is-open="status.isopen">' +
+                '            <button type="button" class="btn-xs btn-primary dropdown-toggle">' +
+                '              <small>Add Content <span class="caret"></span></small>' +
                 '            </button>' +
                 '            <ul class="dropdown-menu" role="menu">' +
+                '              <li class="particle-menu filter disabled"><a href="#">{{ contentBlock.limit }}</a></li>' +
+                '              <li class="divider"></li>' +
                 '              <li ng-repeat="content in contentTypes" class="particle-menu">' +
                 '                <a ng-click="select(content.type, contentBlock.name)" class="particle-menu-item">' +
                 '                  {{ content.name }} ' +
