@@ -19,8 +19,6 @@ Cimentarius.directive('particleCollection', function () {
                 '              <small>Add Content <span class="caret"></span></small>' +
                 '            </button>' +
                 '            <ul class="dropdown-menu" role="menu">' +
-                '              <li class="particle-menu filter disabled">{{ contentBlock.limit }}</li>' +
-                '              <li class="divider"></li>' +
                 '              <li ng-repeat="(type, typeDetails) in contentBlock.contentTypes" class="particle-menu">' +
                 '                <a ng-click="select()" class="particle-menu-item">' +
                 '                 {{ typeDetails.displayName }}' +
