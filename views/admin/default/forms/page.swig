@@ -8,7 +8,7 @@
 
         <tabset justified="true">
             <tab heading="Settings">
-                <form name="pageForm" novalidate ng-submit="submit()" method="POST">
+                <form class=page-form" name="pageForm" novalidate ng-submit="submit()" method="POST">
                     <fieldset>
                         <legend>Basics</legend>
                         <div class="form-group">

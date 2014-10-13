@@ -1,3 +1,4 @@
+// Some Simple Helper classes to start us off...
 .float-right {
   float: right;
 }
@@ -6,5 +7,32 @@
   @extend .float-right;
   button {
     margin-top: -5px;
+  }
+}
+
+.fullwidth {
+  width: 100%;
+}
+
+.tab-body {
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  padding: 10px;
+}
+
+// Page(style) editor
+form[name=pageForm] {
+
+  @extend .tab-body;
+}
+
+// Conent Blocks -- This is where Cimentarius is born.
+ul.particle-list {
+  padding: 0;
+  li.content-block {
+    @extend .tab-body;
+    padding: 10px;
+    list-style: none;
   }
 }

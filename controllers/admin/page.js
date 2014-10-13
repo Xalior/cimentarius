@@ -5,11 +5,11 @@ var config = require('../../config/config'),
     path = require('path'),
     Promise = require('bluebird'),
     fs = require("fs"),
-    readdir = Promise.promisify(fs.readdir),
     staticserve = require('node-static'),
     Page = require('../../models/shelves/page').Page,
     Site = require('../../models/shelves/site').Site,
-    TemplateHelper = require('../../lib/helpers/template');
+    TemplateHelper = require('../../lib/helpers/template'),
+    ContentHelper = require('../../lib/helpers/content');
 
 // Permitted parent object types
 var permittedParents = ['page', 'site'];
