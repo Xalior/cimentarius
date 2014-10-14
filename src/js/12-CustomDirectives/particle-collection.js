@@ -23,7 +23,7 @@ Cimentarius.directive('particleCollection', function () {
                 '                </a>' +
                 '                <ul class="sub-menu" role="menu">' +
                 '                  <li ng-repeat="(content, contentDetails) in typeDetails.contentTypes" class="particle-menu">' +
-                '                    <a href="{{ cimentariusService.options._adminRoot }}/particle/NEW/{{ page.type }}/{{ page.id }}/{{ type }}/{{ content}}"><span class="glyphicon {{ contentDetails.className }}"></span> {{ contentDetails.displayName }} </a' +
+                '                    <a href="{{ cimentariusService.options._adminRoot }}/particle/NEW/{{ page.type }}/{{ page.id }}/{{ contentBlock.name }}/{{ type }}/{{ content}}"><span class="glyphicon {{ contentDetails.className }}"></span> {{ contentDetails.displayName }} </a' +
                 '                  </li>' +
                 '                </ul>' +
                 '              </li>' +

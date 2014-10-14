@@ -24,6 +24,10 @@ var admin = {
             console.info('cimentarius.admin.app:page');
             require('./page').router(requestPath, req, res);
         },
+        particle: function(requestPath, req, res) {
+            console.info('cimentarius.admin.app:particle');
+            require('./particle').router(requestPath, req, res);
+        },
         test: function(requestPath, req, res) {
             console.info('cimentarius.admin.app:test');
             console.log(requestPath);

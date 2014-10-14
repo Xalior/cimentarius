@@ -38,19 +38,65 @@ var getTemplatesFor = function(templatePack) {
     });
 };
 
-var findSite = function(page) {
-    switch (page.get('parent_type')) {
-        // genericise this to use the permitted parents array
-        case('page'):
-            return new Page().where({id: page.get('parent_id')}).fetch().then(function (_parentShelf) {
-                return findSite(_parentShelf);
+var _page = {
+    edit:  function(pageId, req, res) {
+        // get the page to be edited...
+        return Page.forge({id: pageId}).fetch().then( function (page) {
+            if (page) {
+                return _page.findSite(page, req, res).then(function () {
+                    return getTemplatesFor(res.templatePack, 'page').then(function (_pageTemplates) {
+                        res.locals.pageTemplates = JSON.stringify(_pageTemplates);
+                        return _page.editModel(page, req, res);
+
+                    });
+                });
+            } else {
+                return res.errorAdmin(404, 'Page not found');
+            }
+        });
+    },
+    editModel: function(page, req, res) {
+        if (req.method.toUpperCase() == 'POST') {
+            page.set(req.body);
+
+            return page.validate().then(function (messages) {
+                if (messages.errors)
+                    return res.end(JSON.stringify({errors: messages}));
+                else
+                    page.save().then(function (data) {
+                        var data = data.toJSON({shallow:true});
+                        var _template = data.templateName;
+                        // fix default template
+                        if (_template == "System Defined Default") _template = req.site.getPreference('default_page_template');
+                        data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
+                        return res.end(JSON.stringify(data));
+                    });
             });
-        case('site'):
-            return new Site().where({id: page.get('parent_id')}).fetch().then(function (_mySite) {
-                return _mySite;
-            });
-        default:
-            console.log('default switch in findSite');
+        } else {
+            var data = page.toJSON({shallow: true});
+            var _template = data.templateName;
+            // fix default template
+            if (_template == "System Defined Default") _template = req.site.getPreference('default_page_template');
+            data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
+            return res.renderAdmin('forms/page.swig', {page: JSON.stringify(data)});
+        }
+    },
+    findSite: function(page, req, res) {
+        switch (page.get('parent_type')) {
+            // genericise this to use the permitted parents array
+            case('page'):
+                return new Page().where({id: page.get('parent_id')}).fetch().then(function (_parentShelf) {
+                    return _page.findSite(_parentShelf, req, res);
+                });
+            case('site'):
+                return new Site().where({id: page.get('parent_id')}).fetch().then(function (thisSite) {
+                    req.site = thisSite;
+                    res.templatePack = req.site.getPreference('template_pack');
+                    return;
+                });
+            default:
+                console.log('default switch in findSite');
+        }
     }
 };
 
@@ -63,7 +109,7 @@ var page = {
         }
 
         if(_pageRoute == parseInt(_pageRoute)) {
-            return page.routes['edit'](_pageRoute, req, res);
+            return _page.edit(_pageRoute, req, res);
         } else if(_pageRoute=='NEW') {
             // check our parent type exists. Either site, or page.
             var _pageParent = requestPath.shift();
@@ -73,50 +119,25 @@ var page = {
                     // we should handle objects other than Page, to match above array...
                     return Page.forge({id: _parentId}).fetch().then(function(_parentShelf) {
                         if(_parentShelf) {
-                            findSite(_parentShelf).then(function(thisSite) {
-                                var _defaultTemplatePack = thisSite.getPreference('template_pack');
-                                getTemplatesFor(thisSite.getPreference('template_pack')).then(function (_pageTemplates) {
+                            _page.findSite(_parentShelf, req, res).then(function() {
+                                var _position = requestPath.shift();
+                                if (_position == 'position') {
+                                    _position = requestPath.shift();
+                                    if (_position != parseInt(_position)) {
+                                        _position = 65535;
+                                    }
+                                }
+                                var _newPage = new Page;
+                                _newPage.set({
+                                    parent_type: _pageParent,
+                                    parent_id: _parentId,
+                                    position: _position,
+                                    templateName: 'System Defined Default'
+                                });
+                                getTemplatesFor(res.templatePack).then(function (_pageTemplates) {
                                     res.locals.pageTemplates = JSON.stringify(_pageTemplates);
-                                    var _newPage = {};
-                                    var _position = requestPath.shift();
-                                    if (_position == 'position') {
-                                        _position = requestPath.shift();
-                                        if (_position != parseInt(_position)) {
-                                            _position = 65535;
-                                        }
-                                    }
-                                    if (req.method.toUpperCase() == 'POST') {
-                                        // SAVE IT
-                                        _newPage = new Page;
-                                        _newPage.attributes = req.body;
 
-                                        if (_newPage.attributes.created_at) delete(_newPage.attributes.created_at);
-                                        if (_newPage.attributes.template) delete(_newPage.attributes.template);
-
-                                        return _newPage.validate().then(function (messages) {
-                                            if (messages.errors)
-                                                return res.end(JSON.stringify({errors: messages}));
-                                            else {
-                                                _newPage.save().then(function (data) {
-                                                    var data = data.attributes;
-                                                    var _template = data.templateName;
-                                                    // fix default template
-                                                    if (_template=="System Defined Default") _template = thisSite.getPreference('default_page_template');
-                                                    data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(_defaultTemplatePack, 'page') + '/' + _template + '.swig');
-                                                    return res.end(JSON.stringify(data));
-                                                });
-                                            }
-                                        });
-                                    } else {
-                                        // a new, not a save -- sub from URL, to pass to ng-api
-                                        _newPage.attributes = {
-                                            parent_type: _pageParent,
-                                            parent_id: _parentId,
-                                            position: _position,
-                                            templateName: 'System Defined Default'
-                                        };
-                                    }
-                                    return res.renderAdmin('forms/page.swig', {page: JSON.stringify(_newPage.attributes)});
+                                    return _page.editModel(_newPage, req, res);
                                 });
                             });
 
@@ -139,45 +160,6 @@ var page = {
     routes: {
         index: function(requestPath, req, res) {
             res.renderAdmin('pages.swig');
-        },
-        edit: function(pageId, req, res) {
-            // get the page to be edited...
-            return Page.forge({id: pageId}).fetch().then(function(page) {
-                if(page) {
-                    return findSite(page).then(function(thisSite) {
-                        var _defaultTemplatePack = thisSite.getPreference('template_pack');
-                        return getTemplatesFor(_defaultTemplatePack, 'page').then(function (_pageTemplates) {
-                            res.locals.pageTemplates = JSON.stringify(_pageTemplates);
-                            if (req.method.toUpperCase() == 'POST') {
-                                page.attributes = req.body;
-
-                                return page.validate().then(function (messages) {
-                                    if (messages.errors)
-                                        return res.end(JSON.stringify({errors: messages}));
-                                    else
-                                        page.save().then(function (data) {
-                                            var data = data.attributes;
-                                            var _template = data.templateName;
-                                            // fix default template
-                                            if (_template=="System Defined Default") _template = thisSite.getPreference('default_page_template');
-                                            data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(_defaultTemplatePack, 'page') + '/' + _template + '.swig');
-                                            return res.end(JSON.stringify(data));
-                                        });
-                                });
-                            } else {
-                                var data = page.attributes;
-                                var _template = data.templateName;
-                                // fix default template
-                                if (_template == "System Defined Default") _template = thisSite.getPreference('default_page_template');
-                                data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(_defaultTemplatePack, 'page') + '/' + _template + '.swig');
-                                return res.renderAdmin('forms/page.swig', {page: JSON.stringify(data)});
-                            }
-                        });
-                    });
-                } else {
-                    return res.errorAdmin(404, 'Page not found');
-                }
-            });
         },
         thumbnail: function(requestPath, req, res) {
             var _templatePack = requestPath.shift();

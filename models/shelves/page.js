@@ -108,16 +108,15 @@ var Page = CimentariusBookshelf.Model.extend(
                 });
             });
         },
+        /*
+         * Various 'fake' fields, save related auto.
+         */
         _postSave: function(model, attrs, options) {
-
-            console.log("page _postSave");
+            // Re-add dynamic fields
             model.attributes.type = 'page';
         },
-        /*
-         * Prepare for saving, remove data that messes up the save event
-         */
         _postFetch: function (model, resp, options) {
-            console.log("page _postFetch");
+            // Aadd dynamic fields
             model.attributes.type = 'page';
         },
         _beforeDelete: function (model, attrs, options) {
@@ -137,7 +136,7 @@ var Page = CimentariusBookshelf.Model.extend(
                         this.validatorRules.maybe[i].handler);
                 }
             }
-            return this.validator.run(this.attributes).then(function(validated) {
+            return this.validator.run(this.toJSON({shallow: true})).then(function(validated) {
                 return validated;
             }).catch(Checkit.Error, function(err) {
                 return err;
@@ -180,7 +179,20 @@ var Page = CimentariusBookshelf.Model.extend(
                 // Save
                 return _this.save();
             });
+        },
+        permittedParents: function() {
+            return [
+                {
+                    type: '_builtin',
+                    name: 'page'
+                },
+                {
+                    type: '_builtin',
+                    name: 'site'
+                },
+            ]
         }
+
     }
 );
 
