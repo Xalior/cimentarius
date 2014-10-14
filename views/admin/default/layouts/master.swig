@@ -2,7 +2,9 @@
 {% import '../macros/forms.swig' as forms %}
 <!doctype html>
 <html ng-app="Cimentarius">
-    <head>
+    <head ng-controller="Cimentarius" ng-init="init({
+        _adminRoot: '{~ _adminRoot ~}'
+    })">
         {% include "../partials/head.swig" %}
     </head>
     <body>

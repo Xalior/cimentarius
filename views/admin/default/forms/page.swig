@@ -99,7 +99,7 @@
             <tab heading="Content" disabled="!page.id">
                 <ul class="content-blocks">
                     <li ng-repeat="contentBlock in page.template.contentBlocks" class="content-block">
-                        <div particle-collection ng-model="contentBlock"></div>
+                        <div particle-collection ng-model="contentBlock" page="page"></div>
                     </li>
                 </ul>
             </tab>
