@@ -18,11 +18,18 @@ CimentariusBookshelf.Model = Bookshelf.cimentarius.Model.extend({
         this.on('saved', this._postSave);
         this.on('destroying', this._beforeDelete);
         this.on('destroyed', this._postDelete);
+        this.on('fetching', this._beforeFetch);
+        this.on('fetched', this._postFetch);
     },
-    _beforeSave: function (model, attrs, options) {},
+    _beforeSave: function (model, attrs, options) {
+        console.log('        CimentariusBookshelf.Model.apply(this, arguments);');
+        if (model.attributes.created_at) delete(model.attributes.created_at);
+    },
     _postSave: function(model, attrs, options) {},
+    _beforeDelete: function (model, attrs, options) {},
     _postDelete: function (model, attrs, options) {},
-    _beforeDelete: function (model, attrs, options) {}
+    _beforeFetch: function (model, columns, options) {},
+    _postFetch: function (model, resp, options) {}
 });
 
 // Exports
