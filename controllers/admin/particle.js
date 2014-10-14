@@ -111,6 +111,8 @@ var particle = {
                             content_block: _blockName
                         });
                         console.log(particle);
+                        console.log('is');
+                        console.log(particle.prototype);
 
                                 return res.errorAdmin(418, 'Paused');
                     }
