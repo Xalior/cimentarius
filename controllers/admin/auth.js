@@ -10,12 +10,10 @@ var auth = {
     init: function(passport) {
         auth.passport = passport;
         auth.passport.serializeUser(function(user, done) {
-            console.log('auth.passport.serializeUser');
             done(null, user.id);
         });
 
         auth.passport.deserializeUser(function(id, done) {
-            console.log('auth.passport.deserializeUser');
             new User().set({id: id}).fetch().then(function(user) {
                 done(null, user);
             }).catch(function(e) {
