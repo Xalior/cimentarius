@@ -151,7 +151,6 @@ var page = {
                             if (req.method.toUpperCase() == 'POST') {
                                 page.attributes = req.body;
 
-
                                 return page.validate().then(function (messages) {
                                     if (messages.errors)
                                         return res.end(JSON.stringify({errors: messages}));
