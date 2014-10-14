@@ -128,7 +128,7 @@ Promise.all(tablePromises).then(function () {
     console.log('Tables Created Or Checked...!');
 
     // User Creation
-    knex('user').count('username as userCount').then(function(result) {
+    return knex('user').count('username as userCount').then(function(result) {
         // Count Users
         var userCount = result[0]['userCount'];
         // Need to create a user?
@@ -165,13 +165,13 @@ Promise.all(tablePromises).then(function () {
                 User.forge(userDetails).save().then(function() {
                     console.log('User Successfully Created.');
                     // Initial Site Creation
-                    knex('site').count('primary_domain as siteCount').then(function(result) {
+                    return knex('site').count('primary_domain as siteCount').then(function(result) {
                         // Count Users
                         var siteCount = result[0]['siteCount'];
                         // Need to create a user?
                         if (siteCount === 0) {
                             // Inquirer - Prompt
-                            inquirer.prompt([
+                            return inquirer.prompt([
                                 {
                                     type: 'input',
                                     name: 'primary_domain',
@@ -198,7 +198,7 @@ Promise.all(tablePromises).then(function () {
                                     title: answers.title
                                 };
                                 // Forge New Site
-                                Site.forge(siteDetails).save().then(function() {
+                                return Site.forge(siteDetails).save().then(function() {
                                     console.log('Site Successfully Created.');
                                     // Initial Site Creation
                                     knex('site').select().orderBy('id').limit(1).then(function(result) {
@@ -230,8 +230,7 @@ Promise.all(tablePromises).then(function () {
                                                 });
                                             } else {
                                                 // No New Users Required
-                                                console.log('Default Homepage Already Exists');
-                                                process.exit();
+                                                return console.log('Default Homepage Already Exists');
                                             }
                                         });
                                     });
@@ -240,12 +239,12 @@ Promise.all(tablePromises).then(function () {
                                     console.log(e);
                                     process.exit(-1);
                                 }).lastly(function() {
-                                    console.log('All done!');
+                                    return console.log('All done!');
                                 });
                             });
                         } else {
                             // No New Users Required
-                            console.log('(At Least One) Site Account Already Exists');
+                            return console.log('(At Least One) Site Account Already Exists!');
                         }
                     });
                 }).catch(function(e) {
@@ -258,7 +257,9 @@ Promise.all(tablePromises).then(function () {
             });
         } else {
             // No New Users Required
-            console.log('(At Least One) User Account Already Exists');
+            return console.log('(At Least One) User Account Already Exists!!');
         }
     });
+}).then(function(){
+    process.exit();
 });
