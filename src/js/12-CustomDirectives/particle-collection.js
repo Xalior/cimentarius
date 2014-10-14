@@ -23,7 +23,7 @@ Cimentarius.directive('particleCollection', function () {
                 '                </a>' +
                 '                <ul class="sub-menu" role="menu">' +
                 '                  <li ng-repeat="(content, contentDetails) in typeDetails.contentTypes" class="particle-menu">' +
-                '                    <a href="#"><span class="glyphicon {{ contentDetails.className }}"></span> {{ contentDetails.displayName }}</a>' +
+                '                    <a href="{{ cimentariusService.options._adminRoot }}/particle/NEW/{{ page.type }}/{{ page.id }}/{{ type }}/{{ content}}"><span class="glyphicon {{ contentDetails.className }}"></span> {{ contentDetails.displayName }} </a' +
                 '                  </li>' +
                 '                </ul>' +
                 '              </li>' +
@@ -39,13 +39,11 @@ Cimentarius.directive('particleCollection', function () {
                 '          </li>' +
                 '        </ul>' +
                 '       </div>',
-            controller: ['$scope', '$sce', function($scope) {
-                console.log('particleCollection.controller');
+            controller: ['$scope', 'cimentariusService', function($scope, cimentariusService) {
+                $scope.cimentariusService = cimentariusService;
                 console.log($scope);
             }],
             link: function( scope, element, attributes, controller ) {
-                console.log('particleCollection.link');
-                console.log(scope);
                 if (scope.value) {
                     scope.select(scope.value, true);
                 }
@@ -53,6 +51,7 @@ Cimentarius.directive('particleCollection', function () {
             restrict: 'EA',
             scope: {
                 contentBlock: '=ngModel',
+                page: '=page'
             }
         }
     }

@@ -1,4 +1,4 @@
-Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'sharedService', function($scope, $http, $location, sharedService) {
+Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'cimentariusService', function($scope, $http, $location, cimentariusService) {
     $scope.submitted = false;
     $scope.serverErrors = {};
 
@@ -23,7 +23,7 @@ Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'share
                         }
                     }
                 } else {
-                    sharedService.addAlert([{
+                    cimentariusService.addAlert([{
                         type: 'success',
                         msg: 'Job Done'
                     }]);

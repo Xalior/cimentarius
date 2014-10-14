@@ -1,24 +1,32 @@
 var Cimentarius = angular.module('Cimentarius', ['ui.bootstrap','ui.tree']);
 
-Cimentarius.factory('sharedService', function($rootScope) {
-    var sharedService = {
-        alerts: []
+Cimentarius.factory('cimentariusService', function($rootScope) {
+    var cimentariusService = {
+        // Flash banners
+        alerts: [],
+        // built controller stuffs
+        options: {}
     };
-
-    sharedService.addAlert = function(msg) {
+    cimentariusService.addAlert = function(msg) {
         if(!msg.length) msg = [msg];
         while(msg.length) {
-            sharedService.alerts.push(msg.pop());
+            cimentariusService.alerts.push(msg.pop());
         }
-        sharedService.updateAlerts();
+        cimentariusService.updateAlerts();
     };
 
-    sharedService.updateAlerts = function() {
+    cimentariusService.updateAlerts = function() {
         $rootScope.$broadcast('updateAlerts');
     };
 
-    return sharedService;
+    return cimentariusService;
 });
+
+Cimentarius.controller('Cimentarius', ['$scope','cimentariusService', function ($scope, cimentariusService) {
+    $scope.init = function(options) {
+        cimentariusService.options = options;
+    }
+}]);
 
 Cimentarius.filter('asHtml', ['$sce', function($sce){
     return function(text) {

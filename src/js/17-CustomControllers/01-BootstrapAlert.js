@@ -1,8 +1,8 @@
-Cimentarius.controller('BootstrapAlert', ['$scope', 'sharedService', function($scope, sharedService) {
+Cimentarius.controller('BootstrapAlert', ['$scope', 'cimentariusService', function($scope, cimentariusService) {
     $scope.alerts = [];
 
     $scope.init = function(alerts) {
-        if(alerts) sharedService.addAlert(alerts);
+        if(alerts) cimentariusService.addAlert(alerts);
     };
 
     $scope.closeAlert = function (index) {
@@ -10,8 +10,8 @@ Cimentarius.controller('BootstrapAlert', ['$scope', 'sharedService', function($s
     };
 
     $scope.$on('updateAlerts', function() {
-        while(sharedService.alerts.length) {
-            $scope.alerts.push(sharedService.alerts.pop());
+        while(cimentariusService.alerts.length) {
+            $scope.alerts.push(cimentariusService.alerts.pop());
         }
     });
 }]);
