@@ -151,8 +151,6 @@ var page = {
                             if (req.method.toUpperCase() == 'POST') {
                                 page.attributes = req.body;
 
-                                if (page.attributes.created_at) delete(page.attributes.created_at);
-                                if (page.attributes.template) delete(page.attributes.template);
 
                                 return page.validate().then(function (messages) {
                                     if (messages.errors)
