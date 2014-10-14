@@ -4,6 +4,7 @@ var CimentariusBookshelf = require('./cimentarius'),
     _ = require('lodash'),
     fs = require('fs'),
     Promise = require('bluebird'),
+    ContentHelper = require('../../lib/helpers/content.js'),
     config = require('../../config/config');
 
 var Particle = CimentariusBookshelf.Model.extend(
@@ -43,11 +44,11 @@ var Particle = CimentariusBookshelf.Model.extend(
                 name: this.type.toLowerCase(),
                 fields: ['blockName', 'template' , 'position'].concat(this.formData.fields),
                 labels: _.merge(this.formData.labels, {blockName: 'Content Block Name', position: 'Block Position'}),
-                joiValidators: _.merge(this.formData.joiValidators, {blockName: BraidsBase.joi.string().required(), position: BraidsBase.joi.number().integer().required()}),
+//                joiValidators: _.merge(this.formData.joiValidators, {blockName: BraidsBase.joi.string().required(), position: BraidsBase.joi.number().integer().required()}),
                 customValidators: this.formData.customValidators
             };
             // Build Form By Merging Data
-            this.form = BraidsBase.Model.Extend(_.merge(this.formData, formData));
+//            this.form = BraidsBase.Model.Extend(_.merge(this.formData, formData));
         },
         // Init
         initialize: function () {
@@ -217,16 +218,17 @@ var Particle = CimentariusBookshelf.Model.extend(
         }
     }, {
         permittedParents: function() {
-            return [
-                {
-                    type: '_builtin',
-                    name: 'page'
-                },
-                {
-                    type: '_builtin',
-                    name: 'site'
-                },
-            ]
+            return [];
+            //return [
+            //    {
+            //        type: '_builtin',
+            //        name: 'page'
+            //    },
+            //    {
+            //        type: '_builtin',
+            //        name: 'site'
+            //    },
+            //]
         }
     }
 );
@@ -237,7 +239,7 @@ var Particles = CimentariusBookshelf.Collection.extend({
     // Constructor
     constructor: function () {
         // Call Parent
-        OleBookshelf.Collection.apply(this, arguments);
+        CimentariusBookshelf.Collection.apply(this, arguments);
         // Post-Fetch Model Init
         this.on('fetched', function (collection, resp, options) {
             this.models.forEach(function (particleModel, key) {

@@ -11,7 +11,7 @@ var validatePixelAmount = function (value) {
     }
 };
 
-var ImageParticle = Particle.extend(
+var Image = Particle.extend(
     {
         // Type
         type: 'image',
@@ -50,18 +50,18 @@ var ImageParticle = Particle.extend(
                 layer: 'Image layer can only be set when it has a relative or absolute position.',
                 hide_link_border: 'Set whether a border should appear around the link when the cursor is hovering over it.'
             },
-            joiValidators: {
-                src: BraidsBase.joi.string().required(),
-                alt_text: BraidsBase.joi.string().required(),
-                title: BraidsBase.joi.string().allow(''),
-                text: BraidsBase.joi.string().allow(''),
-                x_offset: BraidsBase.joi.string().allow(''),
-                y_offset: BraidsBase.joi.string().allow(''),
-                padding: BraidsBase.joi.string().allow(''),
-                link: BraidsBase.joi.string().allow(''),
-                background_colour: BraidsBase.joi.string().allow(''),
-                layer: BraidsBase.joi.string().allow('')
-            },
+            //joiValidators: {
+            //    src: BraidsBase.joi.string().required(),
+            //    alt_text: BraidsBase.joi.string().required(),
+            //    title: BraidsBase.joi.string().allow(''),
+            //    text: BraidsBase.joi.string().allow(''),
+            //    x_offset: BraidsBase.joi.string().allow(''),
+            //    y_offset: BraidsBase.joi.string().allow(''),
+            //    padding: BraidsBase.joi.string().allow(''),
+            //    link: BraidsBase.joi.string().allow(''),
+            //    background_colour: BraidsBase.joi.string().allow(''),
+            //    layer: BraidsBase.joi.string().allow('')
+            //},
             positionOptions: {
                 static: 'Static',
                 relative: 'Relative',
@@ -89,11 +89,11 @@ var ImageParticle = Particle.extend(
 );
 
 
-var ImageParticles = OleBookshelf.Collection.extend({
-    model: ImageParticle
+var Images = CimentariusBookshelf.Collection.extend({
+    model: Image
 });
 
 module.exports = {
-    Model: OleBookshelf.model('ImageParticle', ImageParticle),
-    Collection: OleBookshelf.collection('ImageParticles', ImageParticles)
+    Model: CimentariusBookshelf.model('_builtin/Image', Image),
+    Collection: CimentariusBookshelf.collection('_builtin/Images', Images)
 };

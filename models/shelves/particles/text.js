@@ -1,9 +1,8 @@
 'use strict';
 
-var OleBookshelf = require('../base');
+var CimentariusBookshelf = require('../cimentarius');
 var Promise = require('bluebird');
 var Particle = require('../particle').Particle;
-var BraidsBase = require('braids');
 
 var validatePixelAmount = function (value) {
     if (value.endsWith('px') || value === '' || value === null) {
@@ -13,7 +12,7 @@ var validatePixelAmount = function (value) {
     }
 };
 
-var TextParticle = Particle.extend(
+var Text = Particle.extend(
     {
         // Type
         type: 'text',
@@ -53,18 +52,18 @@ var TextParticle = Particle.extend(
                 position_alignment: 'Align the starting horizontal position of the text with right or left side of the column.',
                 layer: 'Text layer can only be set when it has a relative or absolute position.'
             },
-            joiValidators: {
-                text: BraidsBase.joi.string().required(),
-                alignment: BraidsBase.joi.string().required(),
-                width: BraidsBase.joi.string().allow(''),
-                margin_top: BraidsBase.joi.string().allow(''),
-                margin_bottom: BraidsBase.joi.string().allow(''),
-                margin_right: BraidsBase.joi.string().allow(''),
-                margin_left: BraidsBase.joi.string().allow(''),
-                x_offset: BraidsBase.joi.string().allow(''),
-                y_offset: BraidsBase.joi.string().allow(''),
-                background_colour: BraidsBase.joi.string().allow('')
-            },
+            //joiValidators: {
+            //    text: BraidsBase.joi.string().required(),
+            //    alignment: BraidsBase.joi.string().required(),
+            //    width: BraidsBase.joi.string().allow(''),
+            //    margin_top: BraidsBase.joi.string().allow(''),
+            //    margin_bottom: BraidsBase.joi.string().allow(''),
+            //    margin_right: BraidsBase.joi.string().allow(''),
+            //    margin_left: BraidsBase.joi.string().allow(''),
+            //    x_offset: BraidsBase.joi.string().allow(''),
+            //    y_offset: BraidsBase.joi.string().allow(''),
+            //    background_colour: BraidsBase.joi.string().allow('')
+            //},
             customValidators: {
                 width: validatePixelAmount,
                 margin_top: validatePixelAmount,
@@ -98,11 +97,11 @@ var TextParticle = Particle.extend(
 );
 
 
-var TextParticles = OleBookshelf.Collection.extend({
-    model: TextParticle
+var Texts = CimentariusBookshelf.Collection.extend({
+    model: Text
 });
 
 module.exports = {
-    Model: OleBookshelf.model('TextParticle', TextParticle),
-    Collection: OleBookshelf.collection('TextParticles', TextParticles)
+    Model: CimentariusBookshelf.model('_builtin/Text', Text),
+    Collection: CimentariusBookshelf.collection('_builtin/Texts', Texts)
 };
