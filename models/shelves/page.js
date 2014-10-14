@@ -91,14 +91,15 @@ var Page = CimentariusBookshelf.Model.extend(
          * Prepare for saving, remove data that messes up the save event
          */
         _beforeSave: function (model, attrs, options) {
+            CimentariusBookshelf.Model.prototype._beforeSave.apply(this, arguments);
+            // Remove dynamic fields
+            if (model.attributes.template) delete(model.attributes.template);
+            if (model.attributes.type) delete(model.attributes.type);
             return new Promise(function (resolve, reject) {
                 // Get Searchable Data
                 model.getSearchableBodyData().then(function (searchableBodyData) {
                     // Set Searchable Body
                     model.set('search_field', searchableBodyData);
-                    // Remove dynamic fields
-                    if (model.attributes.created_at) delete(model.attributes.created_at);
-                    if (model.attributes.template) delete(model.attributes.template);
                     // Resolve
                     resolve(searchableBodyData);
                 }).catch(function (e) {
@@ -106,6 +107,18 @@ var Page = CimentariusBookshelf.Model.extend(
                     reject(e);
                 });
             });
+        },
+        _postSave: function(model, attrs, options) {
+
+            console.log("page _postSave");
+            model.attributes.type = 'page';
+        },
+        /*
+         * Prepare for saving, remove data that messes up the save event
+         */
+        _postFetch: function (model, resp, options) {
+            console.log("page _postFetch");
+            model.attributes.type = 'page';
         },
         _beforeDelete: function (model, attrs, options) {
             console.log('destroying');
