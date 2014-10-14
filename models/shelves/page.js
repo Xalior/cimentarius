@@ -9,42 +9,18 @@ var CimentariusBookshelf = require('./cimentarius'),
 //var pageForm = require('../forms/page');
 //var PageRenderHelper = require('../../models/helpers/page_render');
 
-/**
- * Parent Model Types Mapping
- * @type {Function}
- */
-var getParentModelTypes = function () {
-    return {
-        page: CimentariusBookshelf.model('Page')
-    };
-};
-
-/**
- * Parent Collection Types Mapping
- * @type {Function}
- */
-var getParentCollectionTypes = function () {
-    return {
-        page: CimentariusBookshelf.collection('Pages')
-    };
-};
-
 var Page = CimentariusBookshelf.Model.extend(
     // Instance Methods
     {
+        // Constructor
+        constructor: function () {
+            // Call Parent
+            CimentariusBookshelf.Model.apply(this, arguments);
+        },
         tableName: 'page',
 
         particles: function () {
             return this.hasMany('Particles');
-        },
-        // Initialize
-        initialize: function () {
-            // Destroying Hook for Removing Category Entries In The Through Table
-            this.on('destroying', function () {
-                console.log('destroying');
-                console.log(this);
-//                return CimentariusBookshelf.knex('category_page').where('page_id', '=', this.get('id')).delete();
-            });
         },
         /**
          * Fetch A Page With Particles In Order
@@ -90,10 +66,57 @@ var Page = CimentariusBookshelf.Model.extend(
             // Render
             return pageRenderHelper.render(useWrapper, locals);
         },
+        // Get Searchable Body Data
+        getSearchableBodyData: function () {
+            // Body Data
+            var bodyData = [];
+            // Get Fields
+            var searchableFields = this.searchFields;
+            // Check
+            if (searchableFields) {
+                // Iterate
+                for (var i = 0; i < searchableFields.length; i++) {
+                    // Get Field Identifier
+                    var field = searchableFields[i];
+                    // Get Field Content
+                    var fieldContent = striptags(this.getContent()[field]);
+                    // Add
+                    bodyData.push(fieldContent);
+                }
+            }
+            // Return
+            return Promise.resolve(bodyData.join(' '));
+        },
+        /*
+         * Prepare for saving, remove data that messes up the save event
+         */
+        _beforeSave: function (model, attrs, options) {
+            return new Promise(function (resolve, reject) {
+                // Get Searchable Data
+                model.getSearchableBodyData().then(function (searchableBodyData) {
+                    // Set Searchable Body
+                    model.set('search_field', searchableBodyData);
+                    // Remove dynamic fields
+                    if (model.attributes.created_at) delete(model.attributes.created_at);
+                    if (model.attributes.template) delete(model.attributes.template);
+                    // Resolve
+                    resolve(searchableBodyData);
+                }).catch(function (e) {
+                    // Error
+                    reject(e);
+                });
+            });
+        },
+        _beforeDelete: function (model, attrs, options) {
+            console.log('destroying');
+            console.log(this);
+            return console.log("CimentariusBookshelf.knex('PARTICLES AND STUFFS').where('id', '='," + this.get('id') + ").where('delete();)");
+        },
         /**
          * Validate this model
          */
         validate: function() {
+
             if(!this.validator) {
                 this.validator = new Checkit(this.validatorRules.compulsory);
                 for(var i = 0; i < this.validatorRules.maybe.length; i++) {
@@ -116,29 +139,22 @@ var Page = CimentariusBookshelf.Model.extend(
             },
             maybe:[{
                 rules: { slug: ['required',
-                                function(val) {
-                                    return CimentariusBookshelf.knex('page')
-                                        .where('parent_id', '=', this.target.parent_id)
-                                        .where('id', '!=', this.target.id)
-                                        .where('slug', '=', val)
-                                        .then(function (resp) {
-                                        if (resp.length > 0) throw new Error('The slug is already in use.')
-                                    })
-                                }]
+                    function(val) {
+                        return CimentariusBookshelf.knex('page')
+                            .where('parent_id', '=', this.target.parent_id)
+                            .where('id', '!=', this.target.id)
+                            .where('slug', '=', val)
+                            .then(function (resp) {
+                            if (resp.length > 0) throw new Error('The slug is already in use.')
+                        })
+                    }]
                 },
                 handler: function(input) {
                     return input.parent_type != 'site';
                 }
             }]
-        },
-        contentBlocks: function() {
-            return TemplateHelper.parseTemplate(TemplateHelper.parsthis.get('templateName'))
-        },
-        /**
-         * Update Search Field From Children Particles
-         * Gets Child Particle Search Content, Then Joins It All
-         * Adds to Model
-         */
+        }
+    }, {
         updateSearchField: function () {
             // TET
             var _this = this;
@@ -151,56 +167,9 @@ var Page = CimentariusBookshelf.Model.extend(
                 // Save
                 return _this.save();
             });
-        },
-        /**
-         * Get Parent Model Class
-         * @returns {*}
-         */
-        getParentModelClass: function () {
-            return getParentModelTypes()[this.get('parent_type')];
-        },
-        /**
-         * Get Parent Collection Class
-         * @returns {*}
-         */
-        getParentCollectionClass: function () {
-            return getParentCollectionTypes()[this.get('parent_type')];
         }
-    },
-    // Static Methods
-    {
-        getHighestPosition: function (pageId) {
-            // Find Top Position
-            return new Promise(function (resolve, reject) {
-                OleBookshelf.knex('particle').where('page_id', pageId).select('position').orderBy('position', 'DESC').limit(1).then(function (results) {
-                    // Top Position
-                    var topPosition = false;
-                    if (results && results.length > 0) {
-                        topPosition = (results.shift().position);
-                    }
-                    // Resolve
-                    resolve(topPosition);
-                }).catch(function (e) {
-                    // Reject
-                    reject(e);
-                });
-            });
-        },
-        /**
-         * Get Parent Model Class
-         * @returns {*}
-         */
-        getParentModelClass: function (parentType) {
-            return getParentModelTypes()[parentType];
-        },
-        /**
-         * Get Parent Collection Class
-         * @returns {*}
-         */
-        getParentCollectionClass: function (parentType) {
-            return getParentCollectionTypes()[parentType];
-        }
-    });
+    }
+);
 
 var Pages = CimentariusBookshelf.Collection.extend({
     model: Page

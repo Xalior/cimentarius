@@ -1,8 +1,7 @@
 'use strict';
 
-var OleBookshelf = require('../base');
+var CimentariusBookshelf = require('../cimentarius');
 var Particle = require('../particle').Particle;
-var BraidsBase = require('braids');
 
 var validatePixelAmount = function (value) {
     if (value.endsWith('px') || value.endsWith('%') || value === '0' || value === 0) {
