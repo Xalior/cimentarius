@@ -35,7 +35,7 @@ Cimentarius.directive('particleCollection', function () {
                 '            {{ particle }}' +
                 '          </li>' +
                 '          <li ng-if="!contentBlock.particles.length" class="no-particles">' +
-                '            <span class="glyphicon glyphicon-warning-sign"></span>This content block is empty&hellip;<br />Content blocks invariably look better when they contain content!' +
+                '            <span class="glyphicon glyphicon-warning-sign"></span>This content block is empty&hellip;<br /><em>Content blocks invariably look better when they contain content!</em>' +
                 '          </li>' +
                 '        </ul>' +
                 '       </div>',
