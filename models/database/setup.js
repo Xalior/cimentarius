@@ -86,6 +86,8 @@ tablePromises.push(new Promise(function (resolve) {
                 t.string('slug');
                 // pages also contain metashit, for SEO purposes.
                 t.string('metaDescription');
+                // searchable datacache - speeds up sub-particle search, required by beforeSave event
+                t.text('search_field');
                 t.timestamps();
             }).then(function () {
                 console.log('Page Table Created');
