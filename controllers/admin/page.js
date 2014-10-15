@@ -73,12 +73,11 @@ var _page = {
                     });
             });
         } else {
-            var data = page.toJSON({shallow: true});
-            var _template = data.templateName;
+            var _template = page.get('templateName');
             // fix default template
             if (_template == "System Defined Default") _template = req.site.getPreference('default_page_template');
-            data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
-            return res.renderAdmin('forms/page.swig', {page: JSON.stringify(data)});
+            page.attributes.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
+            return res.renderAdmin('layouts/master.swig', {content: page.form(res)});
         }
     },
     findSite: function(page, req, res) {

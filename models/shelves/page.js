@@ -1,6 +1,7 @@
 'use strict';
 
-var CimentariusBookshelf = require('./cimentarius'),
+var config = require('../../config/config'),
+    CimentariusBookshelf = require('./cimentarius'),
     _ = require('lodash'),
     Promise = require('bluebird'),
     TemplateHelper = require('../../lib/helpers/template.js'),
@@ -123,6 +124,19 @@ var Page = CimentariusBookshelf.Model.extend(
             console.log('destroying');
             console.log(this);
             return console.log("CimentariusBookshelf.knex('PARTICLES AND STUFFS').where('id', '='," + this.get('id') + ").where('delete();)");
+        },
+        form: function(res) {
+            var fn = function(data, err) {
+                if(err) {
+                    return send(res, render('err/500.swig', {err: err}), 500);
+                } else {
+                    return data;
+                }
+            };
+
+            return res._render(res, 'page.swig', {
+                page: JSON.stringify(this.toJSON({shallow: true}))
+            }, fn, '_forms', 'admin');
         },
         /**
          * Validate this model

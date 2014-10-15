@@ -1,3 +1,5 @@
+var path = require("path");
+
 module.exports = config = {
     "name" : "Cimentarius",
 
@@ -19,5 +21,10 @@ module.exports = config = {
         render: {
             cache: false
         }
+    },
+
+    // 'getters'
+    "getInstallPath": function() {
+        return path.resolve(__dirname + '../..');
     }
 };

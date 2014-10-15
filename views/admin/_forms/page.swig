@@ -1,6 +1,3 @@
-{% extends '../layouts/master.swig' %}
-
-{% block content %}
 <div ng-controller="pageController" ng-init="init({~page~})">
     <div class="col-md-8">
         <h1 ng-show="page.id > 0">Page Details for '{{ page.title }}' <small>({{ page.id }})</small></h1>
@@ -134,4 +131,3 @@
         </div>
     </div>
 </div>
-{% endblock %}

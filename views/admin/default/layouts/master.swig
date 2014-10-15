@@ -12,7 +12,10 @@
         <div class = "container">
             {% include "../partials/messages.swig" %}
             <div class = "row">
-                {% block content %}{% endblock %}
+                {% block content %}
+                    <!-- pre-rendered contented passed into master.swig -->
+                    {~ content | safe ~}
+                {% endblock %}
             </div>
         </div>
         {% include "../partials/footer.swig" %}
