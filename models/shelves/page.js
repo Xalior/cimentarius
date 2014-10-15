@@ -128,7 +128,7 @@ var Page = CimentariusBookshelf.Model.extend(
         form: function(res) {
             var fn = function(data, err) {
                 if(err) {
-                    return send(res, render('err/500.swig', {err: err}), 500);
+                    return res.errorAdmin(500, "Error generating Page form");
                 } else {
                     return data;
                 }
