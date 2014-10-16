@@ -103,23 +103,34 @@ var particle = {
             var allContentTypes;
             for (var i in allContentTypes = ContentHelper.getAllTypes()) {
                 if(_particleModule == i) {
-                    if (allContentTypes[i].contentTypes[_particleType]) {
-                        var particle = new allContentTypes[i].contentTypes[_particleType].model.Model();
+                    if (allContentTypes[i].types[_particleType]) {
+                        // Particle type validated, create a new one...
+                        var particle = new allContentTypes[i].types[_particleType].model.Model();
                         particle.set({
                             parent_type: _parentType,
                             parent_id: _parentId,
                             content_block: _blockName
                         });
-                        console.log(particle);
-                        console.log('is');
-                        console.log(particle.prototype);
+                        // validate requested parent Type...
+                        var allParentTypes;
+                        for (var i in allContentTypes = ContentHelper.getAllParentTypes()) {
+                            if(_parentType == i) {
 
+                                if (allParentTypes[i].types[_particleType]) {
+
+                            //
+                            //    // And that the parent exists...
+                            //
+                            //
                                 return res.errorAdmin(418, 'Paused');
+                            }
+
+                        }
+                        return res.errorADmin(404, "Specified Parent Type Not Found");
                     }
-                } else {
-                    return res.errorAdmin(404, 'Specified Content Type Not Found');
                 }
             }
+            return res.errorAdmin(404, 'Specified Content Type Not Found');
 
             //if(parentType = _.find(_permittedParents, function(parent) {
             //    return((parent.type == _parentModule) && (parent.name == _parentType));
