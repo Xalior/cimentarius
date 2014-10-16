@@ -4,9 +4,9 @@ var config = require('../../../config/config'),
     Promise = require('bluebird');
 
 var CimentariusBookshelf = require('../../../models/shelves/cimentarius'),
-    Site = require('../../../models/shelves/site').Site,
-    Sites = require('../../../models/shelves/site').Sites,
-    Page = require('../../../models/shelves/page').Page,
+    Site = require('../../../models/shelves/site').model,
+    Sites = require('../../../models/shelves/site').collection,
+    Page = require('../../../models/shelves/page').model,
     User = require('../../../models/shelves/admin/user').User;
 
 // Knex Instance
