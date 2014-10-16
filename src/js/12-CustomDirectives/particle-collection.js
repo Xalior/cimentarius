@@ -17,12 +17,12 @@ Cimentarius.directive('particleCollection', function () {
                 '              <small>Add Content <span class="caret"></span></small>' +
                 '            </button>' +
                 '            <ul class="dropdown-menu" role="menu">' +
-                '              <li ng-repeat="(type, typeDetails) in contentBlock.contentTypes" class="particle-menu">' +
+                '              <li ng-repeat="(type, typeDetails) in contentBlock.types" class="particle-menu">' +
                 '                <a ng-click="select()" class="particle-menu-item">' +
                 '                 {{ typeDetails.displayName }}' +
                 '                </a>' +
                 '                <ul class="sub-menu" role="menu">' +
-                '                  <li ng-repeat="(content, contentDetails) in typeDetails.contentTypes" class="particle-menu">' +
+                '                  <li ng-repeat="(content, contentDetails) in typeDetails.types" class="particle-menu">' +
                 '                    <a href="{{ cimentariusService.options._adminRoot }}/particle/NEW/{{ page.type }}/{{ page.id }}/{{ contentBlock.name }}/{{ type }}/{{ content}}"><span class="glyphicon {{ contentDetails.className }}"></span> {{ contentDetails.displayName }} </a' +
                 '                  </li>' +
                 '                </ul>' +
