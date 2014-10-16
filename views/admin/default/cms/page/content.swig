@@ -16,7 +16,7 @@
                             {% set content_class = 'content-add hidden' %}
                             {% set full_class = 'content-full' %}
                         {% endif %}
-                        {% for contentType in contentBlock.contentTypes %}
+                        {% for contentType in contentBlock.types %}
                             <li class = "{{ content_class }}">
                                 <a href = "/ole/cms/page/{{ currentPageId }}/content_block/{{ contentBlock.name }}/content_type/{{ contentType }}/particle/create">
                                     Add {{ contentType }}
