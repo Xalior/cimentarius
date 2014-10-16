@@ -138,7 +138,7 @@ var Sites = CimentariusBookshelf.Collection.extend({
 });
 
 module.exports = {
-    Site: CimentariusBookshelf.model('Site', Site),
-    Sites: CimentariusBookshelf.collection('Sites', Sites)
+    model: CimentariusBookshelf.model('Site', Site),
+    collection: CimentariusBookshelf.collection('Sites', Sites)
 //    Form: pageForm
 };
