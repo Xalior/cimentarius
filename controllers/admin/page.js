@@ -6,8 +6,8 @@ var config = require('../../config/config'),
     Promise = require('bluebird'),
     fs = require("fs"),
     staticserve = require('node-static'),
-    Page = require('../../models/shelves/page').Page,
-    Site = require('../../models/shelves/site').Site,
+    Page = require('../../models/shelves/page').model,
+    Site = require('../../models/shelves/site').model,
     TemplateHelper = require('../../lib/helpers/template'),
     ContentHelper = require('../../lib/helpers/content');
 
@@ -22,8 +22,9 @@ var getTemplatesFor = function(templatePack) {
                 var file = path.basename(files[i], '.swig');
                 _pageTemplates.push({
                     name: file,
-                    item: '  <div class="template-title"><strong>Template Name: </strong> <small>'+file+'</small>.</div>' +
-                    '  <div class="template-preview"><img src="/'+config.admin+'/page/thumbnail/default/'+file+'"></div><br />'
+                    item: '<div class="template-title"><strong>Template Name: </strong>' +
+                          ' <small>'+file+'</small>.</div>' +
+                          '<div class="template-preview"><img src="/'+config.admin+'/page/thumbnail/default/'+file+'"></div><br />'
                 });
             }
         }
