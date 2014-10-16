@@ -113,20 +113,20 @@ var particle = {
                         });
                         // validate requested parent Type...
                         var allParentTypes;
-                        for (var i in allContentTypes = ContentHelper.getAllParentTypes()) {
-                            if(_parentType == i) {
-
-                                if (allParentTypes[i].types[_particleType]) {
-
-                            //
-                            //    // And that the parent exists...
-                            //
-                            //
-                                return res.errorAdmin(418, 'Paused');
+                        for (var i in allParentTypes = ContentHelper.getAllParentTypes()) {
+                            if(_parentModule == i) {
+                                if (allParentTypes[i].types[_parentType]) {
+                                    console.log(allParentTypes[i].types);
+                                    //
+                                    //    // And that the parent exists...
+                                    //
+                                    //
+                                    return res.errorAdmin(418, 'Paused');
+                                }
                             }
 
                         }
-                        return res.errorADmin(404, "Specified Parent Type Not Found");
+                        return res.errorAdmin(404, "Specified Parent Type Not Found");
                     }
                 }
             }
