@@ -215,7 +215,7 @@ var Pages = CimentariusBookshelf.Collection.extend({
 });
 
 module.exports = {
-    Page: CimentariusBookshelf.model('Page', Page),
-    Pages: CimentariusBookshelf.collection('Pages', Pages)
+    model: CimentariusBookshelf.model('Page', Page),
+    collection: CimentariusBookshelf.collection('Pages', Pages)
 //    Form: pageForm
 };
