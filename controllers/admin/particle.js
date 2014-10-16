@@ -104,24 +104,36 @@ var particle = {
             for (var i in allContentTypes = ContentHelper.getAllTypes()) {
                 if(_particleModule == i) {
                     if (allContentTypes[i].types[_particleType]) {
-                        // Particle type validated, create a new one...
-                        var particle = new allContentTypes[i].types[_particleType].model.Model();
-                        particle.set({
-                            parent_type: _parentType,
-                            parent_id: _parentId,
-                            content_block: _blockName
-                        });
                         // validate requested parent Type...
                         var allParentTypes;
                         for (var i in allParentTypes = ContentHelper.getAllParentTypes()) {
                             if(_parentModule == i) {
                                 if (allParentTypes[i].types[_parentType]) {
-                                    console.log(allParentTypes[i].types);
-                                    //
-                                    //    // And that the parent exists...
-                                    //
-                                    //
-                                    return res.errorAdmin(418, 'Paused');
+                                    var parent = new allParentTypes[i].types[_parentType].model.model();
+                                    return parent.fetch({id:_parentId}).then(function(parent) {
+                                        if(parent) {
+                                            // Particle type validated, create a new one...
+                                            var particle = new allContentTypes[i].types[_particleType].model.Model();
+                                            particle.set({
+                                                parent_type: _parentType,
+                                                parent_id: _parentId,
+                                                content_block: _blockName
+                                            });
+
+                                            //
+                                            //    // And that the parent exists...
+                                            //
+                                            //
+                                            console.log("PARTICLE");
+                                            console.log(particle);
+                                            console.log("PARENT");
+                                            console.log(parent);
+                                            return res.errorAdmin(418, 'Paused');
+                                        } else {
+                                            return res.errorAdmin(404, "Specified Parent Not Found");
+                                        }
+
+                                    });
                                 }
                             }
 
