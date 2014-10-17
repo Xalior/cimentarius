@@ -13,7 +13,7 @@ var config = require('../../config/config'),
 
 
 var _particle = {
-    edit:  function(paricleId, req, res) {
+    edit:  function(particleId, req, res) {
         // get the page to be edited...
         return Particle.forge({id: paricleId}).fetch().then( function (particle) {
             if (particle) {
@@ -28,15 +28,15 @@ var _particle = {
             }
         });
     },
-    editModel: function(page, req, res) {
+    editModel: function(particle, req, res) {
         if (req.method.toUpperCase() == 'POST') {
-            page.attributes = req.body;
+            particle.attributes = req.body;
 
-            return page.validate().then(function (messages) {
+            return particle.validate().then(function (messages) {
                 if (messages.errors)
                     return res.end(JSON.stringify({errors: messages}));
                 else
-                    page.save().then(function (data) {
+                    particle.save().then(function (data) {
                         var data = data.attributes;
                         var _template = data.templateName;
                         // fix default template
@@ -46,7 +46,7 @@ var _particle = {
                     });
             });
         } else {
-            var data = page.attributes;
+            var data = particle.attributes;
             var _template = data.templateName;
             // fix default template
             if (_template == "System Defined Default") _template = req.site.getPreference('default_particle_template');
@@ -112,7 +112,7 @@ var particle = {
                                     var parent = new allParentTypes[i].types[_parentType].model.model();
                                     return parent.fetch({id:_parentId}).then(function(parent) {
                                         if(parent) {
-                                            // Particle type validated, create a new one...
+                                            // Parent is found - let's start building our new article part.
                                             var particle = new allContentTypes[i].types[_particleType].model.Model();
                                             particle.set({
                                                 parent_type: _parentType,
@@ -120,15 +120,7 @@ var particle = {
                                                 content_block: _blockName
                                             });
 
-                                            //
-                                            //    // And that the parent exists...
-                                            //
-                                            //
-                                            console.log("PARTICLE");
-                                            console.log(particle);
-                                            console.log("PARENT");
-                                            console.log(parent);
-                                            return res.errorAdmin(418, 'Paused');
+                                            return _particle.editModel(particle, req, res);
                                         } else {
                                             return res.errorAdmin(404, "Specified Parent Not Found");
                                         }
