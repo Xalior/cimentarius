@@ -82,21 +82,10 @@ var _page = {
         }
     },
     findSite: function(page, req, res) {
-        switch (page.get('parent_type')) {
-            // genericise this to use the permitted parents array
-            case('page'):
-                return new Page().where({id: page.get('parent_id')}).fetch().then(function (_parentShelf) {
-                    return _page.findSite(_parentShelf, req, res);
-                });
-            case('site'):
-                return new Site().where({id: page.get('parent_id')}).fetch().then(function (thisSite) {
-                    req.site = thisSite;
-                    res.templatePack = req.site.getPreference('template_pack');
-                    return;
-                });
-            default:
-                console.log('default switch in findSite');
-        }
+        page.findSite().then(function(_site) {
+            req.site = _site;
+            res.templatePack = req.site.getPreference('template_pack');
+        });
     }
 };
 

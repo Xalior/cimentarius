@@ -46,14 +46,16 @@ var _particle = {
                     });
             });
         } else {
+            // fix default template
             var data = particle.attributes;
             var _template = data.templateName;
-            // fix default template
-        // DO THIS PROPERLY
-            if (_template == "System Defined Default") _template = req.site.getPreference('default_particle_template');
-        // WRite a proper handler for this
-            data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
-            return res.renderAdmin('forms/page.swig', {page: JSON.stringify(data)});
+            req.site.getPreference('default_particle_template').then(function(default_particle_template) {
+
+                console.log(JSON.stringify(default_particle_template));
+                // WRite a proper handler for this
+                data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'particle') + '/' + _template + '.swig');
+                return res.renderAdmin('forms/page.swig', {page: JSON.stringify(data)});
+            });
         }
     },
     findSite: function(page, req, res) {
@@ -114,15 +116,19 @@ var particle = {
                                     var parent = new allParentTypes[i].types[_parentType].model.model();
                                     return parent.fetch({id:_parentId}).then(function(parent) {
                                         if(parent) {
-                                            // Parent is found - let's start building our new article part.
-                                            var particle = new allContentTypes[i].types[_particleType].model.Model();
-                                            particle.set({
-                                                parent_type: _parentType,
-                                                parent_id: _parentId,
-                                                content_block: _blockName
+                                            return parent.findSite().then(function(_site) {
+                                                req.site = _site;
+                                                res.templatePack = req.site.getPreference('template_pack');
+                                                // Parent is found - let's start building our new article part.
+                                                var particle = new allContentTypes[i].types[_particleType].model.Model();
+                                                particle.set({
+                                                    parent_type: _parentType,
+                                                    parent_id: _parentId,
+                                                    content_block: _blockName,
+                                                    templateName: "System Defined Default"
+                                                });
+                                                return _particle.editModel(particle, req, res);
                                             });
-
-                                            return _particle.editModel(particle, req, res);
                                         } else {
                                             return res.errorAdmin(404, "Specified Parent Not Found");
                                         }

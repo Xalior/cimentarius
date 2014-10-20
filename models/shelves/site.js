@@ -23,7 +23,7 @@ var Site = CimentariusBookshelf.Model.extend(
         /*
          *
          */
-        getPreference: function (name) {
+        getFakePreference: function (name) {
             switch(name) {
                 case 'default_page_template':
                     return 'default';
@@ -31,6 +31,22 @@ var Site = CimentariusBookshelf.Model.extend(
                     return 'default';
 
             }
+        },
+        /**
+         * Fetch A Setting for This Site
+         **/
+        getPreference: function (name) {
+            // Fetch A Setting for This Site
+            // TET
+            var _this = this;
+            // Query
+            return CimentariusBookshelf.knex('setting').where({site_id: _this.get('id'), name: name}).then(function (results) {
+
+//                return Promise.resolve(results);
+                return results;
+            }).then(function (searchFieldResults) {
+                return searchFieldResults;
+            });
         },
         /**
          * Fetch A Page With Particles In Order

@@ -66,12 +66,12 @@ tablePromises.push(new Promise(function (resolve) {
 
 // Settings Table
 tablePromises.push(new Promise(function (resolve) {
-    knex.schema.hasTable('settting').then(function (exists) {
+    knex.schema.hasTable('setting').then(function (exists) {
         if (exists) {
             console.log('Settings Table Already Exists');
             resolve();
         } else {
-            knex.schema.createTable('settting', function (t) {
+            knex.schema.createTable('setting', function (t) {
                 t.increments('id');
                 // entity ID to look up in remote parent type table
                 t.integer('site_id');

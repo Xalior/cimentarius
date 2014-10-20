@@ -4,6 +4,7 @@ var config = require('../../config/config'),
     CimentariusBookshelf = require('./cimentarius'),
     _ = require('lodash'),
     Promise = require('bluebird'),
+    Site = require('../../models/shelves/site').model,
     TemplateHelper = require('../../lib/helpers/template.js'),
     Checkit = require('checkit');
 
@@ -137,6 +138,24 @@ var Page = CimentariusBookshelf.Model.extend(
             return res._render(res, 'page.swig', {
                 page: JSON.stringify(this.toJSON({shallow: true}))
             }, fn, '_forms', 'admin');
+        },
+        findSite: function() {
+            var _that = this;
+            switch (this.get('parent_type')) {
+                // generalise this to use the permitted parents array
+                case('page'):
+                    return new Page().where({id: _that.get('parent_id')}).fetch().then(function (_parentShelf) {
+                        console.log(_parentShelf);
+                        return _that.findSite(_parentShelf);
+                    });
+                case('site'):
+                    return new Site().where({id: _that.get('parent_id')}).fetch().then(function (_site) {
+                        console.log(_site);
+                        return _site;
+                    });
+                default:
+                    console.log('default switch in findSite');
+            }
         },
         /**
          * Validate this model
