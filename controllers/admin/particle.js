@@ -49,7 +49,9 @@ var _particle = {
             var data = particle.attributes;
             var _template = data.templateName;
             // fix default template
+        // DO THIS PROPERLY
             if (_template == "System Defined Default") _template = req.site.getPreference('default_particle_template');
+        // WRite a proper handler for this
             data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
             return res.renderAdmin('forms/page.swig', {page: JSON.stringify(data)});
         }

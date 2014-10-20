@@ -43,7 +43,7 @@ tablePromises.push(new Promise(function (resolve) {
 tablePromises.push(new Promise(function (resolve) {
     knex.schema.hasTable('site').then(function (exists) {
         if (exists) {
-            console.log('Site Table Already Exists');
+            console.log('Sites Table Already Exists');
             resolve();
         } else {
             knex.schema.createTable('site', function (t) {
@@ -56,7 +56,35 @@ tablePromises.push(new Promise(function (resolve) {
                 t.string('other_domains');
                 t.timestamps();
             }).then(function () {
-                console.log('Site Table Created');
+                console.log('Sites Table Created');
+                resolve();
+            });
+        }
+    });
+}));
+
+
+// Settings Table
+tablePromises.push(new Promise(function (resolve) {
+    knex.schema.hasTable('settting').then(function (exists) {
+        if (exists) {
+            console.log('Settings Table Already Exists');
+            resolve();
+        } else {
+            knex.schema.createTable('settting', function (t) {
+                t.increments('id');
+                // entity ID to look up in remote parent type table
+                t.integer('site_id');
+                // index order
+                // settings title (human readable format)
+                t.string('title');
+                // settings need names
+                t.string('name');
+                // and probably have a value
+                t.string('value');
+                t.timestamps();
+            }).then(function () {
+                console.log('Settings Table Created');
                 resolve();
             });
         }
@@ -101,7 +129,7 @@ tablePromises.push(new Promise(function (resolve) {
 tablePromises.push(new Promise(function (resolve) {
     knex.schema.hasTable('particle').then(function (exists) {
         if (exists) {
-            console.log('Particle Table Already Exists');
+            console.log('Particles Table Already Exists');
             resolve();
         } else {
             knex.schema.createTable('particle', function (t) {
@@ -114,7 +142,7 @@ tablePromises.push(new Promise(function (resolve) {
                 t.text('content');
                 t.timestamps();
             }).then(function () {
-                console.log('Particle Table Created');
+                console.log('Particles Table Created');
                 resolve();
             });
         }
@@ -204,10 +232,27 @@ Promise.all(tablePromises).then(function () {
                                     console.log('Site Successfully Created.');
                                     // Initial Site Creation
                                     knex('site').select().orderBy('id').limit(1).then(function(result) {
-                                        // Count Users
+                                        // Count Sites
                                         var site_id = result[0].id;
-                                        knex('page').select().where({'parent_type': 'site', 'parent_id': site_id}).limit(1).then(function (result) {
 
+                                        // Build some defaults
+                                        var defaultSettings = {
+                                            site_id: site_id,
+                                            title: 'Default Page Template',
+                                            name: 'default_page_template',
+                                            value: 'default'
+                                        };
+
+                                        Setting.forge(defaultSettings).save().then(function() {
+                                            defaultSettings.title = 'Default Particle Template'
+                                            defaultSettings.name = 'default_particle_template'
+
+                                            Setting.forge(defaultSettings).save().then(function() {
+                                                console.log('Default settings created...');
+                                            });
+                                        });
+
+                                        knex('page').select().where({'parent_type': 'site', 'parent_id': site_id}).limit(1).then(function (result) {
                                             // Need to create a user?
                                             if (result.length == 0) {
                                                 var pageDetails = {
