@@ -38,3 +38,9 @@ node_modules
 config/config.js
 
 .cimentarius.*
+
+# grunt crap
+public/admin/skins/default/css/
+public/admin/skins/default/js/
+src/.js/
+src/css/
