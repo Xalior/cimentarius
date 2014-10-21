@@ -145,12 +145,10 @@ var Page = CimentariusBookshelf.Model.extend(
                 // generalise this to use the permitted parents array
                 case('page'):
                     return new Page().where({id: _that.get('parent_id')}).fetch().then(function (_parentShelf) {
-                        console.log(_parentShelf);
                         return _that.findSite(_parentShelf);
                     });
                 case('site'):
                     return new Site().where({id: _that.get('parent_id')}).fetch().then(function (_site) {
-                        console.log(_site);
                         return _site;
                     });
                 default:

@@ -47,14 +47,12 @@ var _particle = {
             });
         } else {
             // fix default template
-            var data = particle.attributes;
+            var data = particle.toJSON({shallow: true});
+            console.log(data);
+//                data.type = particle.
             var _template = data.templateName;
             req.site.getPreference('default_particle_template').then(function(default_particle_template) {
-
-                console.log(JSON.stringify(default_particle_template));
-                // WRite a proper handler for this
-                data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'particle') + '/' + _template + '.swig');
-                return res.renderAdmin('forms/page.swig', {page: JSON.stringify(data)});
+                return res.renderAdmin('layouts/master.swig', {content: particle.form(res)});
             });
         }
     },
@@ -110,24 +108,26 @@ var particle = {
                     if (allContentTypes[i].types[_particleType]) {
                         // validate requested parent Type...
                         var allParentTypes;
-                        for (var i in allParentTypes = ContentHelper.getAllParentTypes()) {
-                            if(_parentModule == i) {
-                                if (allParentTypes[i].types[_parentType]) {
-                                    var parent = new allParentTypes[i].types[_parentType].model.model();
+                        for (var j in allParentTypes = ContentHelper.getAllParentTypes()) {
+                            if(_parentModule == j) {
+                                if (allParentTypes[j].types[_parentType]) {
+                                    var parent = new allParentTypes[j].types[_parentType].model.model();
                                     return parent.fetch({id:_parentId}).then(function(parent) {
                                         if(parent) {
                                             return parent.findSite().then(function(_site) {
                                                 req.site = _site;
-                                                res.templatePack = req.site.getPreference('template_pack');
-                                                // Parent is found - let's start building our new article part.
-                                                var particle = new allContentTypes[i].types[_particleType].model.Model();
-                                                particle.set({
-                                                    parent_type: _parentType,
-                                                    parent_id: _parentId,
-                                                    content_block: _blockName,
-                                                    templateName: "System Defined Default"
+                                                req.site.getPreference('template_pack').then(function(template_pack) {
+                                                    res.templatePack = template_pack[0].value;
+                                                    // Parent is found - let's start building our new article part.
+                                                    var particle = new allContentTypes[i].types[_particleType].model.Model();
+                                                    particle.set({
+                                                        parent_type: _parentType,
+                                                        parent_id: _parentId,
+                                                        content_block: _blockName
+                                                    });
+                                                    return _particle.editModel(particle, req, res);
                                                 });
-                                                return _particle.editModel(particle, req, res);
+
                                             });
                                         } else {
                                             return res.errorAdmin(404, "Specified Parent Not Found");

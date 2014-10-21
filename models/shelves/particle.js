@@ -26,27 +26,6 @@ var Particle = CimentariusBookshelf.Model.extend(
         constructor: function () {
             // Call Parent
             CimentariusBookshelf.Model.apply(this, arguments);
-            // Form Instance
-            if (!this.formData.customValidators) {
-                this.formData.customValidators = {};
-            }
-            if (!this.formData.fields) {
-                this.formData.fields = [];
-            }
-            if (!this.formData.labels) {
-                this.formData.labels = {};
-            }
-            if (!this.formData.joiValidators) {
-                this.formData.joiValidators = {};
-            }
-            // Form Data
-            var formData = {
-                name: this.type.toLowerCase(),
-                fields: ['blockName', 'template' , 'position'].concat(this.formData.fields),
-                labels: _.merge(this.formData.labels, {blockName: 'Content Block Name', position: 'Block Position'}),
-//                joiValidators: _.merge(this.formData.joiValidators, {blockName: BraidsBase.joi.string().required(), position: BraidsBase.joi.number().integer().required()}),
-                customValidators: this.formData.customValidators
-            };
             // Build Form By Merging Data
 //            this.form = BraidsBase.Model.Extend(_.merge(this.formData, formData));
         },
@@ -87,6 +66,12 @@ var Particle = CimentariusBookshelf.Model.extend(
             this.on('destroying', this._beforeDelete);
             // Post Delete Hook
             this.on('destroyed', this._postDelete);
+        },
+        toJSON: function(_opts) {
+            var _json = CimentariusBookshelf.Model.prototype.toJSON.apply(this, arguments);
+            _json.type = this.type;
+            _json.module = this.module;
+            return _json;
         },
         // Set Type
         _setType: function () {
@@ -158,8 +143,21 @@ var Particle = CimentariusBookshelf.Model.extend(
         baseAttributes: [
             'name', 'content_block', 'type', 'position', 'created_at', 'updated_at', 'id', 'page_id', 'content'
         ],
+        form: function(res) {
+            var fn = function(data, err) {
+                if(err) {
+                    return res.errorAdmin(500, "Error generating Page form");
+                } else {
+                    return data;
+                }
+            };
+
+            return res._render(res, this.type.toLowerCase() + '.swig', {
+                particle: JSON.stringify(this.toJSON({shallow: true}))
+            }, fn, '_forms/particles', 'admin');
+        },
         getFormTemplatePath: function () {
-            return __dirname + '/../../skins/admin/forms/' + this.type.toLowerCase() + '.swig';
+            return __dirname + '/../../skins/admin/_forms/particles/' + this.type.toLowerCase() + '.swig';
         },
         getTemplateList: function () {
             // TET

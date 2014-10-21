@@ -82,7 +82,7 @@ var _page = {
         }
     },
     findSite: function(page, req, res) {
-        page.findSite().then(function(_site) {
+        return page.findSite().then(function(_site) {
             req.site = _site;
             res.templatePack = req.site.getPreference('template_pack');
         });

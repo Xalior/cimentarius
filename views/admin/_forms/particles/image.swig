@@ -1,10 +1,10 @@
 {% extends '../particle.swig' %}
 
 {% block basicFormExtras %}
-    HELLO
+    HELLO FOR IMAGE
 {% endblock %}
 
 
 {% block advancedFormExtras %}
-    ADVANCED HELLO
+    ADVANCED HELLO FOR IMAGES too
 {% endblock %}

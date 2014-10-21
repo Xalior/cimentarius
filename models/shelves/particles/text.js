@@ -17,14 +17,14 @@ var Text = Particle.extend(
     {
         // Type
         type: 'text',
+        // Module
+        module: '_buildin',
         // Search Fields
         searchFields: [
             'text'
         ],
         // Description
         description: 'Particle For A Piece of Plain Text.',
-        // Template
-        template: 'text',
         // Live Data Bindings
         livePreviewBindings: {
             text: 'text'
