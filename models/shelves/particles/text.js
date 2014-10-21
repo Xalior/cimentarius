@@ -17,8 +17,6 @@ var Text = Particle.extend(
     {
         // Type
         type: 'text',
-        // Module
-        module: '_buildin',
         // Search Fields
         searchFields: [
             'text'

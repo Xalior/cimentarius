@@ -15,8 +15,6 @@ var Image = Particle.extend(
     {
         // Type
         type: 'image',
-        // Module
-        module: '_buildin',
         // Description
         description: 'Particle For An Image.',
         // Live Preview

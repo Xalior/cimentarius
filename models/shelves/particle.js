@@ -12,6 +12,8 @@ var Particle = CimentariusBookshelf.Model.extend(
         {
         // Table Name
         tableName: 'particle',
+        // Module
+        module: '_builtin',
         // Form Data
         formData: {
             fields: [],

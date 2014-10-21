@@ -46,6 +46,7 @@ var _page = {
             if (page) {
                 return _page.findSite(page, req, res).then(function () {
                     return getTemplatesFor(res.templatePack, 'page').then(function (_pageTemplates) {
+                        console.log(_pageTemplates);
                         res.locals.pageTemplates = JSON.stringify(_pageTemplates);
                         return _page.editModel(page, req, res);
 
@@ -76,9 +77,12 @@ var _page = {
         } else {
             var _template = page.get('templateName');
             // fix default template
-            if (_template == "System Defined Default") _template = req.site.getPreference('default_page_template');
-            page.attributes.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
-            return res.renderAdmin('layouts/master.swig', {content: page.form(res)});
+            return req.site.getPreference('default_page_template').then(function(default_page_template) {
+                if (_template == "System Defined Default") _template = default_page_template[0].value;
+                var foo = TemplateHelper.getTemplatePath(res.templatePack, 'page');
+                page.attributes.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
+                return res.renderAdmin('layouts/master.swig', {content: page.form(res)});
+            });
         }
     },
     findSite: function(page, req, res) {

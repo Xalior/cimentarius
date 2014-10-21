@@ -48,10 +48,10 @@ var _particle = {
         } else {
             // fix default template
             var data = particle.toJSON({shallow: true});
-            console.log(data);
-//                data.type = particle.
-            var _template = data.templateName;
-            req.site.getPreference('default_particle_template').then(function(default_particle_template) {
+            console.log(res.templatePack);
+            TemplateHelper.getTemplatesFor(res.templatePack, particle.module+':'+particle.type).then(function(templates) {
+                console.log(templates);
+                res.locals.particleTemplates = templates;
                 return res.renderAdmin('layouts/master.swig', {content: particle.form(res)});
             });
         }
@@ -144,74 +144,6 @@ var particle = {
             }
             return res.errorAdmin(404, 'Specified Content Type Not Found');
 
-            //if(parentType = _.find(_permittedParents, function(parent) {
-            //    return((parent.type == _parentModule) && (parent.name == _parentType));
-            //})) {
-            //    console.log(parentType);
-            //    return res.errorAdmin(404, "Ready to create a child: <code>"+_parentModule+'/'+_parentType+':'+_parentId+'</code>.');
-            //    var _parentId = requestPath.shift();
-            //    if(_parentId == parseInt(_parentId)) {
-            //        // we should handle objects other than Page, to match above array...
-            //        return Page.forge({id: _parentId}).fetch().then(function(_parentShelf) {
-            //            if(_parentShelf) {
-            //                findSite(_parentShelf).then(function(thisSite) {
-            //                    var _defaultTemplatePack = thisSite.getPreference('template_pack');
-            //                    getTemplatesFor(thisSite.getPreference('template_pack')).then(function (_pageTemplates) {
-            //                        res.locals.pageTemplates = JSON.stringify(_pageTemplates);
-            //                        var _newParticle = {};
-            //                        var _position = requestPath.shift();
-            //                        if (_position == 'position') {
-            //                            _position = requestPath.shift();
-            //                            if (_position != parseInt(_position)) {
-            //                                _position = 65535;
-            //                            }
-            //                        }
-            //                        if (req.method.toUpperCase() == 'POST') {
-            //                            // SAVE IT
-            //                            _newParticle = new Page;
-            //                            _newParticle.attributes = req.body;
-            //
-            //                            if (_newParticle.attributes.created_at) delete(_newParticle.attributes.created_at);
-            //                            if (_newParticle.attributes.template) delete(_newParticle.attributes.template);
-            //
-            //                            return _newParticle.validate().then(function (messages) {
-            //                                if (messages.errors)
-            //                                    return res.end(JSON.stringify({errors: messages}));
-            //                                else {
-            //                                    _newParticle.save().then(function (data) {
-            //                                        var data = data.attributes;
-            //                                        var _template = data.templateName;
-            //                                        // fix default template
-            //                                        if (_template=="System Defined Default") _template = thisSite.getPreference('default_page_template');
-            //                                        data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(_defaultTemplatePack, 'page') + '/' + _template + '.swig');
-            //                                        return res.end(JSON.stringify(data));
-            //                                    });
-            //                                }
-            //                            });
-            //                        } else {
-            //                            // a new, not a save -- sub from URL, to pass to ng-api
-            //                            _newParticle.attributes = {
-            //                                parent_type: _particleParent,
-            //                                parent_id: _parentId,
-            //                                position: _position,
-            //                                templateName: 'System Defined Default'
-            //                            };
-            //                        }
-            //                        return res.renderAdmin('forms/page.swig', {page: JSON.stringify(_newParticle.attributes)});
-            //                    });
-            //                });
-            //
-            //            } else {
-            //                return res.errorAdmin(404, 'Page not found');
-            //            }
-            //        });
-            //    } else {
-            //        return res.errorAdmin(404, 'Parent '+_particleParent+' not Found');
-            //    }
-            //    return res.errorAdmin(418, "<p>You're seeing this, well, probably because something unexpected happened...</p><p>Also, I am <strong>not</strong> a tea pot.</p>");
-            //} else {
-            //    return res.errorAdmin(404, 'Parent Type not Found');
-            //}
         } else if (typeof(particle.routes[_particleRoute])=='function') {
             return particle.routes[_particleRoute](requestPath, req, res);
         }
