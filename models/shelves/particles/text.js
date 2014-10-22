@@ -22,7 +22,7 @@ var Text = Particle.extend(
             'text'
         ],
         // Description
-        description: 'Particle For A Piece of Plain Text.',
+        description: 'Basic Text',
         // Live Data Bindings
         livePreviewBindings: {
             text: 'text'

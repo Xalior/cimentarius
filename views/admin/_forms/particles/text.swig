@@ -20,8 +20,3 @@
         </div>
     </div>
 {% endblock %}
-
-
-{% block advancedFormExtras %}
-    ADVANCED HELLO
-{% endblock %}

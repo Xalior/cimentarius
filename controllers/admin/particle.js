@@ -12,13 +12,41 @@ var config = require('../../config/config'),
     ContentHelper = require('../../lib/helpers/content');
 
 
+var getTemplatesFor = function(templatePack, particle) {
+    return TemplateHelper.getTemplatesFor(templatePack, particle.module+':' +particle.type)
+        .then(function(files){
+            var _particleTemplates = [];
+            for (var i = 0; i < files.length; i++) {
+                if(path.extname(files[i])=='.swig') {
+                    var file = path.basename(files[i], '.swig');
+                    _particleTemplates.push({
+                        name: file,
+                        item: '<div class="template-title"><strong>Template Name: </strong>' +
+                        ' <small>'+file+'</small>.</div>' +
+                        '<div class="template-preview"><img src="/'+config.admin+'/page/thumbnail/default/'+file+'"></div><br />'
+                    });
+                }
+            }
+            _particleTemplates.push({
+                name: ''
+            });
+            _particleTemplates.push({
+                name: 'System Defined Default',
+                item: '<div>System Defined Default</div>'
+            });
+            return _particleTemplates;
+        }
+    );
+};
+
+
 var _particle = {
     edit:  function(particleId, req, res) {
         // get the page to be edited...
         return Particle.forge({id: paricleId}).fetch().then( function (particle) {
             if (particle) {
                 return _particle.findSite(particle, req, res).then(function () {
-                    return getTemplatesFor(res.templatePack, particle.get('type')).then(function (_particleTemplates) {
+                    return getTemplatesFor(res.templatePack, particle).then(function (_particleTemplates) {
                         res.locals.particleTemplates = JSON.stringify(_particleTemplates);
                         return _particle.editModel(page, req, res);
                     });
@@ -47,11 +75,16 @@ var _particle = {
             });
         } else {
             // fix default template
-            var data = particle.toJSON({shallow: true});
-            console.log(res.templatePack);
-            TemplateHelper.getTemplatesFor(res.templatePack, particle.module+':'+particle.type).then(function(templates) {
-                console.log(templates);
-                res.locals.particleTemplates = templates;
+            particle.attributes.templateName = "System Defined Default";
+            particle.attributes.type = particle.type;
+            particle.attributes.module = particle.module;
+            particle.attributes.description = particle.description;
+            console.log("PA");
+            console.log(particle.attributes);
+
+            return getTemplatesFor(res.templatePack, particle).then(function(templates) {
+                res.locals.particleTemplates = JSON.stringify(templates);
+//                if (_template == "System Defined Default") _template = req.site.getPreference('default_particle_template');
                 return res.renderAdmin('layouts/master.swig', {content: particle.form(res)});
             });
         }
@@ -93,7 +126,6 @@ var particle = {
             var _blockName = requestPath.shift();
             var _particleModule = requestPath.shift();
             var _particleType = requestPath.shift();
-            var contentType;
 
             if(_parentType.contains(':')) {
                 var _typeParts = _parentType.split(':');

@@ -10,7 +10,7 @@
                             <label for="title">Title</label>
                             <input type="text"
                                    class="form-control"
-                                   placeholder="Particle Title"
+                                   placeholder="{{ particle.description }} Title"
                                    name="title"
                                    ng-model="particle.title"
                                    ng-change="change()"
@@ -38,7 +38,7 @@
 
                         {% block advancedFormExtras %}{% endblock %}
                         <div class="large-12 columns">
-                            <label for="">Particle Template</label>
+                            <label for="">{{ particle.description }} Template</label>
                             <br />
 
                             <input type="hidden"

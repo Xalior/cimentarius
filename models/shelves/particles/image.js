@@ -16,7 +16,7 @@ var Image = Particle.extend(
         // Type
         type: 'image',
         // Description
-        description: 'Particle For An Image.',
+        description: 'Basic Image',
         // Live Preview
         livePreview: true,
         searchFields: [

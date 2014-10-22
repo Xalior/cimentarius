@@ -112,7 +112,7 @@ var page = {
                     // we should handle objects other than Page, to match above array...
                     return Page.forge({id: _parentId}).fetch().then(function(_parentShelf) {
                         if(_parentShelf) {
-                            _page.findSite(_parentShelf, req, res).then(function() {
+                            return _page.findSite(_parentShelf, req, res).then(function() {
                                 var _position = requestPath.shift();
                                 if (_position == 'position') {
                                     _position = requestPath.shift();
@@ -127,13 +127,12 @@ var page = {
                                     position: _position,
                                     templateName: 'System Defined Default'
                                 });
-                                getTemplatesFor(res.templatePack).then(function (_pageTemplates) {
+                                return getTemplatesFor(res.templatePack).then(function (_pageTemplates) {
                                     res.locals.pageTemplates = JSON.stringify(_pageTemplates);
 
                                     return _page.editModel(_newPage, req, res);
                                 });
                             });
-
                         } else {
                             return res.errorAdmin(404, 'Page not found');
                         }
