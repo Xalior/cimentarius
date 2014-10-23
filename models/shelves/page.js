@@ -135,7 +135,7 @@ var Page = CimentariusBookshelf.Model.extend(
             };
 
             return res._render(res, 'page.swig', {
-                page: JSON.stringify(this.toJSON({shallow: true}))
+                page: JSON.stringify(this.toJSON({shallow: false}))
             }, fn, '_forms', 'admin');
         },
         findSite: function() {

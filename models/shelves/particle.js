@@ -93,6 +93,10 @@ var Particle = CimentariusBookshelf.Model.extend(
                 });
             });
         },
+        _postFetch: function (model, resp, options) {
+            model.attributes.description = model.description;
+            model.attributes.module = model.module;
+        },
         /**
          * Validate this model
          */
@@ -108,8 +112,6 @@ var Particle = CimentariusBookshelf.Model.extend(
             }
             var _particleData = this.toJSON({shallow: true});
             _.assign(_particleData, JSON.parse(this.get('particle_data')));
-            console.log("ready to validate:");
-            console.log(_particleData);
             return this.validator.run(_particleData).then(function(validated) {
                 return validated;
             }).catch(Checkit.Error, function(err) {

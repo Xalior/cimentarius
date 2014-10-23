@@ -46,7 +46,6 @@ var _page = {
             if (page) {
                 return _page.findSite(page, req, res).then(function () {
                     return getTemplatesFor(res.templatePack, 'page').then(function (_pageTemplates) {
-                        console.log(_pageTemplates);
                         res.locals.pageTemplates = JSON.stringify(_pageTemplates);
                         return _page.editModel(page, req, res);
 
@@ -79,8 +78,10 @@ var _page = {
             // fix default template
             return req.site.getPreference('default_page_template').then(function(default_page_template) {
                 if (_template == "System Defined Default") _template = default_page_template[0].value;
-                var foo = TemplateHelper.getTemplatePath(res.templatePack, 'page');
                 page.attributes.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
+                console.log('data.template');
+                console.log(page.attributes.template.contentBlocks);
+                var content = [];
                 return res.renderAdmin('layouts/master.swig', {content: page.form(res)});
             });
         }
@@ -140,7 +141,6 @@ var page = {
                 } else {
                     return res.errorAdmin(404, 'Parent '+_pageParent+' not Found');
                 }
-                return res.errorAdmin(418, "<p>You're seeing this, well, probably because something unexpected happened...</p><p>Also, I am <strong>not</strong> a tea pot.</p>");
             } else {
                 return res.errorAdmin(404, 'Parent Type not Found');
             }

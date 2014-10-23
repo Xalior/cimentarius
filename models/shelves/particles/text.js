@@ -61,7 +61,6 @@ var Text = Particle.extend(
         getSearchableBodyData: function () {
             var that = this;
             return new Promise(function(resolve, reject) {
-                console.log(that);
                 return resolve(that.get('title')+' '+that.get('body'));
             });
         }

@@ -66,25 +66,20 @@ var _particle = {
                     return res.end(JSON.stringify({errors: messages}));
                 else
                     particle.save().then(function (data) {
-                        var data = data.attributes;
-                        var _template = data.templateName;
-                        // fix default template
-                        if (_template == "System Defined Default") _template = req.site.getPreference('default_particle_template');
-                        data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
                         return res.end(JSON.stringify(data));
                     });
             });
         } else {
             // fix default template
-            particle.attributes.type = particle.type;
-            particle.attributes.module = particle.module;
+            if(particle.module=="_builtin") {
+                particle.attributes.type = particle.type;
+            } else {
+                particle.attributes.type = particle.module+":"+particle.type;
+            }
             particle.attributes.description = particle.description;
-            console.log("PA");
-            console.log(particle.attributes);
 
             return getTemplatesFor(res.templatePack, particle).then(function(templates) {
                 res.locals.particleTemplates = JSON.stringify(templates);
-//                if (_template == "System Defined Default") _template = req.site.getPreference('default_particle_template');
                 return res.renderAdmin('layouts/master.swig', {content: particle.form(res)});
             });
         }
@@ -132,7 +127,6 @@ var particle = {
                 _parentType = _typeParts[1];
                 _parentModule = _typeParts[0];
             }
-            console.log(_parentModule,_parentType,_parentId,_blockName,_particleModule,_particleType);
 
             var allContentTypes;
             for (var i in allContentTypes = ContentHelper.getAllTypes()) {

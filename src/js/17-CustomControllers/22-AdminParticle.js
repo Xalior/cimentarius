@@ -12,6 +12,7 @@ Cimentarius.controller('particleController', ['$scope', '$http', '$location', 'c
                 url: $location.$$absUrl,
                 data: $scope.particle
             }).success(function(data, status, headers, cfg) {
+                console.log($scope);
                 if(data.errors) {
                     for (var key in data.errors) {
                         var obj = data.errors[key];
