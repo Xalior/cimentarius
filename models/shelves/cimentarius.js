@@ -22,7 +22,6 @@ CimentariusBookshelf.Model = Bookshelf.cimentarius.Model.extend({
         this.on('fetched', this._postFetch);
     },
     _beforeSave: function (model, attrs, options) {
-        console.log('        CimentariusBookshelf.Model.apply(this, arguments);');
         if (model.attributes.created_at) delete(model.attributes.created_at);
     },
     _postSave: function(model, attrs, options) {},

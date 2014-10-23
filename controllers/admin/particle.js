@@ -12,6 +12,7 @@ var config = require('../../config/config'),
     ContentHelper = require('../../lib/helpers/content');
 
 
+
 var getTemplatesFor = function(templatePack, particle) {
     return TemplateHelper.getTemplatesFor(templatePack, particle.module+':' +particle.type)
         .then(function(files){
@@ -58,7 +59,7 @@ var _particle = {
     },
     editModel: function(particle, req, res) {
         if (req.method.toUpperCase() == 'POST') {
-            particle.attributes = req.body;
+            particle.buildContent(req.body);
 
             return particle.validate().then(function (messages) {
                 if (messages.errors)
@@ -75,7 +76,6 @@ var _particle = {
             });
         } else {
             // fix default template
-            particle.attributes.templateName = "System Defined Default";
             particle.attributes.type = particle.type;
             particle.attributes.module = particle.module;
             particle.attributes.description = particle.description;
@@ -155,7 +155,8 @@ var particle = {
                                                     particle.set({
                                                         parent_type: _parentType,
                                                         parent_id: _parentId,
-                                                        content_block: _blockName
+                                                        content_block: _blockName,
+                                                        templateName: "System Defined Default"
                                                     });
                                                     return _particle.editModel(particle, req, res);
                                                 });

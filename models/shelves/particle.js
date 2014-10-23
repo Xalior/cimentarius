@@ -4,8 +4,8 @@ var CimentariusBookshelf = require('./cimentarius'),
     _ = require('lodash'),
     fs = require('fs'),
     Promise = require('bluebird'),
-    ContentHelper = require('../../lib/helpers/content.js'),
-    config = require('../../config/config');
+    config = require('../../config/config'),
+    Checkit = require('checkit');
 
 var Particle = CimentariusBookshelf.Model.extend(
     //Instance Methods
@@ -15,21 +15,12 @@ var Particle = CimentariusBookshelf.Model.extend(
         // Module
         module: '_builtin',
         // Form Data
-        formData: {
-            fields: [],
-            labels: {},
-            joiValidators: {}
-        },
-        // Page Relation
-        page: function () {
-            return this.belongsTo('Page');
-        },
+        particleAttributes: [],
+        particleData: [],
         // Constructor
         constructor: function () {
             // Call Parent
             CimentariusBookshelf.Model.apply(this, arguments);
-            // Build Form By Merging Data
-//            this.form = BraidsBase.Model.Extend(_.merge(this.formData, formData));
         },
         // Init
         initialize: function () {
@@ -43,6 +34,7 @@ var Particle = CimentariusBookshelf.Model.extend(
                     model.getSearchableBodyData().then(function (searchableBodyData) {
                         // Set Searchable Body
                         model.set('search_field', searchableBodyData);
+                        console.log(searchableBodyData);
                         // Resolve
                         resolve(searchableBodyData);
                     }).catch(function (e) {
@@ -54,15 +46,17 @@ var Particle = CimentariusBookshelf.Model.extend(
             // Saved Hook for Search
             this.on('saved', function (model) {
                 // Saved -> Get Page
-                return model.related('page').fetch().then(function (pageModel) {
-                    if (pageModel) {
-                        // Return Update Method & Cache Method
-                        var searchPromise = pageModel.updateSearchField(false);
-                        return searchPromise.then(pageModel.save());
-                    } else {
-                        return Promise.resolve();
-                    }
-                });
+                /*
+                    return model.related('parent').fetch().then(function (pageModel) {
+                        if (pageModel) {
+                            // Return Update Method & Cache Method
+                            var searchPromise = pageModel.updateSearchField(false);
+                            return searchPromise.then(pageModel.save());
+                        } else {
+                            return Promise.resolve();
+                        }
+                    });
+                */
             });
             // Pre-Delete Hook
             this.on('destroying', this._beforeDelete);
@@ -75,6 +69,54 @@ var Particle = CimentariusBookshelf.Model.extend(
             _json.module = this.module;
             return _json;
         },
+        getSearchableBodyData: function () {
+            return new Promise(function(resolve, reject) {
+                return resolve(this.get('title'));
+            });
+        },
+        _beforeSave: function (model, attrs, options) {
+            CimentariusBookshelf.Model.prototype._beforeSave.apply(this, arguments);
+            // Remove dynamic fields
+            if (model.attributes.template) delete(model.attributes.template);
+            if (model.attributes.description) delete(model.attributes.description);
+            if (model.attributes.module) delete(model.attributes.module);
+            return new Promise(function (resolve, reject) {
+                // Get Searchable Data
+                model.getSearchableBodyData().then(function (searchableBodyData) {
+                    // Set Searchable Body
+                    model.set('search_field', searchableBodyData);
+                    // Resolve
+                    resolve(searchableBodyData);
+                }).catch(function (e) {
+                    // Error
+                    reject(e);
+                });
+            });
+        },
+        /**
+         * Validate this model
+         */
+        validate: function() {
+            if(!this.validator) {
+                this.validator = new Checkit(this.validatorRules.compulsory);
+                if(this.validatorRules.maybe) {
+                    for (var i = 0; i < this.validatorRules.maybe.length; i++) {
+                        this.validator.maybe(this.validatorRules.maybe[i].rules,
+                            this.validatorRules.maybe[i].handler);
+                    }
+                }
+            }
+            var _particleData = this.toJSON({shallow: true});
+            _.assign(_particleData, JSON.parse(this.get('particle_data')));
+            console.log("ready to validate:");
+            console.log(_particleData);
+            return this.validator.run(_particleData).then(function(validated) {
+                return validated;
+            }).catch(Checkit.Error, function(err) {
+                return err;
+            })
+        },
+        validator: null,
         // Set Type
         _setType: function () {
             // Check It's Not Already Set
@@ -82,15 +124,6 @@ var Particle = CimentariusBookshelf.Model.extend(
                 // Set
                 this.set('type', this.type);
             }
-        },
-        // Before Save
-        _beforeSave: function (model, attrs, options) {
-        },
-        // Post Delete
-        _postDelete: function (model, attrs, options) {
-        },
-        // Pre-Delete
-        _beforeDelete: function (model, attrs, options) {
         },
         // Set Page ID
         setPageId: function (pageId) {
@@ -104,32 +137,18 @@ var Particle = CimentariusBookshelf.Model.extend(
         buildContent: function (dataObject) {
             // TIT
             var _this = this;
-
-            // Name
-            if (dataObject.blockName) {
-                this.set('name', dataObject.blockName);
-                delete dataObject.blockName;
-            }
-
-            // Template
-            if (dataObject.template) {
-                this.set('template', dataObject.template);
-                delete dataObject.template;
-            }
-
-            // Serialize Other Data
             var data = {};
             _(dataObject).forEach(function (item, key) {
                 // Not Base Attribute? Add to Content
-                if (_this.baseAttributes.indexOf(key) === -1) {
+                if (_this.particleAttributes.indexOf(key) === -1) {
                     data[key] = item;
                     delete dataObject[key];
                 }
             });
             // Add Normal Data
-            this.set(dataObject);
+            this.set(data);
             // And Serialize The Content
-            this.set('content', JSON.stringify(data));
+            this.set('particle_data', JSON.stringify(dataObject));
         },
         // Type
         type: 'Base',
@@ -141,10 +160,6 @@ var Particle = CimentariusBookshelf.Model.extend(
         data: {
             Error: 'Rendered The Base Template. Tsk Tsk.'
         },
-        // Base Attributes
-        baseAttributes: [
-            'name', 'content_block', 'type', 'position', 'created_at', 'updated_at', 'id', 'page_id', 'content'
-        ],
         form: function(res) {
             var fn = function(data, err) {
                 if(err) {

@@ -134,12 +134,22 @@ tablePromises.push(new Promise(function (resolve) {
         } else {
             knex.schema.createTable('particle', function (t) {
                 t.increments('id');
-                t.integer('page_id');
-                t.string('name');
-                t.string('content_block');
-                t.string('type');
+                // probably page - maybe site, or a service... :-o
+                t.string('parent_type');
+                // entity ID to look up in remote parent type table
+                t.integer('parent_id');
+                // index order
                 t.integer('position');
-                t.text('content');
+                // page title (human readable format
+                t.string('title');
+                // pages need rendering templates (by name)
+                t.string('templateName');
+                // and a block-part
+                t.string('content_block');
+                // Type of content
+                t.string('type');
+                t.text('particle_data');
+                t.text('search_field');
                 t.timestamps();
             }).then(function () {
                 console.log('Particles Table Created');

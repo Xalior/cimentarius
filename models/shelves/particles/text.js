@@ -1,8 +1,8 @@
 'use strict';
 
-var CimentariusBookshelf = require('../cimentarius');
-var Promise = require('bluebird');
-var Particle = require('../particle').Particle;
+var CimentariusBookshelf = require('../cimentarius'),
+    Promise = require('bluebird'),
+    Particle = require('../particle').Particle;
 
 var validatePixelAmount = function (value) {
     if (value.endsWith('px') || value === '' || value === null) {
@@ -21,6 +21,9 @@ var Text = Particle.extend(
         searchFields: [
             'text'
         ],
+        particleAttributes: [
+            'body'
+        ],
         // Description
         description: 'Basic Text',
         // Live Data Bindings
@@ -32,10 +35,7 @@ var Text = Particle.extend(
          * Prepare for saving, remove data that messes up the save event
          */
         _beforeSave: function (model, attrs, options) {
-            CimentariusBookshelf.Model.prototype._beforeSave.apply(this, arguments);
-            // Remove dynamic fields
-            if (model.attributes.template) delete(model.attributes.template);
-
+            Particle.prototype._beforeSave.apply(this, arguments);
         },
         form: function(res) {
             var fn = function(data, err) {
@@ -50,47 +50,20 @@ var Text = Particle.extend(
                 particle: JSON.stringify(this.toJSON({shallow: true}))
             }, fn, '_forms', 'admin');
         },
-        /**
-         * Validate this model
-         */
-        validate: function() {
-
-            if(!this.validator) {
-                this.validator = new Checkit(this.validatorRules.compulsory);
-                for(var i = 0; i < this.validatorRules.maybe.length; i++) {
-                    this.validator.maybe(this.validatorRules.maybe[i].rules,
-                        this.validatorRules.maybe[i].handler);
-                }
-            }
-            return this.validator.run(this.toJSON({shallow: true})).then(function(validated) {
-                return validated;
-            }).catch(Checkit.Error, function(err) {
-                return err;
-            })
-        },
-        validator: null,
         validatorRules: {
             compulsory: {
                 parent_type: 'required',
                 parent_id: 'required',
-                title: 'required'
-            },
-            maybe:[{
-                rules: { slug: ['required',
-                    function(val) {
-                        return CimentariusBookshelf.knex('page')
-                            .where('parent_id', '=', this.target.parent_id)
-                            .where('id', '!=', this.target.id)
-                            .where('slug', '=', val)
-                            .then(function (resp) {
-                                if (resp.length > 0) throw new Error('The slug is already in use.')
-                            })
-                    }]
-                },
-                handler: function(input) {
-                    return input.parent_type != 'site';
-                }
-            }]
+                title: 'required',
+                body: 'required'
+            }
+        },
+        getSearchableBodyData: function () {
+            var that = this;
+            return new Promise(function(resolve, reject) {
+                console.log(that);
+                return resolve(that.get('title')+' '+that.get('body'));
+            });
         }
     },
     // Static methods

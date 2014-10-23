@@ -5,7 +5,6 @@ var config = require('../../config/config'),
     _ = require('lodash'),
     Promise = require('bluebird'),
     Site = require('../../models/shelves/site').model,
-    TemplateHelper = require('../../lib/helpers/template.js'),
     Checkit = require('checkit');
 
 //var pageForm = require('../forms/page');
