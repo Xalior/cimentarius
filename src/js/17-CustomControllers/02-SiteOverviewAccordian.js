@@ -1,4 +1,4 @@
-Cimentarius.controller('SiteOverviewAccordion', function ($scope, $http) {
+Cimentarius.controller('SiteOverviewAccordion', ['$scope', '$http', 'cimentariusService', function ($scope, $http, cimentariusService) {
     $scope.init = function () {
         $scope.reload();
         console.log("this is init)");
@@ -19,11 +19,16 @@ Cimentarius.controller('SiteOverviewAccordion', function ($scope, $http) {
     };
 
     $scope.removePage = function(page) {
-        console.log(page);
-        this.remove();
+        var that = this;
+        cimentariusService.modalSet('Delete this page?', 'Are you sure you want to delete "'+page.title+'"?<br /><strong>This will delete all the subpages too!</strong>', function(result){
+            alert(page.title);
+            that.remove()
+        });
+        cimentariusService.modalOpen();
+
     };
 
     $scope.oneAtATime = true;
 
     $scope.sites = [];
-});
+}]);
