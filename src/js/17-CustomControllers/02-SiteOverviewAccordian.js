@@ -1,6 +1,7 @@
 Cimentarius.controller('SiteOverviewAccordion', function ($scope, $http) {
     $scope.init = function () {
         $scope.reload();
+        console.log("this is init)");
     };
 
     $scope.reload = function() {
@@ -15,6 +16,11 @@ Cimentarius.controller('SiteOverviewAccordion', function ($scope, $http) {
 
     $scope.update = function(data) {
         $scope.sites = data;
+    };
+
+    $scope.removePage = function(page) {
+        console.log(page);
+        this.remove();
     };
 
     $scope.oneAtATime = true;
