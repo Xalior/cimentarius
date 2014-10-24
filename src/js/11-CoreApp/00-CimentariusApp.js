@@ -1,5 +1,10 @@
 var Cimentarius = angular.module('Cimentarius', ['ui.bootstrap','ui.tree']);
 
+Cimentarius.config(function($locationProvider) {
+    // use the HTML5 History API
+//    $locationProvider.html5Mode(true);
+});
+
 Cimentarius.factory('cimentariusService', function($rootScope) {
     var cimentariusService = {
         // Flash banners

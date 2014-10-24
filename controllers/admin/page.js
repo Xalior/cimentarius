@@ -45,6 +45,8 @@ var _page = {
         return Page.forge({id: pageId}).fetch().then( function (page) {
             if (page) {
                 return _page.findSite(page, req, res).then(function () {
+                    console.log(page);
+
                     return getTemplatesFor(res.templatePack, 'page').then(function (_pageTemplates) {
                         res.locals.pageTemplates = JSON.stringify(_pageTemplates);
                         return _page.editModel(page, req, res);
@@ -66,22 +68,27 @@ var _page = {
                 else
                     page.save().then(function (data) {
                         var data = data.toJSON({shallow:true});
-                        var _template = data.templateName;
-                        // fix default template
-                        if (_template == "System Defined Default") _template = req.site.getPreference('default_page_template');
-                        data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
-                        return res.end(JSON.stringify(data));
+                        return req.site.getPreference('default_page_template').then(function(_template){
+                            // fix default template
+                            if (data.templateName != "System Defined Default") {
+                                _template = data.templateName;
+                            } else {
+                                console.log(_template);
+                                _template = _template.value;
+                            }
+                            data.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
+                            return res.end(JSON.stringify(data));
+                        });
                     });
             });
         } else {
             var _template = page.get('templateName');
             // fix default template
             return req.site.getPreference('default_page_template').then(function(default_page_template) {
-                if (_template == "System Defined Default") _template = default_page_template[0].value;
+                if (_template == "System Defined Default") _template = default_page_template.value;
                 page.attributes.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
                 console.log('data.template');
                 console.log(page.attributes.template.contentBlocks);
-                var content = [];
                 return res.renderAdmin('layouts/master.swig', {content: page.form(res)});
             });
         }
@@ -89,7 +96,11 @@ var _page = {
     findSite: function(page, req, res) {
         return page.findSite().then(function(_site) {
             req.site = _site;
-            res.templatePack = req.site.getPreference('template_pack');
+
+            return req.site.getPreference('template_pack').then(function(_templatePack) {
+                res.templatePack = _templatePack;
+                return;
+            });
         });
     }
 };

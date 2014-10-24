@@ -23,6 +23,7 @@ Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'cimen
                         }
                     }
                 } else {
+                    $location.path(Cimentarius._adminRoot+'/page/'+data.id);
                     cimentariusService.addAlert([{
                         type: 'success',
                         msg: 'Job Done'
@@ -40,7 +41,6 @@ Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'cimen
     $scope.change = function(name) {
         var that = this;
 
-        console.log("page change");
         if(name) {
             console.log(name);
             console.log($scope.pageForm);

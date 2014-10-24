@@ -143,7 +143,7 @@ var particle = {
                                             return parent.findSite().then(function(_site) {
                                                 req.site = _site;
                                                 req.site.getPreference('template_pack').then(function(template_pack) {
-                                                    res.templatePack = template_pack[0].value;
+                                                    res.templatePack = template_pack.value;
                                                     // Parent is found - let's start building our new article part.
                                                     var particle = new allContentTypes[i].types[_particleType].model.Model();
                                                     particle.set({

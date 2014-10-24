@@ -41,7 +41,7 @@ var Site = CimentariusBookshelf.Model.extend(
             var _this = this;
             // Query
             return CimentariusBookshelf.knex('setting').where({site_id: _this.get('id'), name: name}).limit(1).then(function (results) {
-                return results;
+                return results[0];
             });
         },
         /**
