@@ -24,8 +24,8 @@
                             {# Link #}
                             <a href="{~_adminRoot~}/page/{{page.id}}/" tooltip-placement="right" tooltip="{{site.url}}{{page.slug}}">{{page.title}}</a>
                             {# Delete #}
-                            <a class="pull-right btn btn-danger btn-xs" ng-if="page.slug != '/'" nodrag ng-click="removePage(page.id)"><span class="glyphicon glyphicon-remove"></span></a>
-                            <a class="pull-right btn btn-danger btn-xs disabled" ng-if="page.slug == '/'" nodrag ng-click="removePage(page.id)"><span class="glyphicon glyphicon-remove"></span></a>
+                            <a class="pull-right btn btn-danger btn-xs" ng-if="page.slug != '/'" nodrag ng-click="removePage(page)"><span class="glyphicon glyphicon-remove"></span></a>
+                            <a class="pull-right btn btn-danger btn-xs disabled" ng-if="page.slug == '/'" nodrag ng-click="removePage(page)"><span class="glyphicon glyphicon-remove"></span></a>
                             {# New Child #}
                             <a href="{~_adminRoot~}/page/NEW/page/{{page.id}}/position/{{page.position}}" class="pull-right btn btn-primary btn-xs" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>
 
