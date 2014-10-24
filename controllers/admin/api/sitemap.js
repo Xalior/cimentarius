@@ -9,9 +9,6 @@ var CimentariusBookshelf = require('../../../models/shelves/cimentarius'),
     Page = require('../../../models/shelves/page').model,
     User = require('../../../models/shelves/admin/user').User;
 
-// Knex Instance
-var knex = CimentariusBookshelf.knex;
-
 var sitemap = {
     sitemap: function (requestPath, req, res) {
         new Site().fetchAll().then(function (sites) {

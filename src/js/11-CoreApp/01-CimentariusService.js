@@ -33,7 +33,7 @@ Cimentarius.factory('cimentariusService', ['$modal', '$rootScope', function($mod
             var bootstrapModal = $modal.open({
                 template:
                     '<div class="modal-header">' +
-                    '    <h3 class="modal-title">{{ header }}</h3>' +
+                    '    <h3 class="modal-title">{{ title }}</h3>' +
                     '</div>' +
                     '<div class="modal-body" ng-bind-html="body | asHtml"></div>' +
                     '<div class="modal-footer">' +

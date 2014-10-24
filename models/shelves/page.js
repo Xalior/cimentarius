@@ -5,6 +5,7 @@ var config = require('../../config/config'),
     _ = require('lodash'),
     Promise = require('bluebird'),
     Site = require('../../models/shelves/site').model,
+    Particle = require('../../models/shelves/particle').model,
     Checkit = require('checkit');
 
 //var pageForm = require('../forms/page');
@@ -123,7 +124,21 @@ var Page = CimentariusBookshelf.Model.extend(
         _beforeDelete: function (model, attrs, options) {
             console.log('destroying');
             console.log(this);
-            return console.log("CimentariusBookshelf.knex('PARTICLES AND STUFFS').where('id', '='," + this.get('id') + ").where('delete();)");
+            new Page().where({'parent_type': 'page', 'parent_id': this.id}).fetchAll()
+                .then(function (pages) {
+                    pages.each(function(page) {
+                        page.destroy();
+                    });
+                }
+            );
+
+            new Particle().where({'parent_type': 'page', 'parent_id': this.id}).fetchAll()
+                .then(function (particles) {
+                    particles.each(function(particle) {
+                        particle.destroy();
+                    });
+                }
+            );
         },
         form: function(res) {
             var fn = function(data, err) {

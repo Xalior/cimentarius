@@ -40,6 +40,22 @@ var getTemplatesFor = function(templatePack) {
 };
 
 var _page = {
+    delete:  function(pageId, req, res) {
+        // get the page to be edited...
+        return Page.forge({id: pageId}).fetch().then( function (page) {
+            if (page) {
+                var oldId = page.id;
+                return page.destroy().then(function(deadPage) {
+                    console.log(typeof deadPage.id);
+                    if(typeof deadPage.id == 'undefined') {
+                        return res.end(JSON.stringify({deleted: oldId}));
+                    }
+                });
+            } else {
+                return res.errorAdmin(404, 'Page not found');
+            }
+        });
+    },
     edit:  function(pageId, req, res) {
         // get the page to be edited...
         return Page.forge({id: pageId}).fetch().then( function (page) {
@@ -174,6 +190,21 @@ var page = {
             } else {
                 return res.errorAdmin(404, "Template pack thumbnail not found: <code>"+_templatePack+'\\'+_templateName+'</code>.');
             }
+        },
+        delete: function(requestPath, req, res) {
+            if(requestPath.length==1) {
+                var _pageRoute = requestPath[0];
+                if(_pageRoute == parseInt(_pageRoute)) {
+                    return _page.delete(_pageRoute, req, res);
+                } else {
+                    return res.errorAdmin(404, 'Page to delete path not understood.');
+                }
+            } else {
+                return res.errorAdmin(404, 'Page to delete path not correct.');
+            }
+            var _pageId =
+            console.log("ready to delete some shit");
+            console.log(requestPath);
         }
     }
 };
