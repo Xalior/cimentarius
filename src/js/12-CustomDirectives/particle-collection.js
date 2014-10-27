@@ -31,11 +31,17 @@ Cimentarius.directive('particleCollection', function () {
                 '          </div>' +
                 '        </div>' +
                 '        <ul class="particle-list">' +
-                '          <li ng-if="contentBlock.particles.length" ng-repeat="particle in contentBlock.particles" class="particle">' +
-                '            {{ particle }}' +
+                '          <li ng-if="contentBlock.particles.length" ng-repeat="particle in contentBlock.particles" class="particle" id="particle_{{ particle.id }}">' +
+                '            <div>' +
+                '               <span class="glyphicon {{ particle.className }} particle-type" tooltip="{{ particle.type}}"></span>' +
+                '               {{ particle.title }}' +
+                '               {{ particle.position }}' +
+                '            </div>' +
                 '          </li>' +
                 '          <li ng-if="!contentBlock.particles.length" class="no-particles">' +
-                '            <span class="glyphicon glyphicon-warning-sign"></span>This content block is empty&hellip;<br /><em>Content blocks invariably look better when they contain content!</em>' +
+                '            <div>' +
+                '              <span class="glyphicon glyphicon-warning-sign"></span>This content block is empty&hellip;<br /><em>Content blocks invariably look better when they contain content!</em>' +
+                '            </div>' +
                 '          </li>' +
                 '        </ul>' +
                 '       </div>',

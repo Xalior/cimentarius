@@ -101,14 +101,17 @@ var _page = {
 
                 var _particles = {};
                 particles.forEach(function(_particle) {
+                    var _thisParticleType = ContentHelper.getFilteredTypes(_particle.module+':'+_particle.get('type'));
+                    console.log(_thisParticleType);
                     var _thisParticle = {
                         id: _particle.id,
                         type: _particle.get('type'),
                         title: _particle.get('title'),
                         position: _particle.get('position'),
+                        className: _thisParticleType.className,
                         content_block: _particle.get('content_block')
                     };
-                    if(typeof _particles[_thisParticle.content_block] != 'array') {
+                    if(typeof _particles[_thisParticle.content_block] != 'object') {
                         _particles[_thisParticle.content_block] = [];
                     }
                     _particles[_thisParticle.content_block].push(_thisParticle);
@@ -121,10 +124,9 @@ var _page = {
                     page.attributes.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
                     page.attributes.template.contentBlocks.forEach(function(contentBlock) {
                         contentBlock.particles = _particles[contentBlock.name];
+                        delete _particles[contentBlock.name];
                         console.log(page.attributes.template.contentBlocks);
                     });
-                    console.log('data.template');
-                    console.log(page.attributes.template.contentBlocks);
                     return res.renderAdmin('layouts/master.swig', {content: page.form(res)});
                 });
             });
