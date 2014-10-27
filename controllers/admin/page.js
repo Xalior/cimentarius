@@ -61,8 +61,6 @@ var _page = {
         return Page.forge({id: pageId}).fetch().then( function (page) {
             if (page) {
                 return _page.findSite(page, req, res).then(function () {
-                    console.log(page);
-
                     return getTemplatesFor(res.templatePack, 'page').then(function (_pageTemplates) {
                         res.locals.pageTemplates = JSON.stringify(_pageTemplates);
                         return _page.editModel(page, req, res);
@@ -99,13 +97,36 @@ var _page = {
             });
         } else {
             var _template = page.get('templateName');
-            // fix default template
-            return req.site.getPreference('default_page_template').then(function(default_page_template) {
-                if (_template == "System Defined Default") _template = default_page_template.value;
-                page.attributes.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
-                console.log('data.template');
-                console.log(page.attributes.template.contentBlocks);
-                return res.renderAdmin('layouts/master.swig', {content: page.form(res)});
+            return page.particles().then(function(particles) {
+
+                var _particles = {};
+                particles.forEach(function(_particle) {
+                    var _thisParticle = {
+                        id: _particle.id,
+                        type: _particle.get('type'),
+                        title: _particle.get('title'),
+                        position: _particle.get('position'),
+                        content_block: _particle.get('content_block')
+                    };
+                    if(typeof _particles[_thisParticle.content_block] != 'array') {
+                        _particles[_thisParticle.content_block] = [];
+                    }
+                    _particles[_thisParticle.content_block].push(_thisParticle);
+                });
+                console.log(_particles);
+//                page.attributes.particles = _particles;
+                // fix default template
+                return req.site.getPreference('default_page_template').then(function(default_page_template) {
+                    if (_template == "System Defined Default") _template = default_page_template.value;
+                    page.attributes.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
+                    page.attributes.template.contentBlocks.forEach(function(contentBlock) {
+                        contentBlock.particles = _particles[contentBlock.name];
+                        console.log(page.attributes.template.contentBlocks);
+                    });
+                    console.log('data.template');
+                    console.log(page.attributes.template.contentBlocks);
+                    return res.renderAdmin('layouts/master.swig', {content: page.form(res)});
+                });
             });
         }
     },

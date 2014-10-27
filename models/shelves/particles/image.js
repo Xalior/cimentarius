@@ -1,7 +1,7 @@
 'use strict';
 
 var CimentariusBookshelf = require('../cimentarius');
-var Particle = require('../particle').Particle;
+var Particle = require('../particle').model;
 
 var validatePixelAmount = function (value) {
     if (value.endsWith('px') || value.endsWith('%') || value === '0' || value === 0) {

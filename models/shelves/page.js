@@ -22,35 +22,12 @@ var Page = CimentariusBookshelf.Model.extend(
         tableName: 'page',
 
         particles: function () {
-            return this.hasMany('Particles');
-        },
-        /**
-         * Fetch A Page With Particles In Order
-         */
-        fetchWithOrderedParticles: function () {
-            // Fetch With Particles Ordered By Position
-            return this.fetch({
-                withRelated: [
-                    {
-                        'particles': function (qb) {
-                            qb.orderBy('position', 'ASC');
-                        }
-                    }
-                ]
+            return Particle.forge({
+                parent_type: 'page',
+                parent_id: this.id
+            }).fetchAll().then(function(particles){
+                return particles;
             });
-        },
-        /**
-         * Load Ordered Particles Into Existing Page Model
-         * @returns {*}
-         */
-        loadOrderedParticles: function () {
-            return this.load([
-                {
-                    'particles': function (qb) {
-                        qb.orderBy('position', 'ASC');
-                    }
-                }
-            ]);
         },
         /**
          * @param [skinPack]

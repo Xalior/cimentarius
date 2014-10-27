@@ -42,8 +42,6 @@ Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'cimen
         var that = this;
 
         if(name) {
-            console.log(name);
-            console.log($scope.pageForm);
             that.pageForm.$setDirty();
         }
         for (var key in $scope.serverErrors) {

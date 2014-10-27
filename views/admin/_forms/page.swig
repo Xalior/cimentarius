@@ -21,7 +21,7 @@
                                        ng-maxlength=64
                                        required />
                                 <div class="error-container" ng-show="pageForm.title.$dirty && pageForm.title.$invalid">
-                                    <small class="error" ng-show="pageForm.title.$error.required">All pages require a title.</small>
+                                    <small class="error" ng-show="pageForm.title.$error.required" ng-disabled="page.parent_type=='page'">All pages require a title.</small>
                                     <small class="error" ng-show="pageForm.title.$error.minlength">A page title is required to be at least 1 characters</small>
                                     <small class="error" ng-show="pageForm.title.$error.maxlength">A page title cannot be longer than 64 characters</small>
                                     <small class="error" ng-show="pageForm.title.$error.serverSide">{{ serverErrors.title }}</small>
@@ -31,15 +31,24 @@
                                 <label for="slug">Slug</label>
                                 <input type="text"
                                        class="form-control"
+                                       placeholder="Homepage for this Site"
+                                       name="slug"
+                                       ng-if='page.parent_type=="site"'
+                                       ng-required='page.parent_type!="site"'
+                                       ng-disabled='page.parent_type=="site"'/>
+                                <input type="text"
+                                       class="form-control"
                                        placeholder="URL for this page"
                                        name="slug"
                                        ng-model="page.slug"
                                        ng-change="change()"
                                        ng-minlength=1
                                        ng-maxlength=64
-                                       required />
+                                       ng-if='page.parent_type!="site"'
+                                       ng-required='page.parent_type!="site"'
+                                       ng-disabled='page.parent_type=="site"'/>
                                 <div class="error-container" ng-show="pageForm.slug.$dirty && pageForm.slug.$invalid">
-                                    <small class="error" ng-show="pageForm.slug.$error.required">Please input a slug</small>
+                                    <small class="error" ng-show="pageForm.slug.$error.required" ng-disabled="page.parent_type=='site'">Please input a slug</small>
                                     <small class="error" ng-show="pageForm.slug.$error.minlength">Your username is required to be at least 1 characters</small>
                                     <small class="error" ng-show="pageForm.slug.$error.maxlength">Your username cannot be longer than 64 characters</small>
                                     <small class="error" ng-show="pageForm.slug.$error.unique">That slug is already used at this level, please try another</small>

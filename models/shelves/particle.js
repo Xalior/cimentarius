@@ -65,8 +65,11 @@ var Particle = CimentariusBookshelf.Model.extend(
         },
         toJSON: function(_opts) {
             var _json = CimentariusBookshelf.Model.prototype.toJSON.apply(this, arguments);
-            _json.type = this.type;
-            _json.module = this.module;
+
+            if(!this.get('type'))
+                _json.type = this.type;
+            if(!this.get('module'))
+                _json.module = this.module;
             return _json;
         },
         getSearchableBodyData: function () {
@@ -295,6 +298,6 @@ var replaceWithParticleType = function (particleModel) {
 };
 
 module.exports = {
-    Particle: CimentariusBookshelf.model('Particle', Particle),
-    Particles: CimentariusBookshelf.collection('Particles', Particles)
+    model: CimentariusBookshelf.model('Particle', Particle),
+    collection: CimentariusBookshelf.collection('Particles', Particles)
 };

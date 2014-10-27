@@ -2,7 +2,7 @@
 
 var CimentariusBookshelf = require('../cimentarius'),
     Promise = require('bluebird'),
-    Particle = require('../particle').Particle;
+    Particle = require('../particle').model;
 
 var validatePixelAmount = function (value) {
     if (value.endsWith('px') || value === '' || value === null) {
