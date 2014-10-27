@@ -28,6 +28,7 @@ $brand-danger:          #E74C3C;
 $body-bg:               $gray-darker;
 //** Global text color on `<body>`.
 $text-color:            #fff;
+$inverse-text-color:    invert($text-color);
 
 //** Global textual link color.
 $link-color:            desaturate(lighten($brand-success, 10%),10%);

@@ -9,15 +9,12 @@ var admin = {
     auth: require('./auth'),
     routes: {
         auth: function(requestPath, req, res) {
-            console.info('cimentarius.admin.app:auth');
             admin.auth.router(requestPath, req, res);
         },
         dashboard: function(requestPath, req, res) {
-            console.info('cimentarius.admin.app:dashboard');
             require('./dashboard').router(requestPath, req, res);
         },
         api: function(requestPath, req, res) {
-            console.info('cimentarius.admin.app:api');
             require('./api/index').router(requestPath, req, res);
         },
         page: function(requestPath, req, res) {
@@ -35,17 +32,12 @@ var admin = {
     },
 
     app: function(requestPath, req, res)  {
-        console.info('cimentarius.admin.app:');
         admin.auth.passport.authenticate('admin-login');
         admin.router(requestPath, req, res);
     },
 
     router: function(requestPath, req, res) {
-        console.info('cimentarius.admin.router: '+JSON.stringify(requestPath));
-
         var redirectPrefix = req.url.startsWith('/' +config.admin) ? '/'+ config.admin + '/' : '/';
-
-
         var route = requestPath.shift();
         if((route=='auth') || (req.isAuthenticated())) {
             if(!route) { route='dashboard'; }

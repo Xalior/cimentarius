@@ -31,22 +31,13 @@
                                 <label for="slug">Slug</label>
                                 <input type="text"
                                        class="form-control"
-                                       placeholder="Homepage for this Site"
-                                       name="slug"
-                                       ng-if='page.parent_type=="site"'
-                                       ng-required='page.parent_type!="site"'
-                                       ng-disabled='page.parent_type=="site"'/>
-                                <input type="text"
-                                       class="form-control"
                                        placeholder="URL for this page"
                                        name="slug"
                                        ng-model="page.slug"
                                        ng-change="change()"
                                        ng-minlength=1
                                        ng-maxlength=64
-                                       ng-if='page.parent_type!="site"'
-                                       ng-required='page.parent_type!="site"'
-                                       ng-disabled='page.parent_type=="site"'/>
+                                       required />
                                 <div class="error-container" ng-show="pageForm.slug.$dirty && pageForm.slug.$invalid">
                                     <small class="error" ng-show="pageForm.slug.$error.required" ng-disabled="page.parent_type=='site'">Please input a slug</small>
                                     <small class="error" ng-show="pageForm.slug.$error.minlength">Your username is required to be at least 1 characters</small>

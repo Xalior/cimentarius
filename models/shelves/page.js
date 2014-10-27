@@ -8,9 +8,6 @@ var config = require('../../config/config'),
     Particle = require('../../models/shelves/particle').model,
     Checkit = require('checkit');
 
-//var pageForm = require('../forms/page');
-//var PageRenderHelper = require('../../models/helpers/page_render');
-
 var Page = CimentariusBookshelf.Model.extend(
     // Instance Methods
     {

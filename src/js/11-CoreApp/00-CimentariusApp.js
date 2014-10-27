@@ -1,4 +1,4 @@
-var Cimentarius = angular.module('Cimentarius', ['ui.bootstrap','ui.tree']);
+var Cimentarius = angular.module('Cimentarius', ['ui.bootstrap','ui.tree', 'dndLists']);
 
 
 Cimentarius.filter('asHtml', ['$sce', function($sce){
