@@ -7,6 +7,7 @@
  * License: MIT
  */
 angular.module('dndLists', [])
+
     /**
      * Use the dnd-draggable attribute to make your element draggable
      *
@@ -52,12 +53,11 @@ angular.module('dndLists', [])
      *                      meaning it only affects the original element that is still at it's source
      *                      position, and not the "element" that the user is dragging with his mouse pointer
      */
-    .directive('dndDraggable', ['$parse', '$timeout', 'dndDropEffectWorkaround', 'dndDragTypeWorkaround',
-                        function($parse,   $timeout,   dndDropEffectWorkaround,   dndDragTypeWorkaround) {
+    .directive('dndDraggable', ['$parse', '$timeout', '$document', 'dndDropEffectWorkaround', 'dndDragTypeWorkaround',
+                        function($parse,   $timeout,  $document,  dndDropEffectWorkaround,   dndDragTypeWorkaround) {
         return function(scope, element, attr) {
             // Set the HTML5 draggable attribute on the element
             element.attr("draggable", "true");
-
 
             // If the dnd-disable-if attribute is set, we have to watch that
             if (attr.dndDisableIf) {
@@ -71,7 +71,6 @@ angular.module('dndLists', [])
              * which is the primary way we communicate with the target element
              */
             element.on('dragstart', function(event) {
-                console.log('dragstart');
                 event = event.originalEvent || event;
 
                 // Serialize the data associated with this element. IE only supports the Text drag type
@@ -92,6 +91,8 @@ angular.module('dndLists', [])
                 // typename, but we have to use "Text" there to support IE
                 dndDragTypeWorkaround.dragType = attr.dndType ? scope.$eval(attr.dndType) : undefined;
 
+                angular.element($document[0].body).addClass('dragging');
+
                 event.stopPropagation();
             });
 
@@ -101,7 +102,6 @@ angular.module('dndLists', [])
              * we will invoke the callbacks specified with the dnd-moved or dnd-copied attribute.
              */
             element.on('dragend', function(event) {
-                console.log('dragend');
                 event = event.originalEvent || event;
 
                 // If the dropEffect is none it means that the drag action was aborted or
@@ -127,6 +127,9 @@ angular.module('dndLists', [])
                 element.removeClass("dndDragging");
                 element.removeClass("dndDraggingSource");
                 dndDragTypeWorkaround.isDragging = false;
+
+                angular.element($document[0].body).removeClass('dragging');
+
                 event.stopPropagation();
             });
 
@@ -135,7 +138,6 @@ angular.module('dndLists', [])
              * specified with the dnd-selected attribute.
              */
             element.on('click', function(event) {
-                console.log('click');
                 event = event.originalEvent || event;
 
                 scope.$apply(function() {
@@ -149,7 +151,6 @@ angular.module('dndLists', [])
              * Workaround to make element draggable in IE9
              */
             element.on('selectstart', function() {
-                console.log('selectstart');
                 if (this.dragDrop) this.dragDrop();
                 return false;
             });
@@ -192,7 +193,6 @@ angular.module('dndLists', [])
              * is being dragged over our list, or over an child element.
              */
             element.on('dragover', function(event) {
-                console.log('dragover');
                 event = event.originalEvent || event;
 
                 // Disallow drop if it comes from an external source or is not text.
@@ -270,7 +270,6 @@ angular.module('dndLists', [])
              * one child element per array element.
              */
             element.on('drop', function(event) {
-                console.log('drop');
                 event = event.originalEvent || event;
 
                 // Unserialize the data that was serialized in dragstart. According to the HTML5 specs,
@@ -313,7 +312,6 @@ angular.module('dndLists', [])
              * is still dragging over the list. If you know a better way of doing this, please tell me!
              */
             element.on('dragleave', function(event) {
-                console.log('dragleave');
                 event = event.originalEvent || event;
 
                 element.removeClass("dndDragover");

@@ -51,6 +51,7 @@ ul.content-blocks {
     ul.particle-list {
       li.particle {
         @extend .well;
+        height: 36px;
         margin-bottom: 5px;
         padding: 1px;
         list-style: none;
@@ -73,15 +74,18 @@ ul.content-blocks {
           div.no-particles {
             margin: 0 20px 0 20px;
             span {
-              font-size: 200%;
+              font-size: 20px;
               color: red;
               float: left;
             }
           }
         }
         font-size: 110%;
-        margin: 40px 40px 40px 0;
       }
     }
   }
+}
+
+body.dragging ul[dnd-list] li.no-particles {
+  opacity: 5;
 }

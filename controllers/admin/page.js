@@ -123,8 +123,13 @@ var _page = {
                     if (_template == "System Defined Default") _template = default_page_template.value;
                     page.attributes.template = TemplateHelper.parseTemplate(TemplateHelper.getTemplatePath(res.templatePack, 'page') + '/' + _template + '.swig');
                     page.attributes.template.contentBlocks.forEach(function(contentBlock) {
-                        contentBlock.particles = _particles[contentBlock.name];
-                        delete _particles[contentBlock.name];
+                        if(_particles[contentBlock.name]) {
+                            contentBlock.particles = _particles[contentBlock.name];
+                            delete _particles[contentBlock.name];
+                        } else {
+
+                            contentBlock.particles = [];
+                        }
                         console.log(page.attributes.template.contentBlocks);
                     });
                     return res.renderAdmin('layouts/master.swig', {content: page.form(res)});

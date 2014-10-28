@@ -67,7 +67,7 @@ Cimentarius.directive('particleCollection', function () {
                 '            <div class="row">' +
                 '              <div class="column col-sm-12 no-particles">' +
                 '                <span class="glyphicon glyphicon-warning-sign"></span>' +
-                '                <div>This content block is empty&hellip;<br /><em>Content blocks invariably look better when they contain content!</em></div>' +
+                '                <div>This content block is empty&hellip; <em>Blocks invariably look better when they contain content!</em></div>' +
                 '              </div>' +
                 '            </div>' +
                 '          </li>' +
