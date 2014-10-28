@@ -12,11 +12,11 @@ Cimentarius.directive('particleCollection', function () {
                 '        <div class="row">' +
                 '          <div class="col-sm-1 columns">&nbsp;</div>' +
                 '          <div class="col-sm-8 columns">{{ contentBlock.description }}</div>' +
-                '          <div class="col-sm-3 columns" dropdown is-open="status.isopen">' +
+                '          <div class="col-sm-3 columns" dropdown>' +
                 '            <button type="button" class="btn-xs btn-primary dropdown-toggle fullwidth">' +
                 '              <small>Add Content <span class="caret"></span></small>' +
                 '            </button>' +
-                '            <ul class="dropdown-menu" ui-sortable role="menu" ng-model="contentBlock.types">' +
+                '            <ul class="dropdown-menu" role="menu" ng-model="contentBlock.types">' +
                 '              <li ng-repeat="(type, typeDetails) in contentBlock.types" class="particle-menu">' +
                 '                <a ng-click="select()" class="particle-menu-item">' +
                 '                 {{ typeDetails.displayName }}' +
@@ -45,8 +45,7 @@ Cimentarius.directive('particleCollection', function () {
                 '                  <small>More&hellip; <span class="caret"></span></small>' +
                 '                </button>' +
                 '                <ul class="dropdown-menu" role="menu" ng-model="contentBlock.types">' +
-                '                  <li><h6>New Content <strong>ABOVE</strong>&hellip;</h6></li>' +
-
+                '                  <h6>New Content <strong>ABOVE</strong>&hellip;</h6>' +
                 '                  <li ng-repeat="(type, typeDetails) in contentBlock.types" class="particle-menu">' +
                 '                    <a ng-click="select()" class="particle-menu-item">' +
                 '                     {{ typeDetails.displayName }}' +

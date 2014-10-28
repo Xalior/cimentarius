@@ -37,7 +37,8 @@ ul.dropdown-menu h4,
 ul.dropdown-menu h5,
 ul.dropdown-menu h6,
 ul.dropdown-menu p {
-  @extend inverse-text;
+  @extend .inverse-text;
+  margin-left: 5px;
 }
 
 // Conent Blocks -- This is where Cimentarius is born.
@@ -51,8 +52,8 @@ ul.content-blocks {
     ul.particle-list {
       li.particle {
         @extend .well;
+        margin-bottom: 5px;
         padding: 1px;
-
         list-style: none;
         div {
           span.particle-type {
@@ -67,7 +68,6 @@ ul.content-blocks {
           }
           margin: 3px 5px 5px 5px;
         }
-        margin: 0 0 5px -40px;
       }
       li.no-particles {
         @extend .well;
