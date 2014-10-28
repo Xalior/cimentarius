@@ -23,14 +23,14 @@ Cimentarius.directive('particleCollection', function () {
                 '                </a>' +
                 '                <ul class="sub-menu" role="menu">' +
                 '                  <li ng-repeat="(content, contentDetails) in typeDetails.types" class="particle-menu">' +
-                '                    <a href="{{ cimentariusService.options._adminRoot }}/particle/NEW/{{ page.type }}/{{ page.id }}/{{ contentBlock.name }}/{{ type }}/{{ content}}"><span class="glyphicon {{ contentDetails.className }}"></span> {{ contentDetails.displayName }} </a' +
+                '                    <a href="{{ cimentariusService.options._adminRoot }}/particle/NEW/{{ parent.type }}/{{ parent.id }}/{{ contentBlock.name }}/{{ type }}/{{ content}}"><span class="glyphicon {{ contentDetails.className }}"></span> {{ contentDetails.displayName }} </a' +
                 '                  </li>' +
                 '                </ul>' +
                 '              </li>' +
                 '            </ul>' +
                 '          </div>' +
                 '        </div>' +
-                '        <ul class="particle-list" dnd-list="contentBlock.particles">' +
+                '        <ul class="particle-list" dnd-list="contentBlock.particles" dnd-reordered="parent.reordered">' +
                 '          <li ng-if="contentBlock.particles.length" ng-repeat="particle in contentBlock.particles" class="particle" id="particle_{{ particle.id }}" ' +
                 '           dnd-draggable="particle" dnd-moved="contentBlock.particles.splice($index, 1)" dnd-effect-allowed="move" dnd-selected="models.selected = particle" ' +
                 '           ng-class="{\'selected\': models.selected === particle}">' +
@@ -55,7 +55,7 @@ Cimentarius.directive('particleCollection', function () {
                 '                    </a>' +
                 '                    <ul class="sub-menu" role="menu">' +
                 '                      <li ng-repeat="(content, contentDetails) in typeDetails.types" class="particle-menu">' +
-                '                        <a href="{{ cimentariusService.options._adminRoot }}/particle/NEW/{{ page.type }}/{{ page.id }}/{{ contentBlock.name }}/{{ type }}/{{ content}}"><span class="glyphicon {{ contentDetails.className }}"></span> {{ contentDetails.displayName }} </a' +
+                '                        <a href="{{ cimentariusService.options._adminRoot }}/particle/NEW/{{ parent.type }}/{{ parent.id }}/{{ contentBlock.name }}/{{ type }}/{{ content}}"><span class="glyphicon {{ contentDetails.className }}"></span> {{ contentDetails.displayName }} </a' +
                 '                      </li>' +
                 '                    </ul>' +
                 '                  </li>' +
@@ -85,7 +85,7 @@ Cimentarius.directive('particleCollection', function () {
             restrict: 'EA',
             scope: {
                 contentBlock: '=ngModel',
-                page: '=page'
+                parent: '=parent'
             }
         }
     }

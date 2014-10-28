@@ -72,6 +72,7 @@ angular.module('dndLists', [])
              */
             element.on('dragstart', function(event) {
                 event = event.originalEvent || event;
+                console.dir(this);
 
                 // Serialize the data associated with this element. IE only supports the Text drag type
                 event.dataTransfer.setData("Text", angular.toJson(scope.$eval(attr.dndDraggable)));
@@ -173,6 +174,7 @@ angular.module('dndLists', [])
      *                      dnd-type attribute will be dropable.
      * - dnd-disable-if     Optional boolean expresssion. When it evaluates to true, no dropping into
      *                      the list is possible. Note that this also disables rearranging items inside the list.
+     * - dnd-reordered      Optional attribute. A boolean, which will set: true when a list is reordered.
      *
      * CSS classes:
      * - dndPlaceholder     When an element is dragged over the list, a new placeholder child element will be
@@ -187,6 +189,12 @@ angular.module('dndLists', [])
             var placeholder = angular.element("<li class='dndPlaceholder'></li>");
             var placeholderNode = placeholder[0];
             var listNode = element[0];
+
+
+            // Now check the dnd-reordered
+            if (attr.dndReordered) {
+                scope.reordered = scope.$eval(attr.dndReordered);
+            }
 
             /**
              * The dragover event is triggered "every few hundred milliseconds" while an element
@@ -295,6 +303,7 @@ angular.module('dndLists', [])
                                                        :  event.dataTransfer.effectAllowed;
                 }
 
+                scope.$apply(attr.dndReordered+'=true');
                 // Clean up
                 placeholder.remove();
                 element.removeClass("dndDragover");

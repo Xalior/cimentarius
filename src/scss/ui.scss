@@ -43,10 +43,13 @@ ul.dropdown-menu p {
 
 // Conent Blocks -- This is where Cimentarius is born.
 ul.content-blocks {
+
+  border-bottom: 1px solid;
   padding: 0;
   li.content-block {
     @extend .tab-body;
     padding: 10px;
+
     list-style: none;
     ul.particle-list {
       li.particle {

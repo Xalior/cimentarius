@@ -57,6 +57,12 @@ Cimentarius.controller('pageController', ['$scope', '$http', '$location', 'cimen
 
     $scope.init = function(data) {
         $scope.page = data;
-
+        $scope.originalBlocks = angular.copy(data.template.contentBlocks);
     };
+
+    $scope.resetOrder = function() {
+        console.log($scope.originalBlocks);
+        $scope.page.template.contentBlocks = angular.copy($scope.originalBlocks);
+        $scope.page.reordered = false;
+    }
 }]);
